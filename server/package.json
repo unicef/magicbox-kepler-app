@@ -1,0 +1,19 @@
+{
+  "name": "server",
+  "engines": {
+    "node": "^8.0.0"
+  },
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "client": "cd ../client && yarn start",
+    "server": "nodemon app.js",
+    "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\""
+  },
+  "dependencies": {
+    "express": "^4.16.2"
+  },
+  "devDependencies": {
+    "concurrently": "^3.5.0"
+  }
+}

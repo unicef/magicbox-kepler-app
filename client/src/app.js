@@ -22,9 +22,6 @@ import React, {Component} from 'react';
 import styled from 'styled-components';
 import window from 'global/window';
 import {connect} from 'react-redux';
-import Banner from './components/banner';
-import Announcement from './components/announcement';
-import config from './config';
 import {loadSampleConfigurations} from './actions';
 import {replaceLoadDataModal} from './factories/load-data-modal';
 
@@ -44,8 +41,6 @@ import {updateVisData, addDataToMap} from 'kepler.gl/actions';
 import Processors from 'kepler.gl/processors';
 /* eslint-enable no-unused-vars */
 
-const bannerHeight = 30;
-
 const GlobalStyleDiv = styled.div`
   font-family: ff-clan-web-pro, 'Helvetica Neue', Helvetica, sans-serif;
   font-weight: 400;
@@ -63,14 +58,13 @@ const GlobalStyleDiv = styled.div`
 
 class App extends Component {
   state = {
-    showBanner: false,
     width: window.innerWidth,
     height: window.innerHeight
   };
 
   componentWillMount() {
     // if we pass an id as part of the url
-    // we ry to fetch along map configurations
+    // we try to fetch along map configurations
     const {params: {id: sampleMapId} = {}} = this.props;
     this.props.dispatch(loadSampleConfigurations(sampleMapId));
     window.addEventListener('resize', this._onResize);
@@ -78,28 +72,30 @@ class App extends Component {
   }
 
   componentDidMount() {
-    // delay 2s to show the banner
-    /* disable show banners
-    if (!window.localStorage.getItem('kgHideBanner')) {
-      window.setTimeout(this._showBanner, 3000);
-    }
-    */
     // load sample data
     // this._loadSampleData();
-    let dataSets = {datasets: config.datasets.map(s => { return {
-      info: {
-        id: s.data.id,
-        label: s.data.label,
-        color: s.data.color
-      },
-      data: {
-        fields: s.data.fields,
-        rows: s.data.allData
-      }
-    }}), config: config.config}
 
-    // addDataToMap action to inject dataset into kepler.gl instance
-    this.props.dispatch(addDataToMap(dataSets));
+    const client_url = location.origin; // will be something like http://localhost:8080
+    const server_url = client_url.substr(0, client_url.length-4) + '5000'; // change that to http://localhost:5000
+    fetch(server_url + '/api/demo')
+      .then(res => res.json()) // transform the data into json
+      .then(obj => {
+        let dataSets = {datasets: obj.datasets.map(s => { return {
+          info: {
+            id: s.data.id,
+            label: s.data.label,
+            color: s.data.color
+          },
+          data: {
+            fields: s.data.fields,
+            rows: s.data.allData
+          }
+        }}), config: obj.config}
+
+        // addDataToMap action to inject dataset into kepler.gl instance
+        this.props.dispatch(addDataToMap(dataSets))
+      })
+      .catch(err => console.log(err))
   }
 
   componentWillUnmount() {
@@ -111,19 +107,6 @@ class App extends Component {
       width: window.innerWidth,
       height: window.innerHeight
     });
-  };
-
-  _showBanner = () => {
-    this.setState({showBanner: true});
-  };
-
-  _hideBanner = () => {
-    this.setState({showBanner: false});
-  };
-
-  _disableBanner = () => {
-    this._hideBanner();
-    window.localStorage.setItem('kgHideBanner', 'true');
   };
 
   _loadSampleData() {
@@ -201,24 +184,16 @@ class App extends Component {
   }
 
   render() {
-    const {showBanner, width, height} = this.state;
+    const {width, height} = this.state;
     return (
       <GlobalStyleDiv>
-        <Banner
-          show={this.state.showBanner}
-          height={bannerHeight}
-          onClose={this._hideBanner}
-        >
-          <Announcement onDisable={this._disableBanner}/>
-        </Banner>
         <div
           style={{
             transition: 'margin 1s, height 1s',
             position: 'absolute',
             width: '100%',
-            height: showBanner ? `calc(100% - ${bannerHeight}px)` : '100%',
-            minHeight: `calc(100% - ${bannerHeight}px)`,
-            marginTop: showBanner ? `${bannerHeight}px` : 0
+            height: '100%',
+            marginTop: 0
           }}
         >
           <KeplerGl
@@ -229,7 +204,7 @@ class App extends Component {
              */
             getState={state => state.demo.keplerGl}
             width={width}
-            height={height - (showBanner ? bannerHeight : 0)}
+            height={height}
           />
 
         </div>
