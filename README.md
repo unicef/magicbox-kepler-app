@@ -4,7 +4,8 @@ This project has an express backend that serves a default config.json to kepler-
 - server runs on port 5000
 - client runs on port 8080
 
-###### Below are two sample schools from Kyrgyzstan, colored according to their connectivity to the internet.
+###### Below are two sample schools from Kyrgyzstan, colored according to their level of connectivity to the internet.
+
 ![screenshot](screenshot.png)
 
 ### Local dev
