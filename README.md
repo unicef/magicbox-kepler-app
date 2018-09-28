@@ -5,7 +5,7 @@ This project has an express backend that serves a default config.json to kepler-
 - client runs on port 8080
 
 Below are two sample schools from Kyrgyzstan, colored according to their connectivity to the internet.
-![screenshot]('./screenshot.png')
+![screenshot](screenshot.png)
 
 ### Local dev
 ```
