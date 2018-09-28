@@ -8,7 +8,7 @@ This project has an express backend that serves a default config.json to kepler-
 
 ![screenshot](screenshot.png)
 
-### Local dev
+### Install and run
 ```
 cd server
 npm install
