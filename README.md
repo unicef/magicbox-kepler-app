@@ -11,7 +11,7 @@ This project has an express backend that serves a default config.json to kepler-
 ### Install and run
 ```
 cd server
-npm install
+yarn
 npm start
 ```
 - add mapbox access token to node env
