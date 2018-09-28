@@ -4,7 +4,7 @@ This project has an express backend that serves a default config.json to kepler-
 - server runs on port 5000
 - client runs on port 8080
 
-![screenshot]('https://github.com/unicef/magicbox-kepler-demo/blob/master/server/public/screenshot.png')
+![screenshot]('./screenshot.png')
 
 ### Local dev
 ```
