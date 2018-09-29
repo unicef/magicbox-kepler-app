@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 const port = process.env.PORT || 5000
-const config = require('./config-sample.json')
+const config = require('./config')
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
