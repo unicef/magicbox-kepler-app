@@ -27,7 +27,9 @@ import {replaceLoadDataModal} from './factories/load-data-modal';
 import KeplerGlSchema from 'kepler.gl/schemas';
 import Button from './button';
 import downloadJsonFile from "./file-download";
-window.KeplerGlSchema = KeplerGlSchema
+import config from '../config'
+const client_url = location.origin; // will be something like http://localhost:8080
+const server_url = client_url.substr(0, client_url.length-4) + config.server_port; // change that to http://localhost:5000
 const KeplerGl = require('kepler.gl/components').injectComponents([
   replaceLoadDataModal()
 ]);
@@ -77,10 +79,7 @@ class App extends Component {
   componentDidMount() {
     // load sample data
     // this._loadSampleData();
-
-    const client_url = location.origin; // will be something like http://localhost:8080
-    const server_url = client_url.substr(0, client_url.length-4) + '5000'; // change that to http://localhost:5000
-    fetch(server_url + '/api/demo')
+    fetch(server_url + '/api/default')
       .then(res => res.json()) // transform the data into json
       .then(obj => {
         let dataSets = {datasets: obj.datasets.map(s => { return {
@@ -188,7 +187,6 @@ class App extends Component {
   // This method is used as reference to show how to export the current kepler.gl instance configuration
   // Once exported the configuration can be imported using parseSavedConfig or load method from KeplerGlSchema
   getMapConfig() {
-    console.log(this.props)
     // retrieve kepler.gl store
     const {keplerGl} = this.props.demo;
     // retrieve current kepler.gl instance store
@@ -197,7 +195,7 @@ class App extends Component {
     return {
       datasets: KeplerGlSchema.getDatasetToSave(map),
       config: KeplerGlSchema.getConfigToSave(map),
-      info: { app: 'kepler.gl', created_at: new Date() } 
+      info: { app: 'kepler.gl', created_at: new Date() }
     }
   }
 
@@ -206,8 +204,24 @@ class App extends Component {
   exportMapConfig = () => {
     // create the config object
     const mapConfig = this.getMapConfig();
-    // save it as a json file
-    downloadJsonFile(mapConfig, 'kepler.gl.json');
+    const url = server_url + '/api/save'
+    // Sending and receiving data in JSON format using POST method
+    //
+    fetch(url, {
+            method: 'POST',
+            headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(mapConfig)
+          })
+          .then(response => {
+            return response.json()
+          }).then(body => {
+            alert(body.message)
+          });
+    // // save it as a json file
+    // downloadJsonFile(mapConfig, 'kepler.gl.json');
   };
   render() {
     const {width, height} = this.state;
@@ -222,7 +236,7 @@ class App extends Component {
             marginTop: 0
           }}
         >
-        <Button onClick={this.exportMapConfig}>Export Config</Button>
+        <Button onClick={this.exportMapConfig}>Save Config</Button>
           <KeplerGl
             mapboxApiAccessToken={MAPBOX_TOKEN}
             id="map"
