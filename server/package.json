@@ -5,14 +5,10 @@
   },
   "version": "1.0.0",
   "private": true,
-
   "scripts": {
     "start": "node app.js"
-},
+  },
   "dependencies": {
     "express": "^4.16.2"
-  },
-  "devDependencies": {
-    "concurrently": "^3.5.0"
   }
 }
