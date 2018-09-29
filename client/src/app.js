@@ -24,7 +24,10 @@ import window from 'global/window';
 import {connect} from 'react-redux';
 import {loadSampleConfigurations} from './actions';
 import {replaceLoadDataModal} from './factories/load-data-modal';
-
+import KeplerGlSchema from 'kepler.gl/schemas';
+import Button from './button';
+import downloadJsonFile from "./file-download";
+window.KeplerGlSchema = KeplerGlSchema
 const KeplerGl = require('kepler.gl/components').injectComponents([
   replaceLoadDataModal()
 ]);
@@ -182,7 +185,30 @@ class App extends Component {
       })
     );
   }
+  // This method is used as reference to show how to export the current kepler.gl instance configuration
+  // Once exported the configuration can be imported using parseSavedConfig or load method from KeplerGlSchema
+  getMapConfig() {
+    console.log(this.props)
+    // retrieve kepler.gl store
+    const {keplerGl} = this.props.demo;
+    // retrieve current kepler.gl instance store
+    const {map} = keplerGl;
+    // create the config object
+    return {
+      datasets: KeplerGlSchema.getDatasetToSave(map),
+      config: KeplerGlSchema.getConfigToSave(map),
+      info: { app: 'kepler.gl', created_at: new Date() } 
+    }
+  }
 
+  // This method is used as reference to show how to export the current kepler.gl instance configuration
+  // Once exported the configuration can be imported using parseSavedConfig or load method from KeplerGlSchema
+  exportMapConfig = () => {
+    // create the config object
+    const mapConfig = this.getMapConfig();
+    // save it as a json file
+    downloadJsonFile(mapConfig, 'kepler.gl.json');
+  };
   render() {
     const {width, height} = this.state;
     return (
@@ -196,6 +222,7 @@ class App extends Component {
             marginTop: 0
           }}
         >
+        <Button onClick={this.exportMapConfig}>Export Config</Button>
           <KeplerGl
             mapboxApiAccessToken={MAPBOX_TOKEN}
             id="map"
