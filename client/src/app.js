@@ -29,7 +29,7 @@ import Button from './button';
 import downloadJsonFile from "./file-download";
 import config from '../config'
 const client_url = location.origin; // will be something like http://localhost:8080
-const server_url = client_url.substr(0, client_url.length-4) + config.server_port; // change that to http://localhost:5000
+const server_url = client_url.substr(0, client_url.length-4) + config.server_port; // change from client_url to http://localhost:5000
 const KeplerGl = require('kepler.gl/components').injectComponents([
   replaceLoadDataModal()
 ]);
