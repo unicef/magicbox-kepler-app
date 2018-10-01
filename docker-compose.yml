@@ -1,0 +1,19 @@
+version: '3.7'
+services:
+  app:
+    build: ./client
+    volumes:
+      - ./client:/opt/app
+    ports:
+      - "8080:3000" # HOST:CONTAINER
+    links:
+      - backend
+    environment:
+      - MapboxAccessToken
+
+  backend:
+    build: ./server
+    volumes:
+      - ./server:/opt/backend
+    ports:
+      - "5000" # CONTAINER PORT (an ephemeral host port is choen - see docs: https://docs.docker.com/compose/compose-file/#ports)
