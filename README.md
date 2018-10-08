@@ -1,5 +1,10 @@
 # Demo App
 
+Need to add sections on:
+- datasets: mobility, shapefiles (borders, voronois, roads), points
+- How kepler configs work. Three nodes: datasets, layer config, info.
+
+
 ##### This project has:
 - an express backend that serves a default config.json to kepler-demo.
 - the keplergl client has a "Save Config" button that replaces old default map with current map.
