@@ -1,0 +1,18 @@
+.overlay-buttons {
+  position: absolute;
+  z-index: 100;
+  bottom: 0;
+  right: 0;
+}
+
+.overlay-buttons > button {
+  width: 120px;
+  height: 40px;
+  background-color: #1f7cf4;
+  color: #FFFFFF;
+  cursor: pointer;
+  font-size: 12px;
+  margin: 30px;
+  border: none;
+  border-radius: 3px;
+}
