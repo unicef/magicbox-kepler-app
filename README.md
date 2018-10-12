@@ -1,6 +1,6 @@
 # Demo App
 
-##### Chat with us on our [gitter channel](https://gitter.im/unicef-innovation-dev/Lobby)
+##### Chat with us on our [gitter channel](https://gitter.im/unicef-innovation-dev/Lobby)!
 
 
 ##### This project has:
