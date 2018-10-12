@@ -1,8 +1,6 @@
 # Demo App
 
-Need to add sections on:
-- datasets: mobility, shapefiles (borders, voronois, roads), points
-- How kepler configs work. Three nodes: datasets, layer config, info.
+##### Chat with us on our [gitter channel](https://gitter.im/unicef-innovation-dev/Lobby)
 
 
 ##### This project has:
