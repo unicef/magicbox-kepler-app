@@ -1,5 +1,5 @@
-FROM node:8
-COPY . /opt/app
-WORKDIR /opt/app
+FROM node:latest
+COPY . /opt/react
+WORKDIR /opt/react
 RUN yarn --ignore-engines
 CMD yarn start

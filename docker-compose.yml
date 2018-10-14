@@ -1,7 +1,7 @@
 app:
   build: ./client
   volumes:
-  - "./client:/opt/app"
+  - "./client:/opt/react"
   ports:
   - "8080:3000"
   links:
