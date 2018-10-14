@@ -1,7 +1,7 @@
 {
-  "name": "backend",
+  "name": "server",
   "engines": {
-    "node": ">=8.0.0"
+    "node": "8.0.0"
   },
   "version": "1.0.0",
   "private": true,
