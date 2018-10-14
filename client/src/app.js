@@ -30,6 +30,7 @@ import downloadJsonFile from "./file-download";
 import config from '../config'
 const client_url = location.origin; // will be something like http://localhost:8080
 const server_url = client_url.substr(0, client_url.length-4) + config.server_port; // change from client_url to http://localhost:5000
+// const server_url = 'http://0.0.0.0:' + config.server_port; // change from client_url to http://localhost:500
 const KeplerGl = require('kepler.gl/components').injectComponents([
   replaceLoadDataModal()
 ]);
@@ -79,9 +80,11 @@ class App extends Component {
   componentDidMount() {
     // load sample data
     // this._loadSampleData();
-    fetch(server_url + '/api/default')
+    fetch('/api/default')
       .then(res => res.json()) // transform the data into json
       .then(obj => {
+        console.log('Arrived')
+        console.log(obj)
         let dataSets = {datasets: obj.datasets.map(s => { return {
           info: {
             id: s.data.id,

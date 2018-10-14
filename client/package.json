@@ -19,6 +19,7 @@
     "redux-actions": "^2.2.1",
     "redux-thunk": "^1.0.0"
   },
+  "proxy": "http://api:5000",
   "devDependencies": {
     "babel-core": "^6.7.7",
     "babel-loader": "^6.2.10",
