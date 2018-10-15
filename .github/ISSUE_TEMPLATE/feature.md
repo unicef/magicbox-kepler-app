@@ -1,5 +1,5 @@
 ---
-name: Custom issue template
+name: Feature issue template
 about: Describe a desired feature or functionality
 
 ---
