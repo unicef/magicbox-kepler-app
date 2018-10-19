@@ -18,32 +18,38 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import React, {Component} from 'react';
-import styled from 'styled-components';
-import window from 'global/window';
+import * as topojson from 'topojson-client';
 import {connect} from 'react-redux';
-import {loadSampleConfigurations} from './actions';
-import {replaceLoadDataModal} from './factories/load-data-modal';
 import KeplerGlSchema from 'kepler.gl/schemas';
+import Processors from 'kepler.gl/processors';
+import React, {Component} from 'react';
+import shortid from 'shortid';
+import styled from 'styled-components';
+import {updateVisData, addDataToMap} from 'kepler.gl/actions';
+import window from 'global/window';
+
 import Button from './button';
+import config from '../config';
+import CountrySelectModal from './CountrySelectModal';
 import downloadJsonFile from "./file-download";
-import config from '../config'
-const client_url = location.origin; // will be something like http://localhost:8080
-const server_url = client_url.substr(0, client_url.length-4) + config.server_port; // change that to http://localhost:5000
+import {loadSampleConfigurations} from './actions';
+import {listBlobs, saveBlob} from './azure/blob-fetcher';
+import {replaceLoadDataModal} from './factories/load-data-modal';
+
 const KeplerGl = require('kepler.gl/components').injectComponents([
   replaceLoadDataModal()
 ]);
-
 const MAPBOX_TOKEN = process.env.MapboxAccessToken; // eslint-disable-line
+
+const client_url = location.origin; // will be something like http://localhost:8080
+const server_url = client_url.substr(0, client_url.length-4) + config.server_port; // change that to http://localhost:5000
 
 // Sample data
 /* eslint-disable no-unused-vars */
-import sampleTripData from './data/sample-trip-data';
 import sampleGeojson from './data/sample-geojson.json';
 import sampleH3Data from './data/sample-hex-id-csv';
 import sampleIconCsv, {config as savedMapConfig} from './data/sample-icon-csv';
-import {updateVisData, addDataToMap} from 'kepler.gl/actions';
-import Processors from 'kepler.gl/processors';
+import sampleTripData from './data/sample-trip-data';
 /* eslint-enable no-unused-vars */
 
 const GlobalStyleDiv = styled.div`
@@ -64,7 +70,9 @@ const GlobalStyleDiv = styled.div`
 class App extends Component {
   state = {
     width: window.innerWidth,
-    height: window.innerHeight
+    height: window.innerHeight,
+    countryAndAdminList: [],
+    countrySelectModalOpen: false
   };
 
   componentWillMount() {
@@ -92,12 +100,36 @@ class App extends Component {
             fields: s.data.fields,
             rows: s.data.allData
           }
-        }}), config: obj.config}
+        }};), config: obj.config};
 
         // addDataToMap action to inject dataset into kepler.gl instance
-        this.props.dispatch(addDataToMap(dataSets))
+        this.props.dispatch(addDataToMap(dataSets));
       })
-      .catch(err => console.log(err))
+      .catch(err => console.log(err));
+
+    // uncomment the following code if want to fetch from the old MagicBox API
+    // fetch("http://magicbox8.azurewebsites.net/docs/population")
+    //   .then(res => res.json()) // transform the data into json
+    //   .then(data => {
+    //     let countryCodeList = Object.keys(data.countries);
+    //     // console.log(countryCodeList.slice(0, 10));
+    //     let dataWithIds = countryCodeList.map(entry => {
+    //       return {
+    //         countryCode: entry,
+    //         id: shortid.generate()
+    //       };
+    //     });
+    //     this.setState({ countryAndAdminList: dataWithIds });
+    //   })
+    //   .catch(err => console.log(err));
+
+    listBlobs()
+      .then(result => {
+        let resultWithIds = result.map(entry => {
+          return {...entry, id: shortid.generate()};
+        });
+        this.setState({ countryAndAdminList: resultWithIds });
+      }).catch(err => console.log(err));
   }
 
   componentWillUnmount() {
@@ -184,8 +216,7 @@ class App extends Component {
       })
     );
   }
-  // This method is used as reference to show how to export the current kepler.gl instance configuration
-  // Once exported the configuration can be imported using parseSavedConfig or load method from KeplerGlSchema
+
   getMapConfig() {
     // retrieve kepler.gl store
     const {keplerGl} = this.props.demo;
@@ -196,17 +227,14 @@ class App extends Component {
       datasets: KeplerGlSchema.getDatasetToSave(map),
       config: KeplerGlSchema.getConfigToSave(map),
       info: { app: 'kepler.gl', created_at: new Date() }
-    }
+    };
   }
 
-  // This method is used as reference to show how to export the current kepler.gl instance configuration
-  // Once exported the configuration can be imported using parseSavedConfig or load method from KeplerGlSchema
   exportMapConfig = () => {
     // create the config object
     const mapConfig = this.getMapConfig();
-    const url = server_url + '/api/save'
+    const url = server_url + '/api/save';
     // Sending and receiving data in JSON format using POST method
-    //
     fetch(url, {
             method: 'POST',
             headers: {
@@ -215,14 +243,66 @@ class App extends Component {
           },
           body: JSON.stringify(mapConfig)
           })
-          .then(response => {
-            return response.json()
-          }).then(body => {
-            alert(body.message)
-          });
+          .then(response => response.json())
+          .then(body => alert(body.message));
     // // save it as a json file
     // downloadJsonFile(mapConfig, 'kepler.gl.json');
   };
+
+  openCountrySelect = () => {
+    this.setState({ countrySelectModalOpen: true  });
+  }
+
+  handleCountryAndAdminSelect = (params) => {
+
+    // uncomment the following code if want to fetch from the old MagicBox API
+    // let paramToApi = params.countryCode;
+    // fetch("http://magicbox8.azurewebsites.net/docs/population/" + paramToApi)
+    // .then(res => res.json())
+    // .then(t => {
+    //   let geojson = topojson.feature(t, t.objects.collection);
+    //   console.log(geojson);
+    //   let dataSets = {
+    //     datasets: [
+    //       {
+    //         info: {
+    //           id: 'shapefile-' + paramToApi,
+    //           label: 'Shapefile for ' + paramToApi.toUpperCase()
+    //         },
+    //         data: Processors.processGeojson(geojson)
+    //       }
+    //     ]
+    //   }
+    //
+    //   // addDataToMap action to inject dataset into kepler.gl instance
+    //   this.props.dispatch(addDataToMap(dataSets))
+    // })
+    // .catch(err => console.log(err))
+
+    let blobName = params.countryCode + "_" + params.currentAdminLevel + ".json";
+    console.log(blobName);
+    saveBlob(blobName)
+    .then(res => JSON.parse(res)) // transform from text string to json object
+    .then(t => {
+      let geojson = topojson.feature(t, t.objects.collection);
+      let dataSets = {
+        datasets: [
+          {
+            info: {
+              id: 'shapefile-' + params.countryCode + '-' + params.currentAdminLevel,
+              label: 'Shapefile for ' + params.countryCode + ' L-' + params.currentAdminLevel
+            },
+            data: Processors.processGeojson(geojson)
+          }
+        ]
+      };
+
+      // addDataToMap action to inject dataset into kepler.gl instance
+      this.props.dispatch(addDataToMap(dataSets));
+    })
+    .catch(err => console.log(err));
+  }
+
   render() {
     const {width, height} = this.state;
     return (
@@ -236,9 +316,15 @@ class App extends Component {
             marginTop: 0
           }}
         >
-        <div className='overlay-buttons'>
-          <Button onClick={this.exportMapConfig}>Save Config</Button>
-        </div>
+          <div className='overlay-buttons'>
+            <Button onClick={this.exportMapConfig}>Save Config</Button>
+            <Button onClick={this.openCountrySelect}>Select Country Data</Button>
+          </div>
+          <div>{this.state.countrySelectModalOpen && (
+            <CountrySelectModal
+              options={this.state.countryAndAdminList}
+              onSubmit={this.handleCountryAndAdminSelect} />
+          )}</div>
           <KeplerGl
             mapboxApiAccessToken={MAPBOX_TOKEN}
             id="map"
@@ -249,7 +335,6 @@ class App extends Component {
             width={width}
             height={height}
           />
-
         </div>
       </GlobalStyleDiv>
     );
