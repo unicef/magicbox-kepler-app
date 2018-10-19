@@ -100,7 +100,7 @@ class App extends Component {
             fields: s.data.fields,
             rows: s.data.allData
           }
-        }};), config: obj.config};
+        };}), config: obj.config};
 
         // addDataToMap action to inject dataset into kepler.gl instance
         this.props.dispatch(addDataToMap(dataSets));
