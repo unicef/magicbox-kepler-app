@@ -1,4 +1,9 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
+<<<<<<< HEAD
+=======
+.env
+*config.js
+>>>>>>> 68533821b8cb665a3361de185542481f856175e0
 
 # config
 /client/config.js
