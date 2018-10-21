@@ -1,5 +1,9 @@
 FROM node:8
-COPY . /opt/app
-WORKDIR /opt/app
-RUN yarn --ignore-engines
+COPY . /usr/src/app
+
+# Create app directory
+WORKDIR /usr/src/app
+RUN yarn install --ignore-engines
+RUN npm install
 CMD yarn start
+EXPOSE 8080
