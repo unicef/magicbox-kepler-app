@@ -25,7 +25,7 @@
 const resolve = require('path').resolve;
 const join = require('path').join;
 const webpack = require('webpack');
-
+const Dotenv = require('dotenv-webpack');
 const CONFIG = {
   // bundle app.js and everything it imports, recursively.
   entry: {
@@ -62,6 +62,7 @@ const CONFIG = {
 
   // Optional: Enables reading mapbox token from environment variable
   plugins: [
+    new Dotenv(),
     new webpack.EnvironmentPlugin(['MapboxAccessToken'])
   ]
 };
