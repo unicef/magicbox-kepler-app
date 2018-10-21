@@ -32,6 +32,14 @@ const CONFIG = {
     app: resolve('./src/main.js')
   },
 
+  // this will output the production bundle to the dist folder
+  // ideally, this will be hosted from a CDN or a static file server (nginx, apache)
+  // for production builds, the index.html will need to be configured to point to the production bundle
+  output: {
+    path: resolve(__dirname, 'dist'),
+    filename: 'bundle.js'
+  },
+
   devtool: 'source-map',
 
   resolve: {
@@ -42,7 +50,7 @@ const CONFIG = {
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.js|.jsx$/,
         loader: 'babel-loader',
         include: join(__dirname, 'src'),
         exclude: [/node_modules/]

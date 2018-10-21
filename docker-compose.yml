@@ -1,15 +1,13 @@
-app:
-  build: ./client
-  volumes:
-  - "./client:/opt/app"
-  ports:
-  - "8080:3000"
-  links:
-  - backend
+version: '3'
+services:
+  client-service:
+    build: ./client
+    ports:
+    - 80:8080
+    links:
+    - api
 
-backend:
-  build: ./server
-  volumes:
-  - "./server:/opt/backend"
-  ports:
-  - "5000"
+  api:
+    build: ./server
+    ports:
+    - "5000"
