@@ -14,6 +14,6 @@ services:
     build: ./server
     volumes:
     - ./server:/opt/app
-    - .:/opt/app/appnode_modules
+    - ./opt/app/node_modules
     ports:
-    - 5000:5000
+    - 5000
