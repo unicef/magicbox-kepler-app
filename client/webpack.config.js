@@ -31,7 +31,6 @@ const CONFIG = {
   entry: {
     app: resolve('./src/main.js')
   },
-
   // this will output the production bundle to the dist folder
   // ideally, this will be hosted from a CDN or a static file server (nginx, apache)
   // for production builds, the index.html will need to be configured to point to the production bundle
@@ -39,7 +38,15 @@ const CONFIG = {
     path: resolve(__dirname, 'dist'),
     filename: 'bundle.js'
   },
-
+  devServer: {
+    //redirect api calls to backend server
+    proxy: {
+        '/api': {
+            target: 'http://api:5000',
+            secure: false
+        }
+    }
+  },
   devtool: 'source-map',
 
   resolve: {

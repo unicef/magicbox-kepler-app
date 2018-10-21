@@ -3,3 +3,4 @@ COPY . /opt/app
 WORKDIR /opt/app
 RUN yarn --ignore-engines
 CMD yarn start
+EXPOSE 8080
