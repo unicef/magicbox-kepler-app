@@ -1,13 +1,19 @@
 version: '3'
 services:
-  client-service:
+  client:
     build: ./client
+    volumes:
+    - ./client:/opt/app
+    - ./opt/app/node_modules
     ports:
-    - 80:8080
+    - 8080:8080
     links:
     - api
 
   api:
     build: ./server
+    volumes:
+    - ./server:/opt/app
+    - .:/opt/app/appnode_modules
     ports:
-    - "5000"
+    - 5000:5000

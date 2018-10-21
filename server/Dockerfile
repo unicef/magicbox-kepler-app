@@ -1,5 +1,5 @@
 FROM node:8
-COPY . /opt/backend
-WORKDIR /opt/backend
+COPY . /opt/app
+WORKDIR /opt/app
 RUN npm install
 CMD npm start
