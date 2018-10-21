@@ -11,7 +11,15 @@
 
 ![screenshot](screenshot.png)
 
-### Install and run
+### Docker
+
+- cp ./client/.env-sample ./client/.env
+- add MapBox token to ./clien/.env
+- cp ./server/config-sample.json ./server/config.json
+- cp ./client/config-sample.js ./client/config.js
+- docker-compose up
+
+### Otherwise install and run
 
 Go to your terminal / command-line interface and type in the following lines:
 
