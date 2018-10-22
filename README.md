@@ -45,14 +45,6 @@ cp config-sample.js config.js
 yarn --ignore-engines
 yarn start
 ```
-### If run with docker-compose
-```
-cp server/config-sample.json server/config.json
-cp client/config-sample.js client/config.js
-export MapboxAccessToken=<your_mapbox_token>
-docker-compose up # or docker-compose up -d if you want it to run in the background
-```
-
 ### Developer Background
 
 This demo is built on [Kepler.gl](http://kepler.gl/). Here are a couple sources for learning how to work with Kepler:
