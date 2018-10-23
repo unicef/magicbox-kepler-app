@@ -1,3 +1,5 @@
 module.exports = {
-  server_port: 5000
+  server_port: 5000,
+  can_save: false,
+  can_share: false
 }
