@@ -24,6 +24,8 @@ import window from 'global/window';
 import {connect} from 'react-redux';
 import {loadSampleConfigurations} from './actions';
 import {replaceLoadDataModal} from './factories/load-data-modal';
+import CustomPanelHeader from './components/custom-panel-header';
+import {PanelHeaderFactory} from 'kepler.gl/components';
 import KeplerGlSchema from 'kepler.gl/schemas';
 import Button from './button';
 import downloadJsonFile from "./file-download";
@@ -31,9 +33,20 @@ import config from '../config'
 const client_url = location.origin; // will be something like http://localhost:8080
 const server_url = client_url.substr(0, client_url.length-4) + config.server_port; // change from client_url to http://localhost:5000
 // const server_url = 'http://0.0.0.0:' + config.server_port; // change from client_url to http://localhost:500
-const KeplerGl = require('kepler.gl/components').injectComponents([
-  replaceLoadDataModal()
-]);
+
+const shareable = config.can_share;
+let KeplerGl;
+if (!shareable) {
+  const CustomPanelHeaderFactory = () => CustomPanelHeader;
+  KeplerGl = require('kepler.gl/components').injectComponents([
+    [PanelHeaderFactory, CustomPanelHeaderFactory],
+    replaceLoadDataModal()
+  ]);
+} else {
+  KeplerGl = require('kepler.gl/components').injectComponents([
+    replaceLoadDataModal()
+  ]);
+}
 
 const MAPBOX_TOKEN = process.env.MapboxAccessToken; // eslint-disable-line
 
@@ -228,6 +241,7 @@ class App extends Component {
   };
   render() {
     const {width, height} = this.state;
+    const saveable = config.can_save;
     return (
       <GlobalStyleDiv>
         <div
@@ -239,7 +253,10 @@ class App extends Component {
             marginTop: 0
           }}
         >
-        <div className='overlay-buttons'>
+
+        <div className='overlay-buttons'style={{
+                display: saveable ? 'block' : 'none'
+            }}>
           <Button onClick={this.exportMapConfig}>Save Config</Button>
         </div>
           <KeplerGl
