@@ -35,6 +35,7 @@ const server_url = client_url.substr(0, client_url.length-4) + config.server_por
 // const server_url = 'http://0.0.0.0:' + config.server_port; // change from client_url to http://localhost:500
 
 const shareable = config.can_share;
+const saveable = config.can_save;
 let KeplerGl;
 if (!shareable) {
   const CustomPanelHeaderFactory = () => CustomPanelHeader;
@@ -215,9 +216,34 @@ class App extends Component {
     }
   }
 
+  // This method is used as reference to show how to export the current kepler.gl instance configuration
+  // Once exported the configuration can be imported using parseSavedConfig or load method from KeplerGlSchema
+  exportMapConfig = () => {
+    if (saveable) {
+      // create the config object
+      const mapConfig = this.getMapConfig();
+      const url = server_url + '/api/save'
+      // Sending and receiving data in JSON format using POST method
+      //
+      fetch(url, {
+              method: 'POST',
+              headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(mapConfig)
+            })
+            .then(response => {
+              return response.json()
+            }).then(body => {
+              alert(body.message)
+            });
+      // // save it as a json file
+      // downloadJsonFile(mapConfig, 'kepler.gl.json');
+    }
+  };
   render() {
     const {width, height} = this.state;
-    const saveable = config.can_save;
     return (
       <GlobalStyleDiv>
         <div
