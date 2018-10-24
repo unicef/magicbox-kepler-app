@@ -25,7 +25,9 @@ import {connect} from 'react-redux';
 import {loadSampleConfigurations} from './actions';
 import {replaceLoadDataModal} from './factories/load-data-modal';
 import CustomPanelHeader from './components/custom-panel-header';
+import {CustomDataTableModal} from './factories/custom-data-table-modal';
 import {PanelHeaderFactory} from 'kepler.gl/components';
+import {DataTableModalFactory} from 'kepler.gl/components';
 import KeplerGlSchema from 'kepler.gl/schemas';
 import Button from './button';
 import downloadJsonFile from "./file-download";
@@ -38,8 +40,11 @@ const shareable = config.can_share;
 let KeplerGl;
 if (!shareable) {
   const CustomPanelHeaderFactory = () => CustomPanelHeader;
+  const CustomDataTableModalFactory = () => CustomDataTableModal;
+
   KeplerGl = require('kepler.gl/components').injectComponents([
     [PanelHeaderFactory, CustomPanelHeaderFactory],
+    [DataTableModalFactory, CustomDataTableModalFactory],
     replaceLoadDataModal()
   ]);
 } else {
