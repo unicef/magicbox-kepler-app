@@ -25,7 +25,6 @@ import {connect} from 'react-redux';
 import {loadSampleConfigurations} from './actions';
 import {replaceLoadDataModal} from './factories/load-data-modal';
 import CustomPanelHeader from './components/custom-panel-header';
-import {Banner} from './components/banner';
 import {CustomDataTableModal} from './factories/custom-data-table-modal';
 import {PanelHeaderFactory} from 'kepler.gl/components';
 import {DataTableModalFactory} from 'kepler.gl/components';
@@ -40,7 +39,7 @@ const server_url = client_url.substr(0, client_url.length-4) + config.server_por
 
 const countrycode = config.country_code;
 let KeplerGl;
-if (countrycode === 'SLE') {
+if (config.custom_header_path) {
   const CustomPanelHeaderFactory = () => CustomPanelHeader;
   const CustomDataTableModalFactory = () => CustomDataTableModal;
 

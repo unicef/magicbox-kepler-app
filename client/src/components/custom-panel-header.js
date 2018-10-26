@@ -22,12 +22,10 @@ import React, {Component} from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import KeplerGlLogo from 'kepler.gl/components';
-
+import config from '../../config';
 export default class CustomPanelHeader extends React.Component {
 
-
-    render(){
-
-        return (<img src='./../public/images/mb_header_sl_cropped.png'/>)
+    render() {
+        return (<img src={`./../public/images/${config.custom_header_path}`}/>)
     }
 }
