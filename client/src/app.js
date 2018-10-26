@@ -25,20 +25,22 @@ import {connect} from 'react-redux';
 import {loadSampleConfigurations} from './actions';
 import {replaceLoadDataModal} from './factories/load-data-modal';
 import CustomPanelHeader from './components/custom-panel-header';
+import {Banner} from './components/banner';
 import {CustomDataTableModal} from './factories/custom-data-table-modal';
 import {PanelHeaderFactory} from 'kepler.gl/components';
 import {DataTableModalFactory} from 'kepler.gl/components';
 import KeplerGlSchema from 'kepler.gl/schemas';
 import Button from './button';
 import downloadJsonFile from "./file-download";
-import config from '../config'
+import config from '../config';
+
 const client_url = location.origin; // will be something like http://localhost:8080
 const server_url = client_url.substr(0, client_url.length-4) + config.server_port; // change from client_url to http://localhost:5000
 // const server_url = 'http://0.0.0.0:' + config.server_port; // change from client_url to http://localhost:500
 
-const shareable = config.can_share;
+const countrycode = config.country_code;
 let KeplerGl;
-if (!shareable) {
+if (countrycode === 'SLE') {
   const CustomPanelHeaderFactory = () => CustomPanelHeader;
   const CustomDataTableModalFactory = () => CustomDataTableModal;
 
@@ -234,7 +236,6 @@ class App extends Component {
             marginTop: 0
           }}
         >
-
           <KeplerGl
             mapboxApiAccessToken={MAPBOX_TOKEN}
             id="map"
