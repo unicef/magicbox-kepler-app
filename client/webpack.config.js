@@ -26,6 +26,7 @@ const resolve = require('path').resolve;
 const join = require('path').join;
 const webpack = require('webpack');
 const Dotenv = require('dotenv-webpack');
+const config = require('./config')
 const CONFIG = {
   // bundle app.js and everything it imports, recursively.
   entry: {
@@ -42,7 +43,7 @@ const CONFIG = {
     //redirect api calls to backend server
     proxy: {
         '/api': {
-            target: 'http://api:5000',
+            target: 'http://' + config.proxy_name + ':5000',
             secure: false
         }
     }
