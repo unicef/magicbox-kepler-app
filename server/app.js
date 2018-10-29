@@ -1,10 +1,12 @@
-const express = require('express')
-const app = express()
-const port = process.env.PORT || 5000
-const config = require('./config')
 const bodyParser = require('body-parser');
-const jsonfile = require('jsonfile')
+const express = require('express');
+const jsonfile = require('jsonfile');
 
+const blobFetcher = require('./azure/blob-fetcher');
+const config = require('./config');
+const port = process.env.PORT || 5000;
+
+const app = express();
 
 app.use(function(req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
@@ -28,17 +30,30 @@ router.get('/default', function(req, res) {
 });
 
 router.route('/save')
-    .post(function(req, res) {
-      jsonfile.writeFile('config.json', req.body, err => {
-        if (err) {
-          res.send({message: 'Could not save'})
-        } else {
-          res.send({message: 'Saved! You may need to repoen your ' +
-            'browser in incognito mode next time you retrieve.'
-          })
-        }
-      })
-    });
+  .post(function(req, res) {
+    jsonfile.writeFile('config.json', req.body, err => {
+      if (err) {
+        res.send({message: 'Could not save'})
+      } else {
+        res.send({message: 'Saved! You may need to repoen your ' +
+          'browser in incognito mode next time you retrieve.'
+        })
+      }
+    })
+  });
+
+router.get('/countries', (req, res) => {
+  blobFetcher.listBlobs()
+    .then(result => res.send(result))
+})
+
+router.get('/countries/:countryCode/:adminLevel', (req, res) => {
+  let blobName = req.params.countryCode + "_" + req.params.adminLevel + ".json";
+  console.log(blobName);
+  blobFetcher.saveBlob(blobName)
+    .then(res => JSON.parse(res)) // transform from text string to json object
+    .then(result => res.send(result))
+})
 
 app.use('/api', router);
 

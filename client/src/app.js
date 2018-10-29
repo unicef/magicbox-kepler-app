@@ -33,7 +33,6 @@ import config from '../config';
 import CountrySelectModal from './CountrySelectModal';
 import downloadJsonFile from "./file-download";
 import {loadSampleConfigurations} from './actions';
-import {listBlobs, saveBlob} from './azure/blob-fetcher';
 import {replaceLoadDataModal} from './factories/load-data-modal';
 
 const KeplerGl = require('kepler.gl/components').injectComponents([
@@ -123,7 +122,8 @@ class App extends Component {
     //   })
     //   .catch(err => console.log(err));
 
-    listBlobs()
+    fetch(server_url + '/api/countries')
+      .then(res => res.json())
       .then(result => {
         let resultWithIds = result.map(entry => {
           return {...entry, id: shortid.generate()};
@@ -258,49 +258,47 @@ class App extends Component {
     // uncomment the following code if want to fetch from the old MagicBox API
     // let paramToApi = params.countryCode;
     // fetch("http://magicbox8.azurewebsites.net/docs/population/" + paramToApi)
-    // .then(res => res.json())
-    // .then(t => {
-    //   let geojson = topojson.feature(t, t.objects.collection);
-    //   console.log(geojson);
-    //   let dataSets = {
-    //     datasets: [
-    //       {
-    //         info: {
-    //           id: 'shapefile-' + paramToApi,
-    //           label: 'Shapefile for ' + paramToApi.toUpperCase()
-    //         },
-    //         data: Processors.processGeojson(geojson)
-    //       }
-    //     ]
-    //   }
+    //   .then(res => res.json())
+    //   .then(t => {
+    //     let geojson = topojson.feature(t, t.objects.collection);
+    //     console.log(geojson);
+    //     let dataSets = {
+    //       datasets: [
+    //         {
+    //           info: {
+    //             id: 'shapefile-' + paramToApi,
+    //             label: 'Shapefile for ' + paramToApi.toUpperCase()
+    //           },
+    //           data: Processors.processGeojson(geojson)
+    //         }
+    //       ]
+    //     }
     //
-    //   // addDataToMap action to inject dataset into kepler.gl instance
-    //   this.props.dispatch(addDataToMap(dataSets))
-    // })
-    // .catch(err => console.log(err))
+    //     // addDataToMap action to inject dataset into kepler.gl instance
+    //     this.props.dispatch(addDataToMap(dataSets))
+    //   })
+    //   .catch(err => console.log(err))
 
-    let blobName = params.countryCode + "_" + params.currentAdminLevel + ".json";
-    console.log(blobName);
-    saveBlob(blobName)
-    .then(res => JSON.parse(res)) // transform from text string to json object
-    .then(t => {
-      let geojson = topojson.feature(t, t.objects.collection);
-      let dataSets = {
-        datasets: [
-          {
-            info: {
-              id: 'shapefile-' + params.countryCode + '-' + params.currentAdminLevel,
-              label: 'Shapefile for ' + params.countryCode + ' L-' + params.currentAdminLevel
-            },
-            data: Processors.processGeojson(geojson)
-          }
-        ]
-      };
+    fetch(server_url + '/api/countries/' + params.countryCode + '/' + params.currentAdminLevel)
+      .then(res => res.json())
+      .then(t => {
+        let geojson = topojson.feature(t, t.objects.collection);
+        let dataSets = {
+          datasets: [
+            {
+              info: {
+                id: 'shapefile-' + params.countryCode + '-' + params.currentAdminLevel,
+                label: 'Shapefile for ' + params.countryCode + ' L-' + params.currentAdminLevel
+              },
+              data: Processors.processGeojson(geojson)
+            }
+          ]
+        };
 
-      // addDataToMap action to inject dataset into kepler.gl instance
-      this.props.dispatch(addDataToMap(dataSets));
-    })
-    .catch(err => console.log(err));
+        // addDataToMap action to inject dataset into kepler.gl instance
+        this.props.dispatch(addDataToMap(dataSets));
+      })
+      .catch(err => console.log(err));
   }
 
   render() {
