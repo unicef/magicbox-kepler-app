@@ -23,6 +23,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import {Icons} from 'kepler.gl/components';
 import {format} from 'd3-format';
+import {shapefileHashEnglish} from './english-shapefile-hash'
 
 const numFormat = format(',');
 
@@ -110,37 +111,30 @@ const StyledImageCaption = styled.div`
 
 const SampleMap = ({sample, onClick}) => (
   <StyledSampleMap className="sample-map-gallery__item">
-    <div className="sample-map">
-      <div className="sample-map__image" onClick={onClick}>
-        <img src={sample.imageUrl} />
-      </div>
-      <div className="sample-map__title">{sample.label}</div>
-      <div className="sample-map__size">{`${numFormat(sample.size)} rows`}</div>
-      <StyledImageCaption className="sample-map__image__caption">
-        {sample.description}
-      </StyledImageCaption>
+    <div className="sample-map" onClick={onClick}>
+      <div className="sample-map__title">{sample.countryCode}</div>
     </div>
   </StyledSampleMap>
 );
 
-const SampleMapGallery = ({sampleData, sampleMaps, onLoadSampleData, back}) => (
+const DataGallery = ({sampleData, sampleMaps, onLoadSampleData, back}) => (
   <div className="sample-data-modal">
     <BackLink onClick={back}>
       <Icons.LeftArrow height="12px" />
       <span>Back</span>
     </BackLink>
     <StyledSampleGallery className="sample-map-gallery">
-      {sampleMaps.map(sp => (
-        <SampleMap
-          sample={sp}
-          key={sp.id}
-          onClick={() => onLoadSampleData(sp)}
-        />
-      ))}
+    {sampleMaps.map(sp => (
+      <SampleMap
+        sample={sp}
+        key={sp.id}
+        onClick={() => onLoadSampleData(sp)}
+      />
+    ))}
     </StyledSampleGallery>
   </div>
 );
 
-SampleMapGallery.propTypes = propTypes;
+DataGallery.propTypes = propTypes;
 
-export default SampleMapGallery;
+export default DataGallery;
