@@ -26,10 +26,13 @@ import {FileUpload} from 'kepler.gl/components';
 import {LoadingSpinner} from 'kepler.gl/components';
 import {themeLT} from 'kepler.gl/styles';
 import {Icons} from 'kepler.gl/components/';
+import config from '../../../config';
+import shortid from 'shortid';
+import {updateVisData, addDataToMap} from 'kepler.gl/actions';
 
 import {LOADING_METHODS, QUERY_TYPES, ASSETS_URL} from '../../constants/default-settings';
 
-import SampleMapGallery from './sample-data-viewer';
+import DataGallery from './data-viewer';
 
 const propTypes = {
   // query options
@@ -114,7 +117,7 @@ const StyledTrySampleData = styled.div`
     :hover {
       font-weight: 500;
     }
-  
+
     span {
       white-space: nowrap;
     }
@@ -131,11 +134,36 @@ const StyledSpinner = styled.div`
   }
 `;
 
+
+const client_url = location.origin; // will be something like http://localhost:8080
+const server_url = client_url.substr(0, client_url.length-4) + config.server_port; // change that to http://localhost:5000
+
+
 class LoadDataModal extends Component {
+    constructor(props) {
+      super(props)
+    }
+
+    state = {
+      countryAndAdminList: []
+    }
+
+    componentDidMount() {
+      fetch(server_url + '/api/countries')
+        .then(res => res.json())
+        .then(result => {
+          let resultWithIds = result.map(entry => {
+            return {...entry, id: shortid.generate()};
+          });
+          // console.log(resultWithIds)
+          this.setState({ countryAndAdminList: resultWithIds });
+        }).catch(err => console.log(err));
+    }
+
 
   render() {
     const {loadingMethod, currentOption, previousMethod, sampleMaps, isMapLoading} = this.props;
-
+    console.log("state", this.state)
     return (
       <ThemeProvider theme={themeLT}>
         <div className="load-data-modal">
@@ -155,9 +183,9 @@ class LoadDataModal extends Component {
                   <FileUpload onFileUpload={this.props.onFileUpload} />
                 ) : null}
                 {loadingMethod.id === 'sample' ? (
-                  <SampleMapGallery
+                  <DataGallery
                     sampleData={currentOption}
-                    sampleMaps={sampleMaps}
+                    sampleMaps={this.state.countryAndAdminList}
                     back={() => this.props.onSetLoadingMethod(previousMethod.id)}
                     onLoadSampleData={this.props.onLoadSampleData}/>
                 ) : null}
@@ -193,11 +221,10 @@ const Tabs = ({method, toggleMethod}) => (
 
 const TrySampleData = ({onClick}) => (
   <StyledTrySampleData className="try-sample-data">
-    <StyledMapIcon className="demo-map-icon" />
     <div className="demo-map-title">
-      <div className="demo-map-label">No data ?</div>
+      <div className="demo-map-label">Select shapefile from</div>
       <div className="demo-map-action" onClick={onClick}>
-        <span>Try sample data</span>
+        <span>MagicBox</span>
         <Icons.ArrowRight height="16px" />
       </div>
     </div>

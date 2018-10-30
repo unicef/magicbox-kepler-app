@@ -82,55 +82,55 @@ class App extends Component {
     window.addEventListener('resize', this._onResize);
     this._onResize();
   }
-
-  componentDidMount() {
-    // load sample data
-    // this._loadSampleData();
-    fetch(server_url + '/api/default')
-      .then(res => res.json()) // transform the data into json
-      .then(obj => {
-        let dataSets = {datasets: obj.datasets.map(s => { return {
-          info: {
-            id: s.data.id,
-            label: s.data.label,
-            color: s.data.color
-          },
-          data: {
-            fields: s.data.fields,
-            rows: s.data.allData
-          }
-        };}), config: obj.config};
-
-        // addDataToMap action to inject dataset into kepler.gl instance
-        this.props.dispatch(addDataToMap(dataSets));
-      })
-      .catch(err => console.log(err));
-
-    // uncomment the following code if want to fetch from the old MagicBox API
-    // fetch("http://magicbox8.azurewebsites.net/docs/population")
-    //   .then(res => res.json()) // transform the data into json
-    //   .then(data => {
-    //     let countryCodeList = Object.keys(data.countries);
-    //     // console.log(countryCodeList.slice(0, 10));
-    //     let dataWithIds = countryCodeList.map(entry => {
-    //       return {
-    //         countryCode: entry,
-    //         id: shortid.generate()
-    //       };
-    //     });
-    //     this.setState({ countryAndAdminList: dataWithIds });
-    //   })
-    //   .catch(err => console.log(err));
-
-    fetch(server_url + '/api/countries')
-      .then(res => res.json())
-      .then(result => {
-        let resultWithIds = result.map(entry => {
-          return {...entry, id: shortid.generate()};
-        });
-        this.setState({ countryAndAdminList: resultWithIds });
-      }).catch(err => console.log(err));
-  }
+  //
+  // componentDidMount() {
+  //   // load sample data
+  //   // this._loadSampleData();
+  //   fetch(server_url + '/api/default')
+  //     .then(res => res.json()) // transform the data into json
+  //     .then(obj => {
+  //       let dataSets = {datasets: obj.datasets.map(s => { return {
+  //         info: {
+  //           id: s.data.id,
+  //           label: s.data.label,
+  //           color: s.data.color
+  //         },
+  //         data: {
+  //           fields: s.data.fields,
+  //           rows: s.data.allData
+  //         }
+  //       };}), config: obj.config};
+  //
+  //       // addDataToMap action to inject dataset into kepler.gl instance
+  //       this.props.dispatch(addDataToMap(dataSets));
+  //     })
+  //     .catch(err => console.log(err));
+  //
+  //   // uncomment the following code if want to fetch from the old MagicBox API
+  //   // fetch("http://magicbox8.azurewebsites.net/docs/population")
+  //   //   .then(res => res.json()) // transform the data into json
+  //   //   .then(data => {
+  //   //     let countryCodeList = Object.keys(data.countries);
+  //   //     // console.log(countryCodeList.slice(0, 10));
+  //   //     let dataWithIds = countryCodeList.map(entry => {
+  //   //       return {
+  //   //         countryCode: entry,
+  //   //         id: shortid.generate()
+  //   //       };
+  //   //     });
+  //   //     this.setState({ countryAndAdminList: dataWithIds });
+  //   //   })
+  //   //   .catch(err => console.log(err));
+  //
+  //   fetch(server_url + '/api/countries')
+  //     .then(res => res.json())
+  //     .then(result => {
+  //       let resultWithIds = result.map(entry => {
+  //         return {...entry, id: shortid.generate()};
+  //       });
+  //       this.setState({ countryAndAdminList: resultWithIds });
+  //     }).catch(err => console.log(err));
+  // }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this._onResize);
