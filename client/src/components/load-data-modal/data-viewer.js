@@ -109,13 +109,17 @@ const StyledImageCaption = styled.div`
   opacity: 0;
 `;
 
-const SampleMap = ({sample, onClick}) => (
-  <StyledSampleMap className="sample-map-gallery__item">
-    <div className="sample-map" onClick={onClick}>
-      <div className="sample-map__title">{sample.countryCode}</div>
-    </div>
-  </StyledSampleMap>
-);
+// const SampleMap = ({sample, onClick}) => (
+//   <StyledSampleMap className="sample-map-gallery__item">
+//     <div className="sample-map" onClick={onClick}>
+//       <div className="sample-map__title">{sample.countryCode}</div>
+//     </div>
+//   </StyledSampleMap>
+// );
+
+// handleChange(event) {
+//     console.log(event.target.value);
+//  }
 
 const DataGallery = ({sampleData, sampleMaps, onLoadSampleData, back}) => (
   <div className="sample-data-modal">
@@ -123,15 +127,17 @@ const DataGallery = ({sampleData, sampleMaps, onLoadSampleData, back}) => (
       <Icons.LeftArrow height="12px" />
       <span>Back</span>
     </BackLink>
-    <StyledSampleGallery className="sample-map-gallery">
-    {sampleMaps.map(sp => (
-      <SampleMap
-        sample={sp}
-        key={sp.id}
-        onClick={() => onLoadSampleData(sp)}
-      />
-    ))}
-    </StyledSampleGallery>
+    <form>
+       <label>
+         Please select a country and shapefile:
+         <select>
+         {sampleMaps.map(sp => (
+           <option key={sp.id} value={sp.countryCode}>{shapefileHashEnglish[(sp.countryCode).toLowerCase()]}</option>
+         ))}
+         </select>
+       </label>
+       <input type="submit" value="Submit" />
+     </form>
   </div>
 );
 
