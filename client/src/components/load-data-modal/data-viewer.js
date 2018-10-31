@@ -23,12 +23,11 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import {Icons} from 'kepler.gl/components';
 import {format} from 'd3-format';
-import {shapefileHashEnglish} from './english-shapefile-hash'
 
 const numFormat = format(',');
 
 const propTypes = {
-  sampleData: PropTypes.object.isRequired,
+  // sampleData: PropTypes.object.isRequired,
   onLoadSampleData: PropTypes.func.isRequired,
   back: PropTypes.func.isRequired
 };
@@ -121,7 +120,7 @@ const StyledImageCaption = styled.div`
 //     console.log(event.target.value);
 //  }
 
-const DataGallery = ({sampleData, sampleMaps, onLoadSampleData, back}) => (
+const DataGallery = ({sampleMaps, onLoadSampleData, back}) => (
   <div className="sample-data-modal">
     <BackLink onClick={back}>
       <Icons.LeftArrow height="12px" />
@@ -132,7 +131,7 @@ const DataGallery = ({sampleData, sampleMaps, onLoadSampleData, back}) => (
          Please select a country and shapefile:
          <select>
          {sampleMaps.map(sp => (
-           <option key={sp.id} value={sp.countryCode}>{shapefileHashEnglish[(sp.countryCode).toLowerCase()]}</option>
+           <option key={sp.id} value={sp.countryCode}>{sp.countryName}</option>
          ))}
          </select>
        </label>

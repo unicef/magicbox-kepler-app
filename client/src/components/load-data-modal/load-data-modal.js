@@ -27,6 +27,7 @@ import {LoadingSpinner} from 'kepler.gl/components';
 import {themeLT} from 'kepler.gl/styles';
 import {Icons} from 'kepler.gl/components/';
 import config from '../../../config';
+import {shapefileHashEnglish} from './english-shapefile-hash';
 import shortid from 'shortid';
 import {updateVisData, addDataToMap} from 'kepler.gl/actions';
 
@@ -153,9 +154,20 @@ class LoadDataModal extends Component {
         .then(res => res.json())
         .then(result => {
           let resultWithIds = result.map(entry => {
-            return {...entry, id: shortid.generate()};
+            return {
+              ...entry,
+              countryName: shapefileHashEnglish[(entry.countryCode).toLowerCase()] || entry.countryCode, // in case there's not a matched proper name
+              id: shortid.generate()
+            };
           });
-          // console.log(resultWithIds)
+          resultWithIds.sort((a, b) => {
+            let codeA = a.countryName.toLowerCase();
+            let codeB = b.countryName.toLowerCase();
+            if (codeA > codeB) return 1;
+            if (codeA < codeB) return -1;
+            return 0;
+          });
+          // console.log('sorted result', resultWithIds);
           this.setState({ countryAndAdminList: resultWithIds });
         }).catch(err => console.log(err));
     }
@@ -163,7 +175,7 @@ class LoadDataModal extends Component {
 
   render() {
     const {loadingMethod, currentOption, previousMethod, sampleMaps, isMapLoading} = this.props;
-    console.log("state", this.state)
+    console.log("isMapLoading & loadingMethod.id & state " + loadingMethod.id + ", " + isMapLoading + ", " + this.state.countryAndAdminList.length)
     return (
       <ThemeProvider theme={themeLT}>
         <div className="load-data-modal">
@@ -184,7 +196,7 @@ class LoadDataModal extends Component {
                 ) : null}
                 {loadingMethod.id === 'sample' ? (
                   <DataGallery
-                    sampleData={currentOption}
+                    // sampleData={currentOption}
                     sampleMaps={this.state.countryAndAdminList}
                     back={() => this.props.onSetLoadingMethod(previousMethod.id)}
                     onLoadSampleData={this.props.onLoadSampleData}/>
