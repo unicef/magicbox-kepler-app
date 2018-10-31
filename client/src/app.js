@@ -19,6 +19,15 @@
 // THE SOFTWARE.
 
 import React, {Component} from 'react';
+// Sample data
+/* eslint-disable no-unused-vars */
+import sampleTripData from './data/sample-trip-data';
+import sampleGeojson from './data/sample-geojson.json';
+import sampleH3Data from './data/sample-hex-id-csv';
+import sampleIconCsv, {config as savedMapConfig} from './data/sample-icon-csv';
+import {updateVisData, addDataToMap} from 'kepler.gl/actions';
+import Processors from 'kepler.gl/processors';
+/* eslint-enable no-unused-vars */
 import styled from 'styled-components';
 import window from 'global/window';
 import {connect} from 'react-redux';
@@ -33,7 +42,7 @@ import Button from './button';
 import downloadJsonFile from "./file-download";
 import config from '../config';
 
-const client_url = location.origin; // will be something like http://localhost:8080
+const client_url = window.location.origin; // will be something like http://localhost:8080
 const server_url = client_url.substr(0, client_url.length-4) + config.server_port; // change from client_url to http://localhost:5000
 // const server_url = 'http://0.0.0.0:' + config.server_port; // change from client_url to http://localhost:500
 
@@ -55,16 +64,6 @@ if (config.custom_header_path) {
 }
 
 const MAPBOX_TOKEN = process.env.MapboxAccessToken; // eslint-disable-line
-
-// Sample data
-/* eslint-disable no-unused-vars */
-import sampleTripData from './data/sample-trip-data';
-import sampleGeojson from './data/sample-geojson.json';
-import sampleH3Data from './data/sample-hex-id-csv';
-import sampleIconCsv, {config as savedMapConfig} from './data/sample-icon-csv';
-import {updateVisData, addDataToMap} from 'kepler.gl/actions';
-import Processors from 'kepler.gl/processors';
-/* eslint-enable no-unused-vars */
 
 const GlobalStyleDiv = styled.div`
   font-family: ff-clan-web-pro, 'Helvetica Neue', Helvetica, sans-serif;
