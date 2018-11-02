@@ -33,7 +33,8 @@ import {updateVisData, addDataToMap} from 'kepler.gl/actions';
 
 import {LOADING_METHODS, QUERY_TYPES, ASSETS_URL} from '../../constants/default-settings';
 
-import DataGallery from './data-viewer';
+import CountryShapefileSelect from './country-shapefile-select';
+import SampleMapGallery from './sample-map-gallery';
 
 const propTypes = {
   // query options
@@ -46,6 +47,26 @@ const propTypes = {
   onLoadSampleData: PropTypes.func.isRequired,
   onSetLoadingMethod: PropTypes.func.isRequired
 };
+
+const BackLink = styled.div`
+  display: flex;
+  font-size: 14px;
+  align-items: center;
+  color: ${props => props.theme.titleColorLT};
+  cursor: pointer;
+  margin-bottom: 40px;
+
+  :hover {
+    font-weight: 500;
+  }
+
+  span {
+    white-space: nowrap;
+  }
+  svg {
+    margin-right: 10px;
+  }
+`;
 
 const ModalTab = styled.div`
   align-items: flex-end;
@@ -146,7 +167,16 @@ class LoadDataModal extends Component {
     }
 
     state = {
-      countryAndAdminList: []
+      countryAndAdminList: [],
+      countrySelected: false,
+      currentMaxAdmin: 0,
+    }
+
+    handleCountryChange = (country) => {
+      console.log('aha country changed', country.countryCode);
+      this.setState({
+        countrySelected: true,
+        currentMaxAdmin: country.adminLevel });
     }
 
     componentDidMount() {
@@ -195,11 +225,21 @@ class LoadDataModal extends Component {
                   <FileUpload onFileUpload={this.props.onFileUpload} />
                 ) : null}
                 {loadingMethod.id === 'sample' ? (
-                  <DataGallery
-                    // sampleData={currentOption}
-                    sampleMaps={this.state.countryAndAdminList}
-                    back={() => this.props.onSetLoadingMethod(previousMethod.id)}
-                    onLoadSampleData={this.props.onLoadSampleData}/>
+                  <div>
+                    <BackLink onClick={() => this.props.onSetLoadingMethod(previousMethod.id)}>
+                      <Icons.LeftArrow height="12px" />
+                      <span>Back</span>
+                    </BackLink>
+                    <SampleMapGallery
+                      sampleData={currentOption}
+                      sampleMaps={sampleMaps}
+                      onLoadSampleData={this.props.onLoadSampleData} />
+                    <CountryShapefileSelect
+                      countryList={this.state.countryAndAdminList}
+                      onCountryChange={this.handleCountryChange}
+                      showAdmins={this.state.countrySelected}
+                      currentMaxAdmin={this.state.currentMaxAdmin} />
+                  </div>
                 ) : null}
               </div>)
           }

@@ -110,12 +110,11 @@ function loadRemoteMap(sample) {
  * map sample configurations we are going to load the actual map data if it exists
  * @returns {function(*)}
  */
-export function loadSampleConfigurations(sampleMapId = null) {
+export function loadSampleConfigurations(sampleMapsUrl, sampleMapId = null) {
   return (dispatch) => {
-    requestJson(MAP_CONFIG_URL, (error, samples) => {
-      if (error) {
-        Console.warn(`Error loading sample configuration file ${MAP_CONFIG_URL}`);
-      } else {
+    fetch(sampleMapsUrl)
+      .then(res => res.json())
+      .then(samples => {
         dispatch(loadMapSampleFile(samples));
         // Load the specified map
         if (sampleMapId) {
@@ -125,7 +124,22 @@ export function loadSampleConfigurations(sampleMapId = null) {
             dispatch(setLoadingMapStatus(true));
           }
         }
-      }
-    });
+      }).catch(err => Console.warn(`Error loading sample configuration file ${sampleMapsUrl}`))
+
+    // requestJson(MAP_CONFIG_URL, (error, samples) => {
+    //   if (error) {
+    //     Console.warn(`Error loading sample configuration file ${MAP_CONFIG_URL}`);
+    //   } else {
+    //     dispatch(loadMapSampleFile(samples));
+    //     // Load the specified map
+    //     if (sampleMapId) {
+    //       const map = samples.find(s => s.id === sampleMapId);
+    //       if (map) {
+    //         dispatch(loadRemoteMap(map));
+    //         dispatch(setLoadingMapStatus(true));
+    //       }
+    //     }
+    //   }
+    // });
   }
 }
