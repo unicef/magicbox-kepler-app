@@ -78,7 +78,10 @@ class App extends Component {
     // if we pass an id as part of the url
     // we try to fetch along map configurations
     const {params: {id: sampleMapId} = {}} = this.props;
-    this.props.dispatch(loadSampleConfigurations(sampleMapId));
+    // const {user} = this.props;
+    const user = config.user;
+    const sampleMapsUrl = `${server_url}/api/${user}/samples`;
+    this.props.dispatch(loadSampleConfigurations(sampleMapsUrl, sampleMapId));
     window.addEventListener('resize', this._onResize);
     this._onResize();
   }

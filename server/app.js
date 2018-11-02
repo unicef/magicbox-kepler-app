@@ -26,25 +26,25 @@ router.get('/', function(req, res) {
 
 // test route to make sure everything is working (accessed at GET http://localhost:8080/api)
 router.get('/default', function(req, res) {
-  res.send(config)
+  res.send(config);
 });
 
 router.route('/save')
   .post(function(req, res) {
     jsonfile.writeFile('config.json', req.body, err => {
       if (err) {
-        res.send({message: 'Could not save'})
+        res.send({message: 'Could not save'});
       } else {
         res.send({message: 'Saved! You may need to repoen your ' +
           'browser in incognito mode next time you retrieve.'
-        })
+        });
       }
     })
   });
 
 router.get('/countries', (req, res) => {
   blobFetcher.listBlobs()
-    .then(result => res.send(result))
+    .then(result => res.send(result));
 })
 
 router.get('/countries/:countryCode/:adminLevel', (req, res) => {
@@ -52,7 +52,15 @@ router.get('/countries/:countryCode/:adminLevel', (req, res) => {
   console.log(blobName);
   blobFetcher.saveBlob(blobName)
     .then(res => JSON.parse(res)) // transform from text string to json object
-    .then(result => res.send(result))
+    .then(result => res.send(result));
+})
+
+router.get('/:user/samples', (req, res) => {
+  let userFolder = req.params.user;
+  jsonfile.readFile(`./${userFolder}/samples.json`, (err, obj) => {
+    if (err) console.log(err);
+    res.send(obj);
+  });
 })
 
 app.use('/api', router);
