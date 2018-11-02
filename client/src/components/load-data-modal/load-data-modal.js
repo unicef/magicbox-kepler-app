@@ -156,6 +156,9 @@ const StyledSpinner = styled.div`
   }
 `;
 
+const getSelectedValue = (menu) => {
+  return menu.options[menu.selectedIndex].value;
+}
 
 const client_url = location.origin; // will be something like http://localhost:8080
 const server_url = client_url.substr(0, client_url.length-4) + config.server_port; // change that to http://localhost:5000
@@ -167,16 +170,45 @@ class LoadDataModal extends Component {
     }
 
     state = {
+      isShapefileListLoading: true,
       countryAndAdminList: [],
       countrySelected: false,
       currentMaxAdmin: 0,
+      submitReady: false
     }
 
-    handleCountryChange = (country) => {
-      console.log('aha country changed', country.countryCode);
-      this.setState({
-        countrySelected: true,
-        currentMaxAdmin: country.adminLevel });
+    handleCountryChange = (event) => {
+      let ddMenu = event.target;
+      let code = getSelectedValue(ddMenu);
+      if (code) {
+        let country = this.state.countryAndAdminList.find(e => e.countryCode === code);
+        // console.log('aha country changed', country);
+        this.setState({
+          countrySelected: true,
+          currentMaxAdmin: parseInt(country.adminLevel, 10) });
+      } else {
+        this.setState({
+          countrySelected: false,
+          currentMaxAdmin: 0 });
+      }
+    }
+
+    handleAdminChange = (event) => {
+      let ddMenu = event.target;
+      let admin = getSelectedValue(ddMenu);
+      if (admin) this.setState({ submitReady: true })
+      else this.setState({ submitReady: false })
+    }
+
+    handleShapefileChoice = (event) => {
+      event.preventDefault();
+      let form = event.target;
+      let countryDD = form.elements["country-select"];
+      let adminDD = form.elements["admin-select"];
+      let countryCode = getSelectedValue(countryDD);
+      let adminLevel = getSelectedValue(adminDD);
+      let blobName = `${countryCode}_${adminLevel}.json`;
+      console.log('blobName', blobName);
     }
 
     componentDidMount() {
@@ -198,14 +230,17 @@ class LoadDataModal extends Component {
             return 0;
           });
           // console.log('sorted result', resultWithIds);
-          this.setState({ countryAndAdminList: resultWithIds });
+          this.setState({
+            countryAndAdminList: resultWithIds,
+            isShapefileListLoading: false
+          });
         }).catch(err => console.log(err));
     }
 
 
   render() {
     const {loadingMethod, currentOption, previousMethod, sampleMaps, isMapLoading} = this.props;
-    console.log("isMapLoading & loadingMethod.id & state " + loadingMethod.id + ", " + isMapLoading + ", " + this.state.countryAndAdminList.length)
+    // console.log(`isMapLoading: ${isMapLoading}, loadingMethod.id: ${loadingMethod.id}, state: ${this.state.countryAndAdminList.length}`)
     return (
       <ThemeProvider theme={themeLT}>
         <div className="load-data-modal">
@@ -225,7 +260,7 @@ class LoadDataModal extends Component {
                   <FileUpload onFileUpload={this.props.onFileUpload} />
                 ) : null}
                 {loadingMethod.id === 'sample' ? (
-                  <div>
+                  <div className="gallery">
                     <BackLink onClick={() => this.props.onSetLoadingMethod(previousMethod.id)}>
                       <Icons.LeftArrow height="12px" />
                       <span>Back</span>
@@ -234,11 +269,22 @@ class LoadDataModal extends Component {
                       sampleData={currentOption}
                       sampleMaps={sampleMaps}
                       onLoadSampleData={this.props.onLoadSampleData} />
-                    <CountryShapefileSelect
-                      countryList={this.state.countryAndAdminList}
-                      onCountryChange={this.handleCountryChange}
-                      showAdmins={this.state.countrySelected}
-                      currentMaxAdmin={this.state.currentMaxAdmin} />
+                    <div className="shapefile-gallery">
+                      {this.state.isShapefileListLoading ? (
+                        <StyledSpinner>
+                          <LoadingSpinner />
+                        </StyledSpinner>
+                      ) : (
+                        <CountryShapefileSelect
+                          countryList={this.state.countryAndAdminList}
+                          onCountryChange={this.handleCountryChange}
+                          showAdmins={this.state.countrySelected}
+                          currentMaxAdmin={this.state.currentMaxAdmin}
+                          onAdminChange={this.handleAdminChange}
+                          submitReady={this.state.submitReady}
+                          onShapefileSelected={this.handleShapefileChoice} />
+                        )}
+                    </div>
                   </div>
                 ) : null}
               </div>)
