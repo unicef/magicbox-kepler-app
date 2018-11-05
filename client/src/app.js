@@ -30,7 +30,6 @@ import window from 'global/window';
 
 import Button from './button';
 import config from '../config';
-import CountrySelectModal from './CountrySelectModal';
 import downloadJsonFile from "./file-download";
 import {loadSampleConfigurations} from './actions';
 import {replaceLoadDataModal} from './factories/load-data-modal';
@@ -70,8 +69,6 @@ class App extends Component {
   state = {
     width: window.innerWidth,
     height: window.innerHeight,
-    countryAndAdminList: [],
-    countrySelectModalOpen: false
   };
 
   componentWillMount() {
@@ -252,58 +249,6 @@ class App extends Component {
     // downloadJsonFile(mapConfig, 'kepler.gl.json');
   };
 
-  openCountrySelect = () => {
-    this.setState({ countrySelectModalOpen: true  });
-  }
-
-  handleCountryAndAdminSelect = (params) => {
-
-    // uncomment the following code if want to fetch from the old MagicBox API
-    // let paramToApi = params.countryCode;
-    // fetch("http://magicbox8.azurewebsites.net/docs/population/" + paramToApi)
-    //   .then(res => res.json())
-    //   .then(t => {
-    //     let geojson = topojson.feature(t, t.objects.collection);
-    //     console.log(geojson);
-    //     let dataSets = {
-    //       datasets: [
-    //         {
-    //           info: {
-    //             id: 'shapefile-' + paramToApi,
-    //             label: 'Shapefile for ' + paramToApi.toUpperCase()
-    //           },
-    //           data: Processors.processGeojson(geojson)
-    //         }
-    //       ]
-    //     }
-    //
-    //     // addDataToMap action to inject dataset into kepler.gl instance
-    //     this.props.dispatch(addDataToMap(dataSets))
-    //   })
-    //   .catch(err => console.log(err))
-
-    fetch(server_url + '/api/countries/' + params.countryCode + '/' + params.currentAdminLevel)
-      .then(res => res.json())
-      .then(t => {
-        let geojson = topojson.feature(t, t.objects.collection);
-        let dataSets = {
-          datasets: [
-            {
-              info: {
-                id: 'shapefile-' + params.countryCode + '-' + params.currentAdminLevel,
-                label: 'Shapefile for ' + params.countryCode + ' L-' + params.currentAdminLevel
-              },
-              data: Processors.processGeojson(geojson)
-            }
-          ]
-        };
-
-        // addDataToMap action to inject dataset into kepler.gl instance
-        this.props.dispatch(addDataToMap(dataSets));
-      })
-      .catch(err => console.log(err));
-  }
-
   render() {
     const {width, height} = this.state;
     return (
@@ -321,11 +266,6 @@ class App extends Component {
             <Button onClick={this.exportMapConfig}>Save Config</Button>
             <Button onClick={this.openCountrySelect}>Select Country Data</Button>
           </div>
-          <div>{this.state.countrySelectModalOpen && (
-            <CountrySelectModal
-              options={this.state.countryAndAdminList}
-              onSubmit={this.handleCountryAndAdminSelect} />
-          )}</div>
           <KeplerGl
             mapboxApiAccessToken={MAPBOX_TOKEN}
             id="map"
