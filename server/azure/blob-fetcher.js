@@ -1,5 +1,4 @@
 let azure = require('azure-storage');
-let jsonfile = require('jsonfile');
 
 let config = require('./config');
 let azureKey = config.azure.key1;
@@ -49,7 +48,7 @@ module.exports = {
     * @return {Promise} fulfilled with a text string of blob contents
     */
   saveBlob: async (blobName) => {
-    return new Promise((resolve, reject) =>{
+    return new Promise((resolve, reject) => {
       blobSvc.getBlobToText(containerName, blobName, (err, data) => {
         if (err) {
           reject(err);

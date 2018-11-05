@@ -18,21 +18,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import * as topojson from 'topojson-client';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import KeplerGlSchema from 'kepler.gl/schemas';
 import Processors from 'kepler.gl/processors';
-import React, {Component} from 'react';
-import shortid from 'shortid';
+import React, { Component } from 'react';
 import styled from 'styled-components';
-import {updateVisData, addDataToMap} from 'kepler.gl/actions';
+import { updateVisData, addDataToMap } from 'kepler.gl/actions';
 import window from 'global/window';
 
 import Button from './button';
 import config from '../config';
 import downloadJsonFile from "./file-download";
-import {loadSampleConfigurations} from './actions';
-import {replaceLoadDataModal} from './factories/load-data-modal';
+import { loadSampleConfigurations } from './actions';
+import { replaceLoadDataModal } from './factories/load-data-modal';
 
 const KeplerGl = require('kepler.gl/components').injectComponents([
   replaceLoadDataModal()
@@ -40,13 +38,13 @@ const KeplerGl = require('kepler.gl/components').injectComponents([
 const MAPBOX_TOKEN = process.env.MapboxAccessToken; // eslint-disable-line
 
 const client_url = location.origin; // will be something like http://localhost:8080
-const server_url = client_url.substr(0, client_url.length-4) + config.server_port; // change that to http://localhost:5000
+const server_url = client_url.substr(0, client_url.length - 4) + config.server_port; // change that to http://localhost:5000
 
 // Sample data
 /* eslint-disable no-unused-vars */
 import sampleGeojson from './data/sample-geojson.json';
 import sampleH3Data from './data/sample-hex-id-csv';
-import sampleIconCsv, {config as savedMapConfig} from './data/sample-icon-csv';
+import sampleIconCsv, { config as savedMapConfig } from './data/sample-icon-csv';
 import sampleTripData from './data/sample-trip-data';
 /* eslint-enable no-unused-vars */
 
@@ -74,7 +72,7 @@ class App extends Component {
   componentWillMount() {
     // if we pass an id as part of the url
     // we try to fetch along map configurations
-    const {params: {id: sampleMapId} = {}} = this.props;
+    const { params: { id: sampleMapId } = {} } = this.props;
     // const {user} = this.props;
     const user = config.user;
     const sampleMapsUrl = `${server_url}/api/${user}/samples`;
@@ -196,7 +194,7 @@ class App extends Component {
     // load geojson
     this.props.dispatch(
       updateVisData({
-        info: {label: 'SF Zip Geo'},
+        info: { label: 'SF Zip Geo' },
         data: Processors.processGeojson(sampleGeojson)
       })
     );
@@ -219,9 +217,9 @@ class App extends Component {
 
   getMapConfig() {
     // retrieve kepler.gl store
-    const {keplerGl} = this.props.demo;
+    const { keplerGl } = this.props.demo;
     // retrieve current kepler.gl instance store
-    const {map} = keplerGl;
+    const { map } = keplerGl;
     // create the config object
     return {
       datasets: KeplerGlSchema.getDatasetToSave(map),
@@ -236,21 +234,21 @@ class App extends Component {
     const url = server_url + '/api/save';
     // Sending and receiving data in JSON format using POST method
     fetch(url, {
-            method: 'POST',
-            headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(mapConfig)
-          })
-          .then(response => response.json())
-          .then(body => alert(body.message));
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(mapConfig)
+    })
+      .then(response => response.json())
+      .then(body => alert(body.message));
     // // save it as a json file
     // downloadJsonFile(mapConfig, 'kepler.gl.json');
   };
 
   render() {
-    const {width, height} = this.state;
+    const { width, height } = this.state;
     return (
       <GlobalStyleDiv>
         <div
@@ -264,7 +262,6 @@ class App extends Component {
         >
           <div className='overlay-buttons'>
             <Button onClick={this.exportMapConfig}>Save Config</Button>
-            <Button onClick={this.openCountrySelect}>Select Country Data</Button>
           </div>
           <KeplerGl
             mapboxApiAccessToken={MAPBOX_TOKEN}
@@ -283,7 +280,7 @@ class App extends Component {
 }
 
 const mapStateToProps = state => state;
-const dispatchToProps = dispatch => ({dispatch});
+const dispatchToProps = dispatch => ({ dispatch });
 
 export default connect(
   mapStateToProps,

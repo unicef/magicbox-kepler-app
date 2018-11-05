@@ -15,10 +15,10 @@ const propTypes = {
 };
 
 const generateOptions = (items, type) => {
-  let [valueName, textName] = 
-    type === "country" ? ["countryCode", "countryName"] 
-    : type === "admin" ? ["adminLevel", "adminLevel"]
-    : ["", ""];
+  let [valueName, textName] =
+    type === "country" ? ["countryCode", "countryName"]
+      : type === "admin" ? ["adminLevel", "adminLevel"]
+        : ["", ""];
   let options = items.map(entry => <option key={entry.id} value={entry[valueName]}>{entry[textName]}</option>);
   options.unshift(<option key={shortid.generate()} value="" hidden> -- select an option -- </option>);
   return options;

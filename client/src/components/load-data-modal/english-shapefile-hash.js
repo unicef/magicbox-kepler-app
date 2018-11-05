@@ -1,5 +1,3 @@
-import React from 'react';
-
 export const shapefileHashEnglish = {
   bgd: 'Bangladesh',
   bel: 'Belgium',
@@ -251,7 +249,7 @@ export const shapefileHashEnglish = {
   ukr: 'Ukraine',
   qat: 'Qatar',
   moz: 'Mozambique'
-      };
+};
 
 // // console.log(shapefileHashEnglish[shapefileList[0].split('_')[]])
 // const shapesList = shapefileList.map(x => shapefileHashEnglish[x.split('_')[0]])
