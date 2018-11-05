@@ -26,15 +26,15 @@ import {FileUpload} from 'kepler.gl/components';
 import {LoadingSpinner} from 'kepler.gl/components';
 import {themeLT} from 'kepler.gl/styles';
 import {Icons} from 'kepler.gl/components/';
-import config from '../../../config';
-import {shapefileHashEnglish} from './english-shapefile-hash';
 import shortid from 'shortid';
 import {updateVisData, addDataToMap} from 'kepler.gl/actions';
 
 import {LOADING_METHODS, QUERY_TYPES, ASSETS_URL} from '../../constants/default-settings';
 
+import config from '../../../config';
 import CountryShapefileSelect from './country-shapefile-select';
 import SampleMapGallery from './sample-map-gallery';
+import {shapefileHashEnglish} from './english-shapefile-hash';
 
 const propTypes = {
   // query options
@@ -104,14 +104,15 @@ const ModalTab = styled.div`
   }
 `;
 
-const StyledMapIcon = styled.div`
-  background-image: url("${ASSETS_URL}icon-demo-map.jpg");
-  background-repeat: no-repeat;
-  background-size: 64px 48px;
-  width: 64px;
-  height: 48px;
-  border-radius: 2px;
-`;
+/* this is the thumbnail next to the "Click here to access sample maps/data" button */
+// const StyledMapIcon = styled.div`
+//   background-image: url("${ASSETS_URL}icon-demo-map.jpg");
+//   background-repeat: no-repeat;
+//   background-size: 64px 48px;
+//   width: 64px;
+//   height: 48px;
+//   border-radius: 2px;
+// `;
 
 const StyledTrySampleData = styled.div`
   display: flex;
@@ -156,9 +157,19 @@ const StyledSpinner = styled.div`
   }
 `;
 
+const generateAdminLevels = (deepestLevel) => {
+  // parse int to ensure the value passed in Array() is a number; else, the function won't work properly.
+  // if deepestLevel is, say, 3, the function will give us array [0, 1, 2, 3]
+  let adminLevels = [...Array(parseInt(deepestLevel, 10) + 1).keys()]
+    .map(value => {
+      return {  adminLevel: value, id: shortid.generate() };
+    });
+  return adminLevels;
+};
+
 const getSelectedValue = (menu) => {
   return menu.options[menu.selectedIndex].value;
-}
+};
 
 const client_url = location.origin; // will be something like http://localhost:8080
 const server_url = client_url.substr(0, client_url.length-4) + config.server_port; // change that to http://localhost:5000
@@ -170,34 +181,37 @@ class LoadDataModal extends Component {
     }
 
     state = {
-      isShapefileListLoading: true,
+      adminList: [],
       countryAndAdminList: [],
       countrySelected: false,
-      currentMaxAdmin: 0,
+      isShapefileListLoading: true,
       submitReady: false
     }
 
     handleCountryChange = (event) => {
       let ddMenu = event.target;
       let code = getSelectedValue(ddMenu);
-      if (code) {
+      if (code !== "") {
         let country = this.state.countryAndAdminList.find(e => e.countryCode === code);
         // console.log('aha country changed', country);
+        let maxAdmin = parseInt(country.adminLevel, 10);
+        let adminList = generateAdminLevels(maxAdmin);
         this.setState({
-          countrySelected: true,
-          currentMaxAdmin: parseInt(country.adminLevel, 10) });
+          adminList: adminList, 
+          countrySelected: true });
       } else {
         this.setState({
+          adminList: [],
           countrySelected: false,
-          currentMaxAdmin: 0 });
+          submitReady: false });
       }
     }
 
     handleAdminChange = (event) => {
       let ddMenu = event.target;
       let admin = getSelectedValue(ddMenu);
-      if (admin) this.setState({ submitReady: true })
-      else this.setState({ submitReady: false })
+      if (admin !== "") this.setState({ submitReady: true });
+      else this.setState({ submitReady: false });
     }
 
     handleShapefileChoice = (event) => {
@@ -276,13 +290,13 @@ class LoadDataModal extends Component {
                         </StyledSpinner>
                       ) : (
                         <CountryShapefileSelect
+                          adminList={this.state.adminList}
                           countryList={this.state.countryAndAdminList}
-                          onCountryChange={this.handleCountryChange}
-                          showAdmins={this.state.countrySelected}
-                          currentMaxAdmin={this.state.currentMaxAdmin}
                           onAdminChange={this.handleAdminChange}
-                          submitReady={this.state.submitReady}
-                          onShapefileSelected={this.handleShapefileChoice} />
+                          onCountryChange={this.handleCountryChange}
+                          onShapefileSelected={this.handleShapefileChoice} 
+                          showAdmins={this.state.countrySelected}
+                          submitReady={this.state.submitReady} />
                         )}
                     </div>
                   </div>
