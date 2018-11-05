@@ -70,6 +70,11 @@ const GlobalStyleDiv = styled.div`
   font-weight: 400;
   font-size: 0.875em;
   line-height: 1.71429;
+  transition: margin 1s, height 1s;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  margin-top: 0;
 
   *,
   *:before,
@@ -225,27 +230,16 @@ class App extends Component {
     const saveable = config.can_save;
     return (
       <GlobalStyleDiv>
-        <div
-          style={{
-            transition: 'margin 1s, height 1s',
-            position: 'absolute',
-            width: '100%',
-            height: '100%',
-            marginTop: 0
-          }}
-        >
-          <KeplerGl
-            mapboxApiAccessToken={MAPBOX_TOKEN}
-            id="map"
-            /*
-             * Specify path to keplerGl state, because it is not mount at the root
-             */
-            getState={state => state.demo.keplerGl}
-            width={width}
-            height={height}
-          />
-
-        </div>
+        <KeplerGl
+          mapboxApiAccessToken={MAPBOX_TOKEN}
+          id="map"
+          /*
+            * Specify path to keplerGl state, because it is not mount at the root
+            */
+          getState={state => state.demo.keplerGl}
+          width={width}
+          height={height}
+        />
       </GlobalStyleDiv>
     );
   }
