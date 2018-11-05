@@ -18,23 +18,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import classnames from 'classnames';
-import styled, {ThemeProvider} from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
 import PropTypes from 'prop-types';
-import {FileUpload} from 'kepler.gl/components';
-import {LoadingSpinner} from 'kepler.gl/components';
-import {themeLT} from 'kepler.gl/styles';
-import {Icons} from 'kepler.gl/components/';
+import { FileUpload } from 'kepler.gl/components';
+import { LoadingSpinner } from 'kepler.gl/components';
+import { themeLT } from 'kepler.gl/styles';
+import { Icons } from 'kepler.gl/components/';
 import shortid from 'shortid';
-import {updateVisData, addDataToMap} from 'kepler.gl/actions';
+import { updateVisData, addDataToMap } from 'kepler.gl/actions';
 
-import {LOADING_METHODS, QUERY_TYPES, ASSETS_URL} from '../../constants/default-settings';
+import { LOADING_METHODS, QUERY_TYPES, ASSETS_URL } from '../../constants/default-settings';
 
 import config from '../../../config';
 import CountryShapefileSelect from './country-shapefile-select';
 import SampleMapGallery from './sample-map-gallery';
-import {shapefileHashEnglish} from './english-shapefile-hash';
+import { shapefileHashEnglish } from './english-shapefile-hash';
 
 const propTypes = {
   // query options
@@ -162,7 +162,7 @@ const generateAdminLevels = (deepestLevel) => {
   // if deepestLevel is, say, 3, the function will give us array [0, 1, 2, 3]
   let adminLevels = [...Array(parseInt(deepestLevel, 10) + 1).keys()]
     .map(value => {
-      return {  adminLevel: value, id: shortid.generate() };
+      return { adminLevel: value, id: shortid.generate() };
     });
   return adminLevels;
 };
@@ -172,88 +172,90 @@ const getSelectedValue = (menu) => {
 };
 
 const client_url = location.origin; // will be something like http://localhost:8080
-const server_url = client_url.substr(0, client_url.length-4) + config.server_port; // change that to http://localhost:5000
+const server_url = client_url.substr(0, client_url.length - 4) + config.server_port; // change that to http://localhost:5000
 
 
 class LoadDataModal extends Component {
-    constructor(props) {
-      super(props)
-    }
+  constructor(props) {
+    super(props)
+  }
 
-    state = {
-      adminList: [],
-      countryAndAdminList: [],
-      countrySelected: false,
-      isShapefileListLoading: true,
-      submitReady: false
-    }
+  state = {
+    adminList: [],
+    countryAndAdminList: [],
+    countrySelected: false,
+    isShapefileListLoading: true,
+    submitReady: false
+  }
 
-    handleCountryChange = (event) => {
-      let ddMenu = event.target;
-      let code = getSelectedValue(ddMenu);
-      if (code !== "") {
-        let country = this.state.countryAndAdminList.find(e => e.countryCode === code);
-        // console.log('aha country changed', country);
-        let maxAdmin = parseInt(country.adminLevel, 10);
-        let adminList = generateAdminLevels(maxAdmin);
+  handleCountryChange = (event) => {
+    let ddMenu = event.target;
+    let code = getSelectedValue(ddMenu);
+    if (code !== "") {
+      let country = this.state.countryAndAdminList.find(e => e.countryCode === code);
+      // console.log('aha country changed', country);
+      let maxAdmin = parseInt(country.adminLevel, 10);
+      let adminList = generateAdminLevels(maxAdmin);
+      this.setState({
+        adminList: adminList,
+        countrySelected: true
+      });
+    } else {
+      this.setState({
+        adminList: [],
+        countrySelected: false,
+        submitReady: false
+      });
+    }
+  }
+
+  handleAdminChange = (event) => {
+    let ddMenu = event.target;
+    let admin = getSelectedValue(ddMenu);
+    if (admin !== "") this.setState({ submitReady: true });
+    else this.setState({ submitReady: false });
+  }
+
+  handleShapefileChoice = (event) => {
+    event.preventDefault();
+    let form = event.target;
+    let countryDD = form.elements["country-select"];
+    let adminDD = form.elements["admin-select"];
+    let countryCode = getSelectedValue(countryDD);
+    let adminLevel = getSelectedValue(adminDD);
+    let blobName = `${countryCode}_${adminLevel}.json`;
+    console.log('blobName', blobName);
+  }
+
+  componentDidMount() {
+    fetch(server_url + '/api/countries')
+      .then(res => res.json())
+      .then(result => {
+        let resultWithIds = result.map(entry => {
+          return {
+            ...entry,
+            countryName: shapefileHashEnglish[(entry.countryCode).toLowerCase()] || entry.countryCode, // in case there's not a matched proper name
+            id: shortid.generate()
+          };
+        });
+        resultWithIds.sort((a, b) => {
+          let codeA = a.countryName.toLowerCase();
+          let codeB = b.countryName.toLowerCase();
+          if (codeA > codeB) return 1;
+          if (codeA < codeB) return -1;
+          return 0;
+        });
+        // console.log('sorted result', resultWithIds);
         this.setState({
-          adminList: adminList, 
-          countrySelected: true });
-      } else {
-        this.setState({
-          adminList: [],
-          countrySelected: false,
-          submitReady: false });
-      }
-    }
-
-    handleAdminChange = (event) => {
-      let ddMenu = event.target;
-      let admin = getSelectedValue(ddMenu);
-      if (admin !== "") this.setState({ submitReady: true });
-      else this.setState({ submitReady: false });
-    }
-
-    handleShapefileChoice = (event) => {
-      event.preventDefault();
-      let form = event.target;
-      let countryDD = form.elements["country-select"];
-      let adminDD = form.elements["admin-select"];
-      let countryCode = getSelectedValue(countryDD);
-      let adminLevel = getSelectedValue(adminDD);
-      let blobName = `${countryCode}_${adminLevel}.json`;
-      console.log('blobName', blobName);
-    }
-
-    componentDidMount() {
-      fetch(server_url + '/api/countries')
-        .then(res => res.json())
-        .then(result => {
-          let resultWithIds = result.map(entry => {
-            return {
-              ...entry,
-              countryName: shapefileHashEnglish[(entry.countryCode).toLowerCase()] || entry.countryCode, // in case there's not a matched proper name
-              id: shortid.generate()
-            };
-          });
-          resultWithIds.sort((a, b) => {
-            let codeA = a.countryName.toLowerCase();
-            let codeB = b.countryName.toLowerCase();
-            if (codeA > codeB) return 1;
-            if (codeA < codeB) return -1;
-            return 0;
-          });
-          // console.log('sorted result', resultWithIds);
-          this.setState({
-            countryAndAdminList: resultWithIds,
-            isShapefileListLoading: false
-          });
-        }).catch(err => console.log(err));
-    }
+          countryAndAdminList: resultWithIds,
+          isShapefileListLoading: false
+        });
+      }).catch(err => console.log(err));
+  }
 
 
   render() {
-    const {loadingMethod, currentOption, previousMethod, sampleMaps, isMapLoading} = this.props;
+    const { loadingMethod, currentOption, previousMethod, sampleMaps, isMapLoading } = this.props;
     // console.log(`isMapLoading: ${isMapLoading}, loadingMethod.id: ${loadingMethod.id}, state: ${this.state.countryAndAdminList.length}`)
     return (
       <ThemeProvider theme={themeLT}>
@@ -262,7 +264,7 @@ class LoadDataModal extends Component {
             <StyledSpinner>
               <LoadingSpinner />
             </StyledSpinner>
-            ) : (
+          ) : (
               <div>
                 {loadingMethod.id !== 'sample' ? (
                   <Tabs
@@ -289,14 +291,14 @@ class LoadDataModal extends Component {
                           <LoadingSpinner />
                         </StyledSpinner>
                       ) : (
-                        <CountryShapefileSelect
-                          adminList={this.state.adminList}
-                          countryList={this.state.countryAndAdminList}
-                          onAdminChange={this.handleAdminChange}
-                          onCountryChange={this.handleCountryChange}
-                          onShapefileSelected={this.handleShapefileChoice} 
-                          showAdmins={this.state.countrySelected}
-                          submitReady={this.state.submitReady} />
+                          <CountryShapefileSelect
+                            adminList={this.state.adminList}
+                            countryList={this.state.countryAndAdminList}
+                            onAdminChange={this.handleAdminChange}
+                            onCountryChange={this.handleCountryChange}
+                            onShapefileSelected={this.handleShapefileChoice}
+                            showAdmins={this.state.countrySelected}
+                            submitReady={this.state.submitReady} />
                         )}
                     </div>
                   </div>
@@ -309,11 +311,11 @@ class LoadDataModal extends Component {
   }
 }
 
-const Tabs = ({method, toggleMethod}) => (
+const Tabs = ({ method, toggleMethod }) => (
   <ModalTab className="load-data-modal__tab">
     <div className="load-data-modal__tab__inner">
       {LOADING_METHODS.map(
-        ({id, label}) =>
+        ({ id, label }) =>
           id !== 'sample' ? (
             <div
               className={classnames('load-data-modal__tab__item', {
@@ -331,7 +333,7 @@ const Tabs = ({method, toggleMethod}) => (
   </ModalTab>
 );
 
-const TrySampleData = ({onClick}) => (
+const TrySampleData = ({ onClick }) => (
   <StyledTrySampleData className="try-sample-data">
     <div className="demo-map-title">
       <div className="demo-map-label">Select shapefile from</div>

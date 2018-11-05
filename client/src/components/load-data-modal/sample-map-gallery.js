@@ -21,8 +21,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import {Icons} from 'kepler.gl/components';
-import {format} from 'd3-format';
+import { format } from 'd3-format';
 
 const numFormat = format(',');
 
@@ -83,7 +82,7 @@ const StyledImageCaption = styled.div`
   opacity: 0;
 `;
 
-const SampleMap = ({sample, onClick}) => (
+const SampleMap = ({ sample, onClick }) => (
   <StyledSampleMap className="sample-map-gallery__item">
     <div className="sample-map">
       <div className="sample-map__image" onClick={onClick}>
@@ -98,7 +97,7 @@ const SampleMap = ({sample, onClick}) => (
   </StyledSampleMap>
 );
 
-const SampleMapGallery = ({sampleData, sampleMaps, onLoadSampleData}) => (
+const SampleMapGallery = ({ sampleMaps, onLoadSampleData }) => (
   <div className="sample-data-modal">
     <StyledSampleGallery className="sample-map-gallery">
       {sampleMaps.map(sp => (

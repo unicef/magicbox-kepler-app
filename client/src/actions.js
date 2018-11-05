@@ -18,11 +18,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import {push} from 'react-router-redux';
-import {text as requestText, json as requestJson} from 'd3-request';
-import {toggleModal} from 'kepler.gl/actions';
-import {console as Console} from 'global/window';
-import {MAP_CONFIG_URL} from './constants/sample-maps';
+import { push } from 'react-router-redux';
+import { text as requestText, json as requestJson } from 'd3-request';
+import { toggleModal } from 'kepler.gl/actions';
+import { console as Console } from 'global/window';
+import { MAP_CONFIG_URL } from './constants/sample-maps';
 
 // CONSTANTS
 export const INIT = 'INIT';
@@ -64,7 +64,7 @@ export function setLoadingMapStatus(isMapLoading) {
 
 export function loadSampleMap(sample) {
   return (dispatch, getState) => {
-    const {routing} = getState();
+    const { routing } = getState();
     dispatch(push(`/demo/${sample.id}${routing.locationBeforeTransitions.search}`));
     dispatch(loadRemoteMap(sample));
     dispatch(setLoadingMapStatus(true));
