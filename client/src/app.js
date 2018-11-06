@@ -41,6 +41,7 @@ import KeplerGlSchema from 'kepler.gl/schemas';
 import Button from './button';
 import downloadJsonFile from "./file-download";
 import config from '../config';
+import helper_component_did_mount from './helpers/helper-component-did-mount'
 
 const client_url = window.location.origin; // will be something like http://localhost:8080
 const server_url = client_url.substr(0, client_url.length-4) + config.server_port; // change from client_url to http://localhost:5000
@@ -96,29 +97,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    // load sample data
-    // this._loadSampleData();
-    fetch('/api/default')
-      .then(res => res.json()) // transform the data into json
-      .then(obj => {
-        console.log('Arrived')
-        console.log(obj)
-        let dataSets = {datasets: obj.datasets.map(s => { return {
-          info: {
-            id: s.data.id,
-            label: s.data.label,
-            color: s.data.color
-          },
-          data: {
-            fields: s.data.fields,
-            rows: s.data.allData
-          }
-        }}), config: obj.config}
-
-        // addDataToMap action to inject dataset into kepler.gl instance
-        this.props.dispatch(addDataToMap(dataSets))
-      })
-      .catch(err => console.log(err))
+    helper_component_did_mount.fetch_default_user_map(addDataToMap, this.props)
   }
 
   componentWillUnmount() {
