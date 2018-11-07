@@ -1,7 +1,8 @@
 const express = require('express')
 const app = express()
 const port = process.env.PORT || 5000
-const config = require('./public/default/config')
+const config = require('./config')
+const default_map = require('./public/config')
 const bodyParser = require('body-parser');
 const jsonfile = require('jsonfile')
 const helper = require('./helpers/helper-user-map')
@@ -24,7 +25,7 @@ router.get('/', function(req, res) {
 
 // test route to make sure everything is working (accessed at GET http://localhost:8080/api)
 router.get('/default', function(req, res) {
-  res.send(config)
+  res.send(default_map)
 });
 
 // test route to make sure everything is working (accessed at GET http://localhost:8080/api)
@@ -34,7 +35,7 @@ router.get('/default/:email', function(req, res) {
     .then(res.send)
     .catch(err => {
       console.log(err)
-      res.send(config)
+      res.send(default_map)
     })
   }
 });
