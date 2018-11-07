@@ -21,24 +21,25 @@
 
 ### Otherwise install and run
 
-Go to your terminal / command-line interface and type in the following lines:
+Go to your terminal / command-line interface and type in the following lines. Note that you will need to have an Azure username and password on hand and obtain the Azure storage account name and access key to be able to fetch country shapefiles.
 
-- Run the backend
+- Run the backend:
 ```
 cd server
 cp config-sample.json config.json
+cp azure/config-sample.js azure/config.js # and fill in the correct credentials
 yarn install
 yarn start
 ```
-- Go back to the root directory
+- Go back to the root directory:
 ```
 cd ..
 ```
-- Add mapbox access token to node env
+- Add mapbox access token to node env:
 ```
 export MapboxAccessToken=<your_mapbox_token>
 ```
-- Run the kepler.gl client
+- Run the kepler.gl client:
 ```
 cd client
 cp config-sample.js config.js

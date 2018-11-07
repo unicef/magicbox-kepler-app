@@ -39,8 +39,8 @@ import {PanelHeaderFactory} from 'kepler.gl/components';
 import {DataTableModalFactory} from 'kepler.gl/components';
 import KeplerGlSchema from 'kepler.gl/schemas';
 import Button from './button';
-import downloadJsonFile from "./file-download";
 import config from '../config';
+import downloadJsonFile from "./file-download";
 import helper_component_did_mount from './helpers/helper-component-did-mount'
 
 const client_url = window.location.origin; // will be something like http://localhost:8080
@@ -84,14 +84,17 @@ const GlobalStyleDiv = styled.div`
 class App extends Component {
   state = {
     width: window.innerWidth,
-    height: window.innerHeight
+    height: window.innerHeight,
   };
 
   componentWillMount() {
     // if we pass an id as part of the url
     // we try to fetch along map configurations
-    const {params: {id: sampleMapId} = {}} = this.props;
-    this.props.dispatch(loadSampleConfigurations(sampleMapId));
+    const { params: { id: sampleMapId } = {} } = this.props;
+    // const {user} = this.props;
+    const user = config.user;
+    const sampleMapsUrl = `${server_url}/api/${user}/samples`;
+    this.props.dispatch(loadSampleConfigurations(sampleMapsUrl, sampleMapId));
     window.addEventListener('resize', this._onResize);
     this._onResize();
   }
@@ -164,7 +167,7 @@ class App extends Component {
     // load geojson
     this.props.dispatch(
       updateVisData({
-        info: {label: 'SF Zip Geo'},
+        info: { label: 'SF Zip Geo' },
         data: Processors.processGeojson(sampleGeojson)
       })
     );
@@ -184,23 +187,41 @@ class App extends Component {
       })
     );
   }
-  // This method is used as reference to show how to export the current kepler.gl instance configuration
-  // Once exported the configuration can be imported using parseSavedConfig or load method from KeplerGlSchema
+
   getMapConfig() {
     // retrieve kepler.gl store
-    const {keplerGl} = this.props.demo;
+    const { keplerGl } = this.props.demo;
     // retrieve current kepler.gl instance store
-    const {map} = keplerGl;
+    const { map } = keplerGl;
     // create the config object
     return {
       datasets: KeplerGlSchema.getDatasetToSave(map),
       config: KeplerGlSchema.getConfigToSave(map),
       info: { app: 'kepler.gl', created_at: new Date() }
-    }
+    };
   }
 
+  exportMapConfig = () => {
+    // create the config object
+    const mapConfig = this.getMapConfig();
+    const url = server_url + '/api/save';
+    // Sending and receiving data in JSON format using POST method
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(mapConfig)
+    })
+      .then(response => response.json())
+      .then(body => alert(body.message));
+    // // save it as a json file
+    // downloadJsonFile(mapConfig, 'kepler.gl.json');
+  };
+
   render() {
-    const {width, height} = this.state;
+    const { width, height } = this.state;
     const saveable = config.can_save;
     return (
       <GlobalStyleDiv>
@@ -213,6 +234,9 @@ class App extends Component {
             marginTop: 0
           }}
         >
+          <div className='overlay-buttons'>
+            <Button onClick={this.exportMapConfig}>Save Config</Button>
+          </div>
           <KeplerGl
             mapboxApiAccessToken={MAPBOX_TOKEN}
             id="map"
@@ -223,7 +247,6 @@ class App extends Component {
             width={width}
             height={height}
           />
-
         </div>
       </GlobalStyleDiv>
     );
@@ -231,7 +254,7 @@ class App extends Component {
 }
 
 const mapStateToProps = state => state;
-const dispatchToProps = dispatch => ({dispatch});
+const dispatchToProps = dispatch => ({ dispatch });
 
 export default connect(
   mapStateToProps,
