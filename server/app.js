@@ -6,21 +6,22 @@ const default_map = require('./public/config')
 const bodyParser = require('body-parser');
 const jsonfile = require('jsonfile')
 const helper = require('./helpers/helper-user-map')
+const blobFetcher = require('./azure/blob-fetcher');
 
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   next();
 });
 // configure app to use bodyParser()
 // this will let us get the data from a POST
-app.use(bodyParser.json({limit: '250mb', extended: true}))
-app.use(bodyParser.urlencoded({limit: '250mb', extended: true}))
+app.use(bodyParser.json({ limit: '250mb', extended: true }))
+app.use(bodyParser.urlencoded({ limit: '250mb', extended: true }))
 var router = express.Router();              // get an instance of the express Router
 
 // test route to make sure everything is working (accessed at GET http://localhost:8080/api)
-router.get('/', function(req, res) {
-    res.json({ message: 'hooray! welcome to our api!' });
+router.get('/', (req, res) => {
+  res.json({ message: 'hooray! welcome to our api!' });
 });
 
 // test route to make sure everything is working (accessed at GET http://localhost:8080/api)
@@ -41,17 +42,38 @@ router.get('/default/:email', function(req, res) {
 });
 
 router.route('/save/:email')
-    .post(function(req, res) {
+    .post((req, res) => {
       jsonfile.writeFile('config.json', req.body, err => {
         if (err) {
           res.send({message: 'Could not save'})
         } else {
           res.send({message: 'Saved! You may need to repoen your ' +
             'browser in incognito mode next time you retrieve.'
-          })
-        }
-      })
-    });
+        });
+      }
+    })
+  });
+
+router.get('/countries', (req, res) => {
+  blobFetcher.listBlobs()
+    .then(result => res.send(result));
+})
+
+router.get('/countries/:countryCode/:adminLevel', (req, res) => {
+  let blobName = req.params.countryCode + "_" + req.params.adminLevel + ".json";
+  console.log(blobName);
+  blobFetcher.saveBlob(blobName)
+    .then(res => JSON.parse(res)) // transform from text string to json object
+    .then(result => res.send(result));
+})
+
+router.get('/:user/samples', (req, res) => {
+  let userFolder = req.params.user;
+  jsonfile.readFile(`./${userFolder}/samples.json`, (err, obj) => {
+    if (err) console.log(err);
+    res.send(obj);
+  });
+})
 
 app.use('/api', router);
 

@@ -18,10 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import React, {Component} from 'react';
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import KeplerGlLogo from 'kepler.gl/components';
+import React, { Component } from 'react';
 import config from '../../config';
 export default class CustomPanelHeader extends React.Component {
 

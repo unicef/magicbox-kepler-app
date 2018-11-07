@@ -3,5 +3,15 @@
     "babel-preset-es2015",
     "babel-preset-react",
     "babel-preset-stage-0"
+  ],
+  "plugins": [
+    [
+      "transform-runtime",
+      {
+        "polyfill": false,
+        "regenerator": true
+      }
+    ]
   ]
+  /* credits: https://github.com/babel/babel/issues/5085#issuecomment-374903233 */
 }

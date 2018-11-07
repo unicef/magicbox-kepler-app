@@ -18,7 +18,9 @@
     "react-router-redux": "^4.0.8",
     "react-virtualized": "^9.18.5",
     "redux-actions": "^2.2.1",
-    "redux-thunk": "^1.0.0"
+    "redux-thunk": "^1.0.0",
+    "shortid": "^2.2.13",
+    "topojson-client": "^3.0.0"
   },
   "devDependencies": {
     "babel-core": "^6.7.7",
