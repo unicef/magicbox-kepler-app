@@ -38,9 +38,9 @@ import {CustomDataTableModal} from './factories/custom-data-table-modal';
 import {PanelHeaderFactory} from 'kepler.gl/components';
 import {DataTableModalFactory} from 'kepler.gl/components';
 import KeplerGlSchema from 'kepler.gl/schemas';
-import Button from './button';
+import Button from './components/button';
 import config from '../config';
-import downloadJsonFile from "./file-download";
+// import downloadJsonFile from "./file-download";
 import helper_component_did_mount from './helpers/helper-component-did-mount'
 
 const client_url = window.location.origin; // will be something like http://localhost:8080
@@ -204,7 +204,7 @@ class App extends Component {
   exportMapConfig = () => {
     // create the config object
     const mapConfig = this.getMapConfig();
-    const url = server_url + '/api/save';
+    const url = server_url + '/api/save/default';
     // Sending and receiving data in JSON format using POST method
     fetch(url, {
       method: 'POST',
