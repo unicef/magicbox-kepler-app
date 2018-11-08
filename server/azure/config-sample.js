@@ -11,8 +11,8 @@ module.exports = {
     password: [fill yours here]
   },
   azure: {
-    storageAccount: [will be provided],
+    storage_account: [will be provided],
     key1: [will be provided],
-    containerName: 'gadm2-8'
+    countainer_name: 'gadm2-8'
   }
 }

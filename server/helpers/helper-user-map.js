@@ -14,7 +14,7 @@ function create_user_dir(email) {
 
 function get_user_map(email) {
   return new Promise((resolve, reject) => {
-    jsonfile.readFile(path + email + '/config', (err, obj) => {
+    jsonfile.readFile(path + email + '/config.json', (err, obj) => {
       if (err) reject(err)
       return resolve(obj)
     })
@@ -31,9 +31,6 @@ module.exports = {
           get_user_map(email)
             .then(resolve)
             .catch(reject)
-        } else if(err.code == 'ENOENT') {
-          create_user_dir(email)
-          .then(resolve).catch(reject)
         } else {
           create_user_dir(email)
           .then(resolve).catch(reject)
