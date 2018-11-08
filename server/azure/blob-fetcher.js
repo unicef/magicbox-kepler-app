@@ -2,8 +2,8 @@ let azure = require('azure-storage');
 
 let config = require('./config');
 let azureKey = config.azure.key1;
-let storageAccount = config.azure.storage_account;
-let containerName = config.azure.countainer_name;
+let storageAccount = config.azure.storageAccount;
+let containerName = config.azure.containerName;
 
 let blobSvc = azure.createBlobService(storageAccount, azureKey);
 
@@ -36,7 +36,6 @@ module.exports = {
               return entry.countryCode !== countryList[index + 1].countryCode;
             }
           });
-          // console.log('minifiedCountryList', minifiedCountryList);
           return resolve(minifiedCountryList);
         }
       });

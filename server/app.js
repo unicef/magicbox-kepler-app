@@ -33,7 +33,9 @@ router.get('/default', function(req, res) {
 router.get('/default/:email', function(req, res) {
   if (req.params) {
     helper.check_user(req.params.email)
-    .then(res.send)
+    .then(obj => {
+      res.send(obj)
+    })
     .catch(err => {
       console.log(err)
       res.send(default_map)
@@ -43,8 +45,9 @@ router.get('/default/:email', function(req, res) {
 
 router.route('/save/:email')
     .post((req, res) => {
-      jsonfile.writeFile('config.json', req.body, err => {
+      jsonfile.writeFile('./public/users/' + req.params.email + '/' + 'config.json', req.body, err => {
         if (err) {
+          console.log(err)
           res.send({message: 'Could not save'})
         } else {
           res.send({message: 'Saved! You may need to repoen your ' +
