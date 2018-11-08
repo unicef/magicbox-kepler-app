@@ -1,11 +1,11 @@
 module.exports = {
   fetch_default_user_map: (addDataToMap, props) => {
-    let fetch_defaut_path = '/api/default'
-    // if (props.user) {
-    //   if (props.user.email) {
-        fetch_defaut_path += '/mfabrikant@unicef.org' //+ props.user.email
-    //   }
-    // }
+    let fetch_defaut_path = '/api/default/'
+    if (props.user) {
+      if (props.user.email) {
+       fetch_defaut_path += '/'+ props.user.email
+      }
+    }
     fetch(fetch_defaut_path)
       .then(res => res.json()) // transform the data into json
       .then(obj => {
