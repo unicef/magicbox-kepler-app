@@ -3,7 +3,7 @@
 .env
 *config.js
 /server/public/users
-!/server/public/users/default@unicef.org/config-sample.json
+!/server/public/users/default/config-sample.json
 # config
 client/config.js
 server/public/config.json
