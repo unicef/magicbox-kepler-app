@@ -202,6 +202,7 @@ class App extends Component {
   }
 
   exportMapConfig = () => {
+    let email = this.props.user ? this.props.user.displayableId : 'default'
     // create the config object
     const mapConfig = this.getMapConfig();
     const url = server_url + '/api/save/default';

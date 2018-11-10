@@ -2,8 +2,8 @@ module.exports = {
   fetch_default_user_map: (addDataToMap, props) => {
     let fetch_defaut_path = '/api/default/'
     if (props.user) {
-      if (props.user.email) {
-       fetch_defaut_path += '/'+ props.user.email
+      if (props.user.displayableId) {
+       fetch_defaut_path += props.user.displayableId
       }
     }
     fetch(fetch_defaut_path)
