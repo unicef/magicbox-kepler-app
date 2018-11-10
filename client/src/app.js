@@ -205,7 +205,7 @@ class App extends Component {
     let email = this.props.user ? this.props.user.displayableId : 'default'
     // create the config object
     const mapConfig = this.getMapConfig();
-    const url = server_url + '/api/save/default';
+    const url = server_url + '/api/save/' + email;
     // Sending and receiving data in JSON format using POST method
     fetch(url, {
       method: 'POST',
