@@ -41,7 +41,11 @@ router.get('/default/:email', function(req, res) {
   if (req.params) {
     helper.check_user(req.params.email)
     .then(obj => {
-      res.send(obj)
+      if (obj) {
+        res.send(obj)
+      } else {
+        res.send(default_map)
+      }
     })
     .catch(err => {
       console.log(err)
