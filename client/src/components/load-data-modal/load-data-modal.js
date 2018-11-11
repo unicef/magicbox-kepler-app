@@ -222,7 +222,7 @@ class LoadDataModal extends Component {
     let countryCode = getSelectedValue(countryDD);
     let adminLevel = getSelectedValue(adminDD);
     let blobName = `${countryCode}_${adminLevel}.json`;
-    fetch(`${server_url}/api/shapefiles/countries/${countryCode}/${adminLevel}`)
+    fetch(`/api/shapefiles/countries/${countryCode}/${adminLevel}`)
     .then(res => res.json())
     .then(t => {
       let geojson = topojson.feature(t, t.objects.collection);
@@ -243,7 +243,7 @@ class LoadDataModal extends Component {
   }
 
   componentDidMount() {
-    fetch(server_url + '/api/shapefiles/countries')
+    fetch('/api/shapefiles/countries')
       .then(res => res.json())
       .then(result => {
         let resultWithIds = result.map(entry => {

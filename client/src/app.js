@@ -94,7 +94,7 @@ class App extends Component {
     // const {user} = this.props;
     const user = config.user;
     //const sampleMapsUrl = `${server_url}/api/${user}/samples`;
-    const sampleMapsUrl = `${server_url}/api/samples`;
+    const sampleMapsUrl = '/api/samples';
     this.props.dispatch(loadSampleConfigurations(sampleMapsUrl, sampleMapId));
     window.addEventListener('resize', this._onResize);
     this._onResize();
@@ -206,7 +206,7 @@ class App extends Component {
     let email = this.props.user ? this.props.user.displayableId : 'default'
     // create the config object
     const mapConfig = this.getMapConfig();
-    const url = server_url + '/api/maps/save/' + email;
+    const url = '/api/maps/save/' + email;
     // Sending and receiving data in JSON format using POST method
     fetch(url, {
       method: 'POST',
