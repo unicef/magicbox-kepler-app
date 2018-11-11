@@ -18,35 +18,53 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import { connect } from 'react-redux';
-import KeplerGlSchema from 'kepler.gl/schemas';
-import Processors from 'kepler.gl/processors';
-import React, { Component } from 'react';
-import styled from 'styled-components';
-import { updateVisData, addDataToMap } from 'kepler.gl/actions';
-import window from 'global/window';
-
-import Button from './button';
-import config from '../config';
-import downloadJsonFile from "./file-download";
-import { loadSampleConfigurations } from './actions';
-import { replaceLoadDataModal } from './factories/load-data-modal';
-
-const KeplerGl = require('kepler.gl/components').injectComponents([
-  replaceLoadDataModal()
-]);
-const MAPBOX_TOKEN = process.env.MapboxAccessToken; // eslint-disable-line
-
-const client_url = location.origin; // will be something like http://localhost:8080
-const server_url = client_url.substr(0, client_url.length - 4) + config.server_port; // change that to http://localhost:5000
-
+import React, {Component} from 'react';
 // Sample data
 /* eslint-disable no-unused-vars */
+import sampleTripData from './data/sample-trip-data';
 import sampleGeojson from './data/sample-geojson.json';
 import sampleH3Data from './data/sample-hex-id-csv';
-import sampleIconCsv, { config as savedMapConfig } from './data/sample-icon-csv';
-import sampleTripData from './data/sample-trip-data';
+import sampleIconCsv, {config as savedMapConfig} from './data/sample-icon-csv';
+import {updateVisData, addDataToMap} from 'kepler.gl/actions';
+import Processors from 'kepler.gl/processors';
 /* eslint-enable no-unused-vars */
+import styled from 'styled-components';
+import window from 'global/window';
+import {connect} from 'react-redux';
+import {loadSampleConfigurations} from './actions';
+import {replaceLoadDataModal} from './factories/load-data-modal';
+import CustomPanelHeader from './components/custom-panel-header';
+import {CustomDataTableModal} from './factories/custom-data-table-modal';
+import {PanelHeaderFactory} from 'kepler.gl/components';
+import {DataTableModalFactory} from 'kepler.gl/components';
+import KeplerGlSchema from 'kepler.gl/schemas';
+import Button from './components/button';
+import config from '../config';
+// import downloadJsonFile from "./file-download";
+import helper_component_did_mount from './helpers/helper-component-did-mount'
+
+const client_url = window.location.origin; // will be something like http://localhost:8080
+const server_url = client_url.substr(0, client_url.length-4) + config.server_port; // change from client_url to http://localhost:5000
+// const server_url = 'http://0.0.0.0:' + config.server_port; // change from client_url to http://localhost:500
+
+const countrycode = config.country_code;
+let KeplerGl;
+if (config.custom_header_path) {
+  const CustomPanelHeaderFactory = () => CustomPanelHeader;
+  const CustomDataTableModalFactory = () => CustomDataTableModal;
+
+  KeplerGl = require('kepler.gl/components').injectComponents([
+    [PanelHeaderFactory, CustomPanelHeaderFactory],
+    [DataTableModalFactory, CustomDataTableModalFactory],
+    replaceLoadDataModal()
+  ]);
+} else {
+  KeplerGl = require('kepler.gl/components').injectComponents([
+    replaceLoadDataModal()
+  ]);
+}
+
+const MAPBOX_TOKEN = process.env.MapboxAccessToken; // eslint-disable-line
 
 const GlobalStyleDiv = styled.div`
   font-family: ff-clan-web-pro, 'Helvetica Neue', Helvetica, sans-serif;
@@ -75,60 +93,16 @@ class App extends Component {
     const { params: { id: sampleMapId } = {} } = this.props;
     // const {user} = this.props;
     const user = config.user;
-    const sampleMapsUrl = `${server_url}/api/${user}/samples`;
+    //const sampleMapsUrl = `${server_url}/api/${user}/samples`;
+    const sampleMapsUrl = `${server_url}/api/samples`;
     this.props.dispatch(loadSampleConfigurations(sampleMapsUrl, sampleMapId));
     window.addEventListener('resize', this._onResize);
     this._onResize();
   }
-  //
-  // componentDidMount() {
-  //   // load sample data
-  //   // this._loadSampleData();
-  //   fetch(server_url + '/api/default')
-  //     .then(res => res.json()) // transform the data into json
-  //     .then(obj => {
-  //       let dataSets = {datasets: obj.datasets.map(s => { return {
-  //         info: {
-  //           id: s.data.id,
-  //           label: s.data.label,
-  //           color: s.data.color
-  //         },
-  //         data: {
-  //           fields: s.data.fields,
-  //           rows: s.data.allData
-  //         }
-  //       };}), config: obj.config};
-  //
-  //       // addDataToMap action to inject dataset into kepler.gl instance
-  //       this.props.dispatch(addDataToMap(dataSets));
-  //     })
-  //     .catch(err => console.log(err));
-  //
-  //   // uncomment the following code if want to fetch from the old MagicBox API
-  //   // fetch("http://magicbox8.azurewebsites.net/docs/population")
-  //   //   .then(res => res.json()) // transform the data into json
-  //   //   .then(data => {
-  //   //     let countryCodeList = Object.keys(data.countries);
-  //   //     // console.log(countryCodeList.slice(0, 10));
-  //   //     let dataWithIds = countryCodeList.map(entry => {
-  //   //       return {
-  //   //         countryCode: entry,
-  //   //         id: shortid.generate()
-  //   //       };
-  //   //     });
-  //   //     this.setState({ countryAndAdminList: dataWithIds });
-  //   //   })
-  //   //   .catch(err => console.log(err));
-  //
-  //   fetch(server_url + '/api/countries')
-  //     .then(res => res.json())
-  //     .then(result => {
-  //       let resultWithIds = result.map(entry => {
-  //         return {...entry, id: shortid.generate()};
-  //       });
-  //       this.setState({ countryAndAdminList: resultWithIds });
-  //     }).catch(err => console.log(err));
-  // }
+
+  componentDidMount() {
+    helper_component_did_mount.fetch_default_user_map(addDataToMap, this.props)
+  }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this._onResize);
@@ -229,9 +203,10 @@ class App extends Component {
   }
 
   exportMapConfig = () => {
+    let email = this.props.user ? this.props.user.displayableId : 'default'
     // create the config object
     const mapConfig = this.getMapConfig();
-    const url = server_url + '/api/save';
+    const url = server_url + '/api/maps/save/' + email;
     // Sending and receiving data in JSON format using POST method
     fetch(url, {
       method: 'POST',
@@ -249,6 +224,7 @@ class App extends Component {
 
   render() {
     const { width, height } = this.state;
+    const saveable = config.can_save;
     return (
       <GlobalStyleDiv>
         <div

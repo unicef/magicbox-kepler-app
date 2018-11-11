@@ -1,15 +1,18 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
+=======
+.env
 *config.js
+/server/public/users
+!/server/public/users/default/config-sample.json
+# config
+client/config.js
+server/public/config.json
+# data
+/server/config.json
 
 # dependencies
-client/node_modules
-server/node_modules
-
-# testing
-/coverage
-
-# production
-/build
+/client/node_modules
+/server/node_modules
 
 # misc
 .DS_Store
@@ -21,6 +24,11 @@ server/node_modules
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+dist
 
-# data
-/server/config.json
+# production
+/client/build
+/server/build
+
+# testing
+/coverage

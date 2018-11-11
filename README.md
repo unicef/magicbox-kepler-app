@@ -11,7 +11,15 @@
 
 ![screenshot](screenshot.png)
 
-### Install and run
+### Docker
+
+- cp ./client/.env-sample ./client/.env
+- add MapBox token to ./clien/.env
+- cp ./server/config-sample.json ./server/config.json
+- cp ./client/config-sample.js ./client/config.js
+- docker-compose up
+
+### Otherwise install and run
 
 Go to your terminal / command-line interface and type in the following lines. Note that you will need to have an Azure username and password on hand and obtain the Azure storage account name and access key to be able to fetch country shapefiles.
 
@@ -38,7 +46,6 @@ cp config-sample.js config.js
 yarn --ignore-engines
 yarn start
 ```
-
 ### Developer Background
 
 This demo is built on [Kepler.gl](http://kepler.gl/). Here are a couple sources for learning how to work with Kepler:
@@ -48,3 +55,4 @@ This demo is built on [Kepler.gl](http://kepler.gl/). Here are a couple sources 
 * [Vis Academy Tutorials](http://vis.academy/#/kepler.gl/setup)
 
 Kepler itself is built on [Redux](https://redux.js.org/). An understanding of Redux is helpful for any changes to the UI. Redux has a [basic tutorial](https://redux.js.org/basics) that covers key concepts.
+>>>>>>> ede695c192d5a5220712c6e6936fa17e773fbd7d

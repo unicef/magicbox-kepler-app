@@ -18,6 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+/* eslint-disable */
 export default `time,event_lat,event_lng,icon,icon-bk,annotation-severity,annotation-html
 2016-06-28 20:02:06,37.778564,-122.39096,accel,accel,3,"Braking at 10:32pm, -0.3g"
 2016-06-28 20:09:18,37.78824,-122.40894,add-person,add-person,3,"10:33pm,37.3490528616667,-121.972682895794,accel,3,""Acceleration at 10:33pm, +0.2g"""
