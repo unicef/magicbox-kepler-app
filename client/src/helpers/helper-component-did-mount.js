@@ -1,11 +1,13 @@
 module.exports = {
   fetch_default_user_map: (addDataToMap, props) => {
-    let fetch_defaut_path = '/api/default/'
+    let fetch_defaut_path = '/api/maps/default/'
+    let user = 'default'
     if (props.user) {
       if (props.user.displayableId) {
-       fetch_defaut_path += props.user.displayableId
+       user = props.user.displayableId
       }
     }
+    fetch_defaut_path += user
     fetch(fetch_defaut_path)
       .then(res => res.json()) // transform the data into json
       .then(obj => {
