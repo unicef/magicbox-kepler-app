@@ -8,9 +8,9 @@ services:
     ports:
     - 8080:8080
     links:
-    - api
+    - server
 
-  api:
+  server:
     build: ./server
     volumes:
     - ./server:/opt/app
