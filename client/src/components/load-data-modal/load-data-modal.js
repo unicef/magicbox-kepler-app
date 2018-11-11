@@ -19,6 +19,7 @@
 // THE SOFTWARE.
 
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import classnames from 'classnames';
 import styled, { ThemeProvider } from 'styled-components';
 import PropTypes from 'prop-types';
@@ -28,9 +29,9 @@ import { themeLT } from 'kepler.gl/styles';
 import { Icons } from 'kepler.gl/components/';
 import shortid from 'shortid';
 import { updateVisData, addDataToMap } from 'kepler.gl/actions';
-
+import * as topojson from 'topojson-client';
 import { LOADING_METHODS, QUERY_TYPES, ASSETS_URL } from '../../constants/default-settings';
-
+import Processors from 'kepler.gl/processors';
 import config from '../../../config';
 import CountryShapefileSelect from './country-shapefile-select';
 import SampleMapGallery from './sample-map-gallery';
@@ -171,7 +172,7 @@ const getSelectedValue = (menu) => {
   return menu.options[menu.selectedIndex].value;
 };
 
-const client_url = location.origin; // will be something like http://localhost:8080
+const client_url = window.location.origin; // will be something like http://localhost:8080
 const server_url = client_url.substr(0, client_url.length - 4) + config.server_port; // change that to http://localhost:5000
 
 
@@ -189,11 +190,9 @@ class LoadDataModal extends Component {
   }
 
   handleCountryChange = (event) => {
-    let ddMenu = event.target;
-    let code = getSelectedValue(ddMenu);
+    let code = event.target.value;
     if (code !== "") {
       let country = this.state.countryAndAdminList.find(e => e.countryCode === code);
-      // console.log('aha country changed', country);
       let maxAdmin = parseInt(country.adminLevel, 10);
       let adminList = generateAdminLevels(maxAdmin);
       this.setState({
@@ -210,8 +209,7 @@ class LoadDataModal extends Component {
   }
 
   handleAdminChange = (event) => {
-    let ddMenu = event.target;
-    let admin = getSelectedValue(ddMenu);
+    let admin = event.target.value;
     if (admin !== "") this.setState({ submitReady: true });
     else this.setState({ submitReady: false });
   }
@@ -224,11 +222,28 @@ class LoadDataModal extends Component {
     let countryCode = getSelectedValue(countryDD);
     let adminLevel = getSelectedValue(adminDD);
     let blobName = `${countryCode}_${adminLevel}.json`;
-    console.log('blobName', blobName);
+    fetch(`${server_url}/api/shapefiles/countries/${countryCode}/${adminLevel}`)
+    .then(res => res.json())
+    .then(t => {
+      let geojson = topojson.feature(t, t.objects.collection);
+      let dataSets = {
+        datasets: [
+          {
+            info: {
+              id: `shapefile-${countryCode}-${adminLevel}`,
+              label: `Shapefile for ${countryCode} L-${adminLevel}`
+            },
+            data: Processors.processGeojson(geojson)
+          }
+        ]
+      };
+      this.props.dispatch(addDataToMap(dataSets));
+    })
+    .catch(err => console.log(err));
   }
 
   componentDidMount() {
-    fetch(server_url + '/api/countries')
+    fetch(server_url + '/api/shapefiles/countries')
       .then(res => res.json())
       .then(result => {
         let resultWithIds = result.map(entry => {
@@ -256,7 +271,6 @@ class LoadDataModal extends Component {
 
   render() {
     const { loadingMethod, currentOption, previousMethod, sampleMaps, isMapLoading } = this.props;
-    // console.log(`isMapLoading: ${isMapLoading}, loadingMethod.id: ${loadingMethod.id}, state: ${this.state.countryAndAdminList.length}`)
     return (
       <ThemeProvider theme={themeLT}>
         <div className="load-data-modal">
@@ -309,7 +323,7 @@ class LoadDataModal extends Component {
       </ThemeProvider>
     );
   }
-}
+};
 
 const Tabs = ({ method, toggleMethod }) => (
   <ModalTab className="load-data-modal__tab">
@@ -347,4 +361,10 @@ const TrySampleData = ({ onClick }) => (
 
 LoadDataModal.propTypes = propTypes;
 
-export default LoadDataModal;
+const mapStateToProps = state => state;
+const dispatchToProps = dispatch => ({ dispatch });
+
+export default connect(
+  mapStateToProps,
+  dispatchToProps
+)(LoadDataModal);

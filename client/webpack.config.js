@@ -25,15 +25,34 @@
 /* eslint-disable prefer-destructuring */
 const resolve = require('path').resolve;
 const join = require('path').join;
-const webpack = require('webpack');
 /* eslint-enable prefer-destructuring */
+const webpack = require('webpack');
+
+const Dotenv = require('dotenv-webpack');
+const config = require('./config');
 
 const CONFIG = {
   // bundle app.js and everything it imports, recursively.
   entry: {
     app: resolve('./src/main.js'),
   },
-
+  // this will output the production bundle to the dist folder
+  // ideally, this will be hosted from a CDN or a static file server (nginx, apache)
+  // for production builds, the index.html will need to be configured to point to
+  // the production bundle
+  output: {
+    path: resolve(__dirname, 'dist'),
+    filename: 'bundle.js',
+  },
+  devServer: {
+    // redirect api calls to backend server
+    proxy: {
+      '/api': {
+        target: `http://${config.proxy_name}:5000`,
+        secure: false,
+      },
+    },
+  },
   devtool: 'source-map',
 
   resolve: {
@@ -44,7 +63,7 @@ const CONFIG = {
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.js|.jsx$/,
         loader: 'babel-loader',
         include: join(__dirname, 'src'),
         exclude: [/node_modules/],
@@ -64,6 +83,7 @@ const CONFIG = {
 
   // Optional: Enables reading mapbox token from environment variable
   plugins: [
+    new Dotenv(),
     new webpack.EnvironmentPlugin(['MapboxAccessToken']),
   ],
 };
