@@ -5,7 +5,8 @@ let azureKey = config.azure.key1;
 let storageAccount = config.azure.storageAccount;
 let containerName = config.azure.containerName;
 let blobSvc = azure.createBlobService(storageAccount, azureKey);
-const helperHighestAdminLevel = require('../helpers/helper-highest-admin')
+const helper = require('../helpers/helper-index')
+
 module.exports = {
   /**
     * Retrieves list of blobs in an array
@@ -26,7 +27,7 @@ module.exports = {
             return countryList;
           }, []);
           return resolve(
-            helperHighestAdminLevel.minifyCountryList(countryList)
+            helper.minifyCountryList(countryList)
           );
         }
       });
@@ -47,6 +48,5 @@ module.exports = {
         }
       });
     });
-  },
-
+  }
 }

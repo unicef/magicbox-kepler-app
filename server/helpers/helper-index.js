@@ -10,5 +10,5 @@ module.exports = {
         return entry.countryCode !== list[index + 1].countryCode;
       }
     })
-  }
+  },
 }
