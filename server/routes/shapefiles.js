@@ -2,16 +2,16 @@ const express = require('express');
 // eslint-disable-next-line new-cap
 const router = express.Router();
 const blobFetcher = require('../azure/blob-fetcher');
+const helperShapefile = require('../helpers/helper-shapefile')
+
 router.get('/countries', (req, res) => {
-  blobFetcher.listBlobs()
+  helperShapefile.listCountries()
     .then(result => res.send(result));
 })
 
 router.get('/countries/:countryCode/:adminLevel', (req, res) => {
-  let blobName = req.params.countryCode + "_" + req.params.adminLevel + ".json";
-  console.log(blobName);
-  blobFetcher.saveBlob(blobName)
-    .then(res => JSON.parse(res)) // transform from text string to json object
+  let fileName = req.params.countryCode + "_" + req.params.adminLevel + ".json";
+  helperShapefile.sendCountryShapefile(fileName)
     .then(result => res.send(result));
 })
 
