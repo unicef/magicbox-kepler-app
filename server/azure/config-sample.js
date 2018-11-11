@@ -12,7 +12,7 @@ module.exports = {
   },
   azure: {
     storageAccount: 'topojson',
-    key1: 'storageKey',
+    key1: 'asdf', // Azure storage key
     containerName: 'gadm2-8'
   }
 }
