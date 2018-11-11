@@ -5,17 +5,6 @@ const default_map = require('../public/users/default/config')
 const jsonfile = require('jsonfile')
 const helper = require('../helpers/helper-user-map')
 
-// router.get('/default', function(req, res) {
-//   helper.check_user('default')
-//   .then(obj => {
-//     res.send(obj)
-//   })
-//   .catch(err => {
-//     console.log(err)
-//     res.send(default_map)
-//   })
-// });
-
 router.get('/default/:email', function(req, res) {
   if (req.params) {
     helper.check_user(req.params.email)
