@@ -6,11 +6,17 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "lint": "node_modules/.bin/eslint .",
     "start": "node app.js"
   },
   "dependencies": {
     "azure-storage": "^2.10.2",
     "body-parser": "^1.18.3",
+    "eslint": "^5.9.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.2",
+    "eslint-plugin-react": "^7.11.1",
     "express": "^4.16.2",
     "jsonfile": "^5.0.0"
   }
