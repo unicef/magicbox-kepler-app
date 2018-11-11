@@ -11,7 +11,7 @@ module.exports = {
     password: 'fill yours here'
   },
   azure: {
-    storageAccount: 'storage_account_name',
+    storageAccount: 'topojson',
     key1: 'storage_key',
     containerName: 'gadm2-8'
   }
