@@ -21,8 +21,6 @@
 
 ### Otherwise install and run
 
-Go to your terminal / command-line interface and type in the following lines. Note that you will need to have an Azure username and password on hand and obtain the Azure storage account name and access key to be able to fetch country shapefiles.
-
 - Run the backend:
 ```
 cd server
@@ -42,10 +40,11 @@ export MapboxAccessToken=<your_mapbox_token>
 `cd client`
 - In webpack-config.js, find proxy and change http://server:5000 to http://localhost:5000
 
-`
+```
 yarn --ignore-engines
 yarn start
-`
+````
+
 ### Developer Background
 
 This demo is built on [Kepler.gl](http://kepler.gl/). Here are a couple sources for learning how to work with Kepler:
