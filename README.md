@@ -11,12 +11,12 @@
 
 ![screenshot](screenshot.png)
 
+### Run
+`bash setup.sh`
+
 ### Docker
 
-- cp ./client/.env-sample ./client/.env
-- add MapBox token to ./clien/.env
-- cp ./server/config-sample.json ./server/config.json
-- cp ./client/config-sample.js ./client/config.js
+- bash setup.sh
 - docker-compose up
 
 ### Otherwise install and run
@@ -26,9 +26,7 @@ Go to your terminal / command-line interface and type in the following lines. No
 - Run the backend:
 ```
 cd server
-cp config-sample.json config.json
-cp azure/config-sample.js azure/config.js # and fill in the correct credentials
-yarn install
+npm install
 yarn start
 ```
 - Go back to the root directory:
@@ -39,13 +37,15 @@ cd ..
 ```
 export MapboxAccessToken=<your_mapbox_token>
 ```
-- Run the kepler.gl client:
-```
-cd client
-cp config-sample.js config.js
+#### Run the kepler.gl client:
+
+`cd client`
+- In webpack-config.js, find proxy and change http://server:5000 to http://localhost:5000
+
+`
 yarn --ignore-engines
 yarn start
-```
+`
 ### Developer Background
 
 This demo is built on [Kepler.gl](http://kepler.gl/). Here are a couple sources for learning how to work with Kepler:
