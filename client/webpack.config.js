@@ -48,7 +48,7 @@ const CONFIG = {
     // redirect api calls to backend server
     proxy: {
       '/api': {
-        target: `http://localhost:5000`,
+        target: `http://server:5000`,
         secure: false,
       },
     },
