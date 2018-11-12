@@ -5,7 +5,7 @@
 
 ##### This project has:
 - an express backend that serves a default config.json to kepler-demo.
-- the keplergl client has a "Save Config" button that replaces old default map with current map.
+- a "Save Config" button that replaces old default map with current map.
 
 ###### Below are two sample schools from Kyrgyzstan, colored according to their level of connectivity to the internet.
 
