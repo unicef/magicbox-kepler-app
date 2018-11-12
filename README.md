@@ -12,11 +12,11 @@
 ![screenshot](screenshot.png)
 
 ### Run
-`bash setup.sh`
-- Add mapbox access token to node env:
+
 ```
 export MapboxAccessToken=<your_mapbox_token>
-```
+bash setup.sh
+````
 ### Docker
 
 - bash setup.sh
