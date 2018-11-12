@@ -1,3 +1,3 @@
 module.exports = {
-  default_path: './public/users/'
-}
+  default_path: './public/users/',
+};
