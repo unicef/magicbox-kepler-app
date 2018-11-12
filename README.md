@@ -1,6 +1,8 @@
 # MagicBox Kepler Demo
 
-##### Chat with us on our [gitter channel](https://gitter.im/unicef-innovation-dev/Lobby)!
+[![Chat on Gitter](https://badges.gitter.im/unicef-innovation-dev/Lobby.png)](https://gitter.im/unicef-innovation-dev/Lobby)
+[![Maintainability](https://api.codeclimate.com/v1/badges/0ebed2a0a46f9976eaff/maintainability)](https://codeclimate.com/github/unicef/magicbox-kepler-demo/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/0ebed2a0a46f9976eaff/test_coverage)](https://codeclimate.com/github/unicef/magicbox-kepler-demo/test_coverage)
 
 
 ##### This project has:
@@ -56,4 +58,3 @@ This demo is built on [Kepler.gl](http://kepler.gl/). Here are a couple sources 
 * [Vis Academy Tutorials](http://vis.academy/#/kepler.gl/setup)
 
 Kepler itself is built on [Redux](https://redux.js.org/). An understanding of Redux is helpful for any changes to the UI. Redux has a [basic tutorial](https://redux.js.org/basics) that covers key concepts.
->>>>>>> ede695c192d5a5220712c6e6936fa17e773fbd7d
