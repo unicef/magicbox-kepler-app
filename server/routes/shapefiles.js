@@ -7,12 +7,12 @@ const helperShapefile = require('../helpers/helper-shapefile')
 router.get('/countries', (req, res) => {
   helperShapefileCountry.listCountries()
     .then(result => res.send(result));
-})
+});
 
 router.get('/countries/:countryCode/:adminLevel', (req, res) => {
-  let fileName = req.params.countryCode + "_" + req.params.adminLevel + ".json";
+  const fileName = `${req.params.countryCode}_${req.params.adminLevel}.json`;
   helperShapefile.sendCountryShapefile(fileName)
     .then(result => res.send(result));
-})
+});
 
 module.exports = router;
