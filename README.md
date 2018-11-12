@@ -13,7 +13,10 @@
 
 ### Run
 `bash setup.sh`
-
+- Add mapbox access token to node env:
+```
+export MapboxAccessToken=<your_mapbox_token>
+```
 ### Docker
 
 - bash setup.sh
@@ -31,10 +34,7 @@ yarn start
 ```
 cd ..
 ```
-- Add mapbox access token to node env:
-```
-export MapboxAccessToken=<your_mapbox_token>
-```
+
 #### Run the kepler.gl client:
 
 `cd client`
