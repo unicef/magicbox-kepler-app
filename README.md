@@ -19,8 +19,10 @@ bash setup.sh
 ````
 ### Docker
 
-- bash setup.sh
-- docker-compose up
+````
+bash setup.sh
+docker-compose up
+````
 
 ### Otherwise install and run
 
