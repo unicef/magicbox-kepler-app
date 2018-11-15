@@ -3,8 +3,8 @@ module.exports = {
     let fetch_defaut_path = '/api/maps/default/'
     let user = 'default'
     if (props.user) {
-      if (props.user.displayableId) {
-       user = props.user.displayableId
+      if (props.idToken.email) {
+       user = props.idToken.email
       }
     }
     fetch_defaut_path += user
