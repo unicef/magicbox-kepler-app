@@ -15,38 +15,13 @@
 
 ### Docker
 
-- cp ./client/.env-sample ./client/.env
-- add MapBox token to ./clien/.env
-- cp ./server/config-sample.json ./server/config.json
-- cp ./client/config-sample.js ./client/config.js
-- docker-compose up
-
-### Otherwise install and run
-
-Go to your terminal / command-line interface and type in the following lines:
-
-- Run the backend
-```
-cd server
-cp config-sample.json config.json
-yarn install
-yarn start
-```
-- Go back to the root directory
-```
-cd ..
-```
-- Add mapbox access token to node env
-```
+````
+bash setup.sh
 export MapboxAccessToken=<your_mapbox_token>
-```
-- Run the kepler.gl client
-```
-cd client
-cp config-sample.js config.js
-yarn --ignore-engines
-yarn start
-```
+docker-compose up
+````
+
+
 ### Developer Background
 
 This demo is built on [Kepler.gl](http://kepler.gl/). Here are a couple sources for learning how to work with Kepler:
