@@ -2,7 +2,7 @@ module.exports = {
   fetch_default_user_map: (addDataToMap, props) => {
     let fetch_defaut_path = '/api/maps/default/'
     let user = 'default'
-    if (props.user) {
+    if (props.idToken) {
       if (props.idToken.email) {
        user = props.idToken.email
       }
