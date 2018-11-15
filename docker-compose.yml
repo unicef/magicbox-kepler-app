@@ -4,7 +4,7 @@ services:
     build: ./client
     volumes:
     - ./client:/opt/app
-    - ./opt/app/node_modules
+    - /opt/app/node_modules
     ports:
     - 8080:8080
     links:
@@ -14,6 +14,6 @@ services:
     build: ./server
     volumes:
     - ./server:/opt/app
-    - ./opt/app/node_modules
+    - /opt/app/node_modules
     ports:
     - 5000

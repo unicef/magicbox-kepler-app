@@ -203,7 +203,7 @@ class App extends Component {
   }
 
   exportMapConfig = () => {
-    let email = this.props.user ? this.props.user.displayableId : 'default'
+    let email = this.props.idToken ? this.props.idToken.email : 'default'
     // create the config object
     const mapConfig = this.getMapConfig();
     const url = '/api/maps/save/' + email;
