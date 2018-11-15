@@ -11,41 +11,15 @@
 
 ![screenshot](screenshot.png)
 
-### Run
 
-```
-export MapboxAccessToken=<your_mapbox_token>
-bash setup.sh
-````
 ### Docker
 
 ````
 bash setup.sh
+export MapboxAccessToken=<your_mapbox_token>
 docker-compose up
 ````
 
-### Otherwise install and run
-
-- Run the backend:
-```
-cd server
-npm install
-yarn start
-```
-- Go back to the root directory:
-```
-cd ..
-```
-
-#### Run the kepler.gl client:
-
-`cd client`
-- In webpack-config.js, find proxy and change http://server:5000 to http://localhost:5000
-
-```
-yarn --ignore-engines
-yarn start
-````
 
 ### Developer Background
 
