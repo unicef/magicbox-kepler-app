@@ -237,7 +237,7 @@ class App extends Component {
           }}
         >
           <div className='overlay-buttons'>
-            <Button onClick={this.exportMapConfig}>Save Config</Button>
+            <Button saveable={saveable} onClick={this.exportMapConfig}>Save Config</Button>
           </div>
           <KeplerGl
             mapboxApiAccessToken={MAPBOX_TOKEN}
