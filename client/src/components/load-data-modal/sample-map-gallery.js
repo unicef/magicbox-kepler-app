@@ -21,15 +21,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import {Icons} from 'kepler.gl/components';
-import {format} from 'd3-format';
+import { format } from 'd3-format';
 
 const numFormat = format(',');
 
 const propTypes = {
   sampleData: PropTypes.object.isRequired,
-  onLoadSampleData: PropTypes.func.isRequired,
-  back: PropTypes.func.isRequired
+  onLoadSampleData: PropTypes.func.isRequired
 };
 
 const StyledSampleGallery = styled.div`
@@ -46,7 +44,6 @@ const StyledSampleMap = styled.div`
   width: 30%;
   max-width: 480px;
   margin-bottom: 50px;
-
   .sample-map__image {
     border-radius: 4px;
     overflow: hidden;
@@ -55,7 +52,6 @@ const StyledSampleMap = styled.div`
     transition: opacity 0.4s ease;
     position: relative;
     line-height: 0;
-
     img {
       max-width: 100%;
     }
@@ -64,38 +60,16 @@ const StyledSampleMap = styled.div`
       opacity: 1;
     }
   }
-
   .sample-map__size {
     font-size: 12px;
     font-weight: 400;
     line-height: 24px;
   }
-
   :hover {
     .sample-map__image__caption {
       opacity: 0.8;
       transition: opacity 0.4s ease;
     }
-  }
-`;
-
-const BackLink = styled.div`
-  display: flex;
-  font-size: 14px;
-  align-items: center;
-  color: ${props => props.theme.titleColorLT};
-  cursor: pointer;
-  margin-bottom: 40px;
-
-  :hover {
-    font-weight: 500;
-  }
-
-  span {
-    white-space: nowrap;
-  }
-  svg {
-    margin-right: 10px;
   }
 `;
 
@@ -108,7 +82,7 @@ const StyledImageCaption = styled.div`
   opacity: 0;
 `;
 
-const SampleMap = ({sample, onClick}) => (
+const SampleMap = ({ sample, onClick }) => (
   <StyledSampleMap className="sample-map-gallery__item">
     <div className="sample-map">
       <div className="sample-map__image" onClick={onClick}>
@@ -123,12 +97,8 @@ const SampleMap = ({sample, onClick}) => (
   </StyledSampleMap>
 );
 
-const SampleMapGallery = ({sampleData, sampleMaps, onLoadSampleData, back}) => (
+const SampleMapGallery = ({ sampleMaps, onLoadSampleData }) => (
   <div className="sample-data-modal">
-    <BackLink onClick={back}>
-      <Icons.LeftArrow height="12px" />
-      <span>Back</span>
-    </BackLink>
     <StyledSampleGallery className="sample-map-gallery">
       {sampleMaps.map(sp => (
         <SampleMap

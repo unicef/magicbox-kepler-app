@@ -18,11 +18,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import {push} from 'react-router-redux';
-import {text as requestText, json as requestJson} from 'd3-request';
-import {toggleModal} from 'kepler.gl/actions';
-import {console as Console} from 'global/window';
-import {MAP_CONFIG_URL} from './constants/sample-maps';
+import { push } from 'react-router-redux';
+import { text as requestText, json as requestJson } from 'd3-request';
+import { toggleModal } from 'kepler.gl/actions';
+import { console as Console } from 'global/window';
+import { MAP_CONFIG_URL } from './constants/sample-maps';
 
 // CONSTANTS
 export const INIT = 'INIT';
@@ -64,7 +64,7 @@ export function setLoadingMapStatus(isMapLoading) {
 
 export function loadSampleMap(sample) {
   return (dispatch, getState) => {
-    const {routing} = getState();
+    const { routing } = getState();
     dispatch(push(`/demo/${sample.id}${routing.locationBeforeTransitions.search}`));
     dispatch(loadRemoteMap(sample));
     dispatch(setLoadingMapStatus(true));
@@ -110,12 +110,11 @@ function loadRemoteMap(sample) {
  * map sample configurations we are going to load the actual map data if it exists
  * @returns {function(*)}
  */
-export function loadSampleConfigurations(sampleMapId = null) {
+export function loadSampleConfigurations(sampleMapsUrl, sampleMapId = null) {
   return (dispatch) => {
-    requestJson(MAP_CONFIG_URL, (error, samples) => {
-      if (error) {
-        Console.warn(`Error loading sample configuration file ${MAP_CONFIG_URL}`);
-      } else {
+    fetch(sampleMapsUrl)
+      .then(res => res.json())
+      .then(samples => {
         dispatch(loadMapSampleFile(samples));
         // Load the specified map
         if (sampleMapId) {
@@ -125,7 +124,22 @@ export function loadSampleConfigurations(sampleMapId = null) {
             dispatch(setLoadingMapStatus(true));
           }
         }
-      }
-    });
+      }).catch(err => Console.warn(`Error loading sample configuration file ${sampleMapsUrl}`))
+
+    // requestJson(MAP_CONFIG_URL, (error, samples) => {
+    //   if (error) {
+    //     Console.warn(`Error loading sample configuration file ${MAP_CONFIG_URL}`);
+    //   } else {
+    //     dispatch(loadMapSampleFile(samples));
+    //     // Load the specified map
+    //     if (sampleMapId) {
+    //       const map = samples.find(s => s.id === sampleMapId);
+    //       if (map) {
+    //         dispatch(loadRemoteMap(map));
+    //         dispatch(setLoadingMapStatus(true));
+    //       }
+    //     }
+    //   }
+    // });
   }
 }

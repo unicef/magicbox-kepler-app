@@ -17,12 +17,12 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+import React, {Component} from 'react';
 
-import React, { Component } from 'react';
-import config from '../../config';
-export default class CustomPanelHeader extends React.Component {
+let customDataTableStyle = {
+  fontSize: '24px',
+  padding: '20px',
+  textAlign: 'center'
+};
 
-    render() {
-        return (<img src={`./../public/images/${config.custom_header_path}`}/>)
-    }
-}
+export const CustomDataTableModal = () => (<div style={customDataTableStyle}>This data cannot be viewed in a table</div>);
