@@ -47,7 +47,9 @@ const client_url = window.location.origin; // will be something like http://loca
 const server_url = client_url.substr(0, client_url.length-4) + config.server_port; // change from client_url to http://localhost:5000
 // const server_url = 'http://0.0.0.0:' + config.server_port; // change from client_url to http://localhost:500
 
-const countrycode = config.country_code;
+const shareable = config.can_share;
+const saveable = config.can_save;
+
 let KeplerGl;
 if (config.custom_header_path) {
   const CustomPanelHeaderFactory = () => CustomPanelHeader;
@@ -64,7 +66,7 @@ if (config.custom_header_path) {
   ]);
 }
 
-const MAPBOX_TOKEN = process.env.MapboxAccessToken; // eslint-disable-line
+const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN; // eslint-disable-line
 
 const GlobalStyleDiv = styled.div`
   font-family: ff-clan-web-pro, 'Helvetica Neue', Helvetica, sans-serif;
@@ -203,28 +205,28 @@ class App extends Component {
   }
 
   exportMapConfig = () => {
-    let email = this.props.idToken ? this.props.idToken.email : 'default'
-    // create the config object
-    const mapConfig = this.getMapConfig();
-    const url = '/api/maps/save/' + email;
-    // Sending and receiving data in JSON format using POST method
-    fetch(url, {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(mapConfig)
-    })
-      .then(response => response.json())
-      .then(body => alert(body.message));
-    // // save it as a json file
-    // downloadJsonFile(mapConfig, 'kepler.gl.json');
+    if (saveable) {
+      let email = this.props.idToken ? this.props.idToken.email : 'default'
+      // create the config object
+      const mapConfig = this.getMapConfig();
+      const url = '/api/maps/save/' + email;
+      // Sending and receiving data in JSON format using POST method
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(mapConfig)
+      })
+        .then(response => response.json())
+        .then(body => alert(body.message));
+      // // save it as a json file
+    }// downloadJsonFile(mapConfig, 'kepler.gl.json');
   };
 
   render() {
     const { width, height } = this.state;
-    const saveable = config.can_save;
     return (
       <GlobalStyleDiv>
         <div
