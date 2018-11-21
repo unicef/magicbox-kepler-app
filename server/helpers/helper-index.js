@@ -6,9 +6,8 @@ module.exports = {
     return list.filter((entry, index) => {
       if (index === list.length - 1) {
         return list[index].countryCode;
-      } else {
-        return entry.countryCode !== list[index + 1].countryCode;
       }
+      return entry.countryCode !== list[index + 1].countryCode;
     })
   },
 }

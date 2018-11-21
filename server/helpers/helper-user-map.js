@@ -9,7 +9,7 @@ function create_user_dir(email) {
   return new Promise((resolve, reject) => {
     mkdir(path + email)
       .then(resolve)
-      .catch((err) => { if (err.code != 'EEXIST') throw err; });
+      .catch((err) => { if (err.code !== 'EEXIST') throw err; });
   });
 }
 
@@ -26,7 +26,7 @@ module.exports = {
   check_user: email => new Promise((resolve, reject) => {
     // Check user has directory
     fs.stat(path + email, (err, stat) => {
-      if (err == null) {
+      if (err === null) {
         // User has dir
         get_user_map(email)
           .then(resolve)

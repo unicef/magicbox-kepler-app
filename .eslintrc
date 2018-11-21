@@ -19,6 +19,7 @@
     "react"
   ],
   "rules": {
+    "no-console": 1,
     "valid-jsdoc": 0,
     "no-var": 0,
     "max-len": 0,
@@ -37,5 +38,6 @@
     "camelcase": 0,
     "consistent-return": 0,
     "comma-dangle": 1
-  }
+  },
+  "globals": { "fetch": false, "console": false, "process": false }
 }

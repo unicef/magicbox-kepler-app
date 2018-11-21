@@ -42,11 +42,6 @@ import SaveButton from './components/save-button';
 import config from '../config';
 // import downloadJsonFile from "./file-download";
 import helper_component_did_mount from './helpers/helper-component-did-mount'
-
-const client_url = window.location.origin; // will be something like http://localhost:8080
-const server_url = client_url.substr(0, client_url.length-4) + config.server_port; // change from client_url to http://localhost:5000
-// const server_url = 'http://0.0.0.0:' + config.server_port; // change from client_url to http://localhost:500
-
 // shareable not used yet
 // const shareable = config.can_share;
 const saveable = config.can_save;
@@ -94,9 +89,7 @@ class App extends Component {
     // if we pass an id as part of the url
     // we try to fetch along map configurations
     const { params: { id: sampleMapId } = {} } = this.props;
-    // const {user} = this.props;
-    const user = config.user;
-    //const sampleMapsUrl = `${server_url}/api/${user}/samples`;
+
     const sampleMapsUrl = '/api/samples';
     this.props.dispatch(loadSampleConfigurations(sampleMapsUrl, sampleMapId));
     window.addEventListener('resize', this._onResize);
@@ -207,7 +200,7 @@ class App extends Component {
 
   exportMapConfig = () => {
     if (saveable) {
-      let email = this.props.idToken ? this.props.idToken.email : 'default'
+      const email = this.props.idToken ? this.props.idToken.email : 'default'
       // create the config object
       const mapConfig = this.getMapConfig();
       const url = '/api/maps/save/' + email;
