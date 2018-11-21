@@ -38,7 +38,7 @@ import {CustomDataTableModal} from './factories/custom-data-table-modal';
 import {PanelHeaderFactory} from 'kepler.gl/components';
 import {DataTableModalFactory} from 'kepler.gl/components';
 import KeplerGlSchema from 'kepler.gl/schemas';
-import Button from './components/button';
+import SaveButton from './components/save-button';
 import config from '../config';
 // import downloadJsonFile from "./file-download";
 import helper_component_did_mount from './helpers/helper-component-did-mount'
@@ -238,7 +238,8 @@ class App extends Component {
             marginTop: 0
           }}
         >
-          <button onClick={this.exportMapConfig}>Save Config</button>
+          <SaveButton saveable={saveable} onClick={this.exportMapConfig} />
+          
           <KeplerGl
             mapboxApiAccessToken={MAPBOX_TOKEN}
             id="map"
