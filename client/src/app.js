@@ -47,7 +47,8 @@ const client_url = window.location.origin; // will be something like http://loca
 const server_url = client_url.substr(0, client_url.length-4) + config.server_port; // change from client_url to http://localhost:5000
 // const server_url = 'http://0.0.0.0:' + config.server_port; // change from client_url to http://localhost:500
 
-const shareable = config.can_share;
+// shareable not used yet
+// const shareable = config.can_share;
 const saveable = config.can_save;
 
 let KeplerGl;
@@ -239,7 +240,7 @@ class App extends Component {
           }}
         >
           <SaveButton saveable={saveable} onClick={this.exportMapConfig} />
-          
+
           <KeplerGl
             mapboxApiAccessToken={MAPBOX_TOKEN}
             id="map"
