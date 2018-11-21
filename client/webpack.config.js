@@ -29,7 +29,6 @@ const join = require('path').join;
 const webpack = require('webpack');
 
 const Dotenv = require('dotenv-webpack');
-const config = require('./config');
 
 const CONFIG = {
   // bundle app.js and everything it imports, recursively.

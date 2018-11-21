@@ -5,8 +5,6 @@ const SaveButton = ({saveable, onClick, children}) => {
       return (
         <button className='saveConfigButton' onClick={onClick}>Save Config</button>
       );
-    } else {
-      return (<span></span>)
     }
 }
 export default SaveButton;

@@ -1,4 +1,5 @@
 const fs = require('fs')
+const jsonfile = require('jsonfile')
 let config = require('../azure/config');
 let has_creds = config.azure.key1.match(/\d/)
 const blobFetcher = require('../azure/blob-fetcher');

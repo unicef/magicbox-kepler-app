@@ -15,7 +15,7 @@ router.get('/default/:email', (req, res) => {
           res.send(default_map);
         }
       })
-      .catch((err) => {
+      .catch(err => {
         console.log(err);
         res.send(default_map);
       });

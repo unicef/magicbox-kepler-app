@@ -18,13 +18,13 @@ module.exports = {
       if (err) {
         reject(err);
       } else {
-        const countryList = data.entries.reduce((countryList, entry) => {
+        const countryList = data.entries.reduce((list, entry) => {
           const codeAndLevel = { // each entry is a string like this "ABC_X.json" with ABC the country code and X the admin level
             countryCode: entry.name.substr(0, 3),
             adminLevel: entry.name.substr(4, 1),
           };
-          countryList.push(codeAndLevel);
-          return countryList;
+          list.push(codeAndLevel);
+          return list;
         }, []);
         return resolve(
           helper.minifyCountryList(countryList)
