@@ -214,6 +214,7 @@ class App extends Component {
         body: JSON.stringify(mapConfig)
       })
         .then(response => response.json())
+        /* eslint-disable */
         .then(body => alert(body.message));
       // // save it as a json file
     }// downloadJsonFile(mapConfig, 'kepler.gl.json');

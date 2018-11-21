@@ -4,6 +4,7 @@
   "description": "##### Chat with us on our [gitter channel](https://gitter.im/unicef-innovation-dev/Lobby)!",
   "main": "index.js",
   "scripts": {
+    "lint": "./node_modules/.bin/eslint '**/*.{js,jsx}' --quiet",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
