@@ -26,7 +26,7 @@ import PropTypes from 'prop-types';
 import { FileUpload } from 'kepler.gl/components';
 import { LoadingSpinner } from 'kepler.gl/components';
 import { themeLT } from 'kepler.gl/styles';
-import { Icons } from 'kepler.gl/components/';
+import { Icons } from 'kepler.gl/components';
 import shortid from 'shortid';
 import { updateVisData, addDataToMap } from 'kepler.gl/actions';
 import * as topojson from 'topojson-client';
