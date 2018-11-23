@@ -1,6 +1,6 @@
 module.exports = {
   server_port: 5000,
-  can_save: false,
+  can_save: true,
   can_share: false,
   custom_header_path: null,
   proxy_name: 'localhost',
