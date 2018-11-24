@@ -28,7 +28,7 @@ import { LoadingSpinner } from 'kepler.gl/components';
 import { themeLT } from 'kepler.gl/styles';
 import { Icons } from 'kepler.gl/components';
 import shortid from 'shortid';
-import { updateVisData, addDataToMap } from 'kepler.gl/actions';
+import { addDataToMap } from 'kepler.gl/actions';
 import * as topojson from 'topojson-client';
 import { LOADING_METHODS, QUERY_TYPES, ASSETS_URL } from '../../constants/default-settings';
 import Processors from 'kepler.gl/processors';
@@ -184,9 +184,11 @@ class LoadDataModal extends Component {
   state = {
     adminList: [],
     countryAndAdminList: [],
+    mobilityList: [],
     countrySelected: false,
     isShapefileListLoading: true,
-    submitReady: false
+    submitReady: false,
+    submitMobilityReady: false
   }
 
   handleCountryChange = (event) => {
@@ -212,6 +214,14 @@ class LoadDataModal extends Component {
     let admin = event.target.value;
     if (admin !== "") this.setState({ submitReady: true });
     else this.setState({ submitReady: false });
+  }
+
+  handleMobilityCountryChange = (event) => {
+    let code = event.target.value;
+    if (code !== "")
+      this.setState({ submitMobilityReady: true });
+    else
+      this.setState({ submitMobilityReady: false });
   }
 
   handleShapefileChoice = (event) => {
@@ -242,6 +252,29 @@ class LoadDataModal extends Component {
     .catch(err => console.log(err));
   }
 
+  handleMobilityChoice = (event) => {
+    event.preventDefault();
+    let form = event.target;
+    let countryDD = form.elements["mobility-country-select"];
+    let countryCode = getSelectedValue(countryDD);
+    fetch(`/api/mobility/countries/${countryCode}`)
+      .then(res => res.json())
+      .then(result => {
+        let dataSets = {
+          datasets: [
+            {
+              info: {
+                id: `mobility data ${countryCode}`,
+                label: `Mobility data for ${countryCode}`
+              },
+              data: Processors.processCsvData(result.data)
+            }
+          ]
+        };
+        this.props.dispatch(addDataToMap(dataSets));
+      }).catch(err => console.log(err));
+  }
+
   componentDidMount() {
     fetch('/api/shapefiles/countries')
       .then(res => res.json())
@@ -253,6 +286,22 @@ class LoadDataModal extends Component {
             id: shortid.generate()
           };
         });
+        this.setState({
+          countryAndAdminList: resultWithIds,
+          isShapefileListLoading: false
+        });
+      }).catch(err => console.log(err));
+
+    fetch('api/mobility/countries')
+      .then(res => res.json())
+      .then(result => {
+        let resultWithIds = result.map(entry => {
+          return {
+            ...entry,
+            countryName: shapefileHashEnglish[(entry.countryCode).toLowerCase()] || entry.countryCode,
+            id: shortid.generate()
+          };
+        });
         resultWithIds.sort((a, b) => {
           let codeA = a.countryName.toLowerCase();
           let codeB = b.countryName.toLowerCase();
@@ -260,10 +309,8 @@ class LoadDataModal extends Component {
           if (codeA < codeB) return -1;
           return 0;
         });
-        // console.log('sorted result', resultWithIds);
         this.setState({
-          countryAndAdminList: resultWithIds,
-          isShapefileListLoading: false
+          mobilityList: resultWithIds
         });
       }).catch(err => console.log(err));
   }
@@ -305,14 +352,19 @@ class LoadDataModal extends Component {
                           <LoadingSpinner />
                         </StyledSpinner>
                       ) : (
+
                           <CountryShapefileSelect
                             adminList={this.state.adminList}
                             countryList={this.state.countryAndAdminList}
+                            mobilityList={this.state.mobilityList}
                             onAdminChange={this.handleAdminChange}
                             onCountryChange={this.handleCountryChange}
+                            onMobilityCountryChange={this.handleMobilityCountryChange}
                             onShapefileSelected={this.handleShapefileChoice}
+                            onMobilitySelected={this.handleMobilityChoice}
                             showAdmins={this.state.countrySelected}
-                            submitReady={this.state.submitReady} />
+                            submitReady={this.state.submitReady}
+                            submitMobilityReady={this.state.submitMobilityReady} />
                         )}
                     </div>
                   </div>
