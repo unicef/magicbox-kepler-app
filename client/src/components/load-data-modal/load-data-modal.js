@@ -184,8 +184,11 @@ class LoadDataModal extends Component {
     countryAndAdminList: [],
     countrySelected: '',
     adminSelected: '',
+    mobilityList: [],
+    // countrySelected: false,
     isShapefileListLoading: true,
-    submitReady: false
+    submitReady: false,
+    submitMobilityReady: false
   }
 
   handleCountryChange = (event) => {
@@ -211,6 +214,14 @@ class LoadDataModal extends Component {
     let admin = event.target.value;
     if (admin !== "") this.setState({ submitReady: true, adminSelected: admin });
     else this.setState({ submitReady: false });
+  }
+
+  handleMobilityCountryChange = (event) => {
+    let code = event.target.value;
+    if (code !== "")
+      this.setState({ submitMobilityReady: true });
+    else
+      this.setState({ submitMobilityReady: false });
   }
 
   handleShapefileChoice = (event) => {
@@ -249,7 +260,34 @@ class LoadDataModal extends Component {
     .catch(err => console.log(err));
   }
 
-  fetchAvailableShapefileList = (path) => {
+  handleMobilityChoice = (event) => {
+    event.preventDefault();
+    let form = event.target;
+    let countryDD = form.elements["mobility-country-select"];
+    let countryCode = getSelectedValue(countryDD);
+    this.fetchSelectedMobilityData(countryCode);
+  }
+
+  fetchSelectedMobilityData = (countryCode) => {
+    fetch(`/api/mobility/countries/${countryCode}`)
+      .then(res => res.json())
+      .then(result => {
+        let dataSets = {
+          datasets: [
+            {
+              info: {
+                id: `mobility data ${countryCode}`,
+                label: `Mobility data for ${countryCode}`
+              },
+              data: Processors.processCsvData(result.data)
+            }
+          ]
+        };
+        this.props.dispatch(addDataToMap(dataSets));
+      }).catch(err => console.log(err));
+  }
+
+  fetchCountries = (path) => {
     fetch(path)
       .then(res => res.json())
       .then(result => {
@@ -261,16 +299,23 @@ class LoadDataModal extends Component {
           };
         });
         helper_alphabetize.alphabetize_list(resultWithIds, 'countryName')
-        this.setState({
-          countryAndAdminList: resultWithIds,
-          isShapefileListLoading: false
-        });
+        if (path === '/api/shapefiles/countries'){
+          this.setState({
+            countryAndAdminList: resultWithIds,
+            isShapefileListLoading: false
+          });
+        } else if (path === 'api/mobility/countries') {
+          this.setState({
+            mobilityList: resultWithIds
+          });
+        }
+
       }).catch(err => console.log(err));
   }
 
-
   componentDidMount() {
-    this.fetchAvailableShapefileList('/api/shapefiles/countries')
+    this.fetchCountries('/api/shapefiles/countries');
+    this.fetchCountries('/api/mobility/countries');
   }
 
   render() {
@@ -309,14 +354,19 @@ class LoadDataModal extends Component {
                           <LoadingSpinner />
                         </StyledSpinner>
                       ) : (
+
                           <CountryShapefileSelect
                             adminList={this.state.adminList}
                             countryList={this.state.countryAndAdminList}
+                            mobilityList={this.state.mobilityList}
                             onAdminChange={this.handleAdminChange}
                             onCountryChange={this.handleCountryChange}
+                            onMobilityCountryChange={this.handleMobilityCountryChange}
                             onShapefileSelected={this.handleShapefileChoice}
                             showAdmins={!!this.state.countrySelected}
-                            submitReady={this.state.submitReady} />
+                            submitReady={this.state.submitReady}
+                            onMobilitySelected={this.handleMobilityChoice}
+                            submitMobilityReady={this.state.submitMobilityReady} />
                         )}
                     </div>
                   </div>

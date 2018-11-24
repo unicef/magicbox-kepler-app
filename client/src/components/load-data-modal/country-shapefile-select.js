@@ -7,11 +7,15 @@ import shortid from 'shortid';
 const propTypes = {
   adminList: PropTypes.array.isRequired,
   countryList: PropTypes.array.isRequired,
+  mobilityList: PropTypes.array.isRequired,
   onAdminChange: PropTypes.func.isRequired,
   onCountryChange: PropTypes.func.isRequired,
+  onMobilityCountryChange: PropTypes.func.isRequired,
   onShapefileSelected: PropTypes.func.isRequired,
+  onMobilitySelected: PropTypes.func.isRequired,
   showAdmins: PropTypes.bool.isRequired,
   submitReady: PropTypes.bool.isRequired,
+  submitMobilityReady: PropTypes.bool.isRequired
 };
 
 const generateOptions = (items, type) => {
@@ -24,7 +28,7 @@ const generateOptions = (items, type) => {
   return options;
 };
 
-const CountryShapefileSelect = ({ adminList, countryList, onAdminChange, onCountryChange, onShapefileSelected, showAdmins, submitReady }) => (
+const CountryShapefileSelect = ({ adminList, countryList, mobilityList, onAdminChange, onCountryChange, onMobilityCountryChange, onShapefileSelected, onMobilitySelected, showAdmins, submitReady, submitMobilityReady }) => (
   <div className="country-shapefile-select">
     <form onSubmit={onShapefileSelected}>
       <h3>Add shapefiles:</h3>
@@ -42,6 +46,15 @@ const CountryShapefileSelect = ({ adminList, countryList, onAdminChange, onCount
         </div>
       }</div>
       <div>{submitReady && <input type="submit" value="Submit" />}</div>
+    </form>
+    <form onSubmit={onMobilitySelected}>
+      <h3>Add mobility data:</h3>
+      <p>Please select a country to access mobility:</p>
+      <label>Country: </label>
+      <select name="mobility-country-select" onChange={onMobilityCountryChange}>
+        {generateOptions(mobilityList, "country")}
+      </select>
+      <div>{submitMobilityReady && <input type="submit" value="Submit" />}</div>
     </form>
   </div>
 );
