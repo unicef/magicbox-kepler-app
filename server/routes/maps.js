@@ -40,7 +40,7 @@ router.route('/save/:token')
       });
     }
 
-    const tokenIsValidThenEmail = helper.checkTokenIsValid(config.params.token)
+    const tokenIsValidThenEmail = helper.checkTokenIsValid(req.params.token)
 
     if (!tokenIsValidThenEmail) {
       return res.send({
