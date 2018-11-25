@@ -25,6 +25,9 @@ function get_user_map(email) {
 
 module.exports = {
   checkTokenIsValid: (jwt) => {
+    if (jwt === 'default') {
+      return false
+    }
     const decodedToken = decode(jwt)
     const {email, idp, exp, iss} = decodedToken
 
