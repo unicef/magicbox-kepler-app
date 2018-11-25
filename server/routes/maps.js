@@ -8,7 +8,7 @@ const helper = require('../helpers/helper-user-map');
 
 router.get('/default/:token', (req, res) => {
   if (req.params) {
-    const tokenIsValidThenEmail = helper.checkTokenIsValid(config.params.token)
+    const tokenIsValidThenEmail = helper.checkTokenIsValid(req.params.token)
     if (tokenIsValidThenEmail) {
       helper.check_user(tokenIsValidThenEmail)
         .then((obj) => {
@@ -21,7 +21,7 @@ router.get('/default/:token', (req, res) => {
         .catch(err => {
           console.log(err);
           res.send(default_map);
-        });
+      });
     // User is not authorized
     } else {
       console.log("DEFAULT")
