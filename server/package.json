@@ -7,7 +7,8 @@
   "private": true,
   "scripts": {
     "lint": "node_modules/.bin/eslint .",
-    "start": "node app.js"
+    "start": "node app.js",
+    "test": "mocha --exit"
   },
   "dependencies": {
     "azure-storage": "^2.10.2",
@@ -20,5 +21,9 @@
     "express": "^4.16.2",
     "jsonfile": "^5.0.0",
     "jwt-decode": "^2.2.0"
+  },
+  "devDependencies": {
+    "chai-http": "^4.2.0",
+    "mocha": "^5.2.0"
   }
 }
