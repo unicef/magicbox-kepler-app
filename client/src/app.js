@@ -200,11 +200,13 @@ class App extends Component {
 
   exportMapConfig = () => {
     if (saveable) {
-      const email = this.props.idToken ? this.props.idToken.email : 'default'
+      let token = 'default'
+      if (this.props.user) {
+        token = this.props.user.tokenStr ? this.props.user.tokenStr : 'default'
+      }
       // create the config object
       const mapConfig = this.getMapConfig();
-      const url = '/api/maps/save/' + email;
-      // Sending and receiving data in JSON format using POST method
+      const url = '/api/maps/save/' + token;      // Sending and receiving data in JSON format using POST method
       fetch(url, {
         method: 'POST',
         headers: {
