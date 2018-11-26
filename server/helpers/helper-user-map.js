@@ -43,11 +43,8 @@ module.exports = {
     ) { return false}
     // Check email domain
     const emailDomain = email.split(/@/)[1]
-    if (
-      config.whiteListedDomains.filter(domain => {
-        return emailDomain === domain
-      }).lenth === -1
-    ) {
+
+    if (!config.whiteListedDomains[emailDomain]) {
       return false
     }
     return decodedToken.email
