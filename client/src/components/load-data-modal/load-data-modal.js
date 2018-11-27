@@ -298,18 +298,17 @@ class LoadDataModal extends Component {
             id: shortid.generate()
           };
         });
-        helper_alphabetize.alphabetize_list(resultWithIds, 'countryName')
+        helper_alphabetize.alphabetize_list(resultWithIds, 'countryName');
         if (path === '/api/shapefiles/countries'){
           this.setState({
             countryAndAdminList: resultWithIds,
             isShapefileListLoading: false
           });
-        } else if (path === 'api/mobility/countries') {
+        } else if (path === '/api/mobility/countries') {
           this.setState({
             mobilityList: resultWithIds
           });
         }
-
       }).catch(err => console.log(err));
   }
 
