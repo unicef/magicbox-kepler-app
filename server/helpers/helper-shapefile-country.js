@@ -7,7 +7,6 @@ const helperIndex = require('./helper-index')
 function prepareListCountries(files) {
   let countryList = files.reduce((ary, file) => {
       [countryCode, adminLevel] = file.replace('.json', '').split('_')
-      console.log(countryCode, adminLevel)
     ary.push(
       {
         countryCode: countryCode,
