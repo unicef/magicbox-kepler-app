@@ -6,7 +6,7 @@ const jsonfile = require('jsonfile');
 const path = require('../config').default_path;
 const decode = require('jwt-decode')
 
-function create_user_dir(email) {
+function createUserDir(email) {
   return new Promise((resolve, reject) => {
     mkdir(path + email)
       .then(resolve)
@@ -14,7 +14,7 @@ function create_user_dir(email) {
   });
 }
 
-function get_user_map(email) {
+function getUserMap(email) {
   return new Promise((resolve, reject) => {
     jsonfile.readFile(`${path + email}/config.json`, (err, obj) => {
       if (err) reject(err);
@@ -24,42 +24,53 @@ function get_user_map(email) {
 }
 
 module.exports = {
-  checkTokenIsValid: (jwt) => {
-    if (jwt === 'default') {
-      return false
+  checkTokenIsValid: jwt => {
+    const authErrors = {
+      errors: []
     }
+    if (jwt === 'default') {
+      authErrors.errors.push('not a real token')
+      return authErrors
+    }
+
     const decodedToken = decode(jwt)
     const {email, idp, exp, iss} = decodedToken
 
     // Check token expiration
-    const current_time = new Date().getTime() / 1000;
-    if (current_time > exp) {
-      return false
+    const currentTime = new Date().getTime();
+    if ((currentTime*1000) > exp) {
+      authErrors.errors.push('expired')
     }
     // Check idp and iss match
     if (
       idp !== config.authProviderDetails.idp &&
       iss !== config.authProviderDetails.iss
-    ) { return false}
+    ) {
+      authErrors.errors.push('iss and or idp incorrect')
+    }
     // Check email domain
     const emailDomain = email.split(/@/)[1]
 
     if (!config.whiteListedDomains[emailDomain]) {
-      return false
+      authErrors.errors.push('email domain not whitelisted')
+    }
+
+    if (authErrors.errors.length > 0) {
+      return authErrors
     }
     return decodedToken.email
   },
 
-  check_user: email => new Promise((resolve, reject) => {
+  checkUser: email => new Promise((resolve, reject) => {
     // Check user has directory
     fs.stat(path + email, (err, stat) => {
       if (err === null) {
         // User has dir
-        get_user_map(email)
+        getUserMap(email)
           .then(resolve)
           .catch(reject);
       } else {
-        create_user_dir(email)
+        createUserDir(email)
           .then(resolve).catch(reject);
       }
     });

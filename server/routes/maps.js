@@ -6,34 +6,36 @@ const jsonfile = require('jsonfile');
 const default_map = require('../public/users/default/config');
 const helper = require('../helpers/helper-user-map');
 
+// User requests logs in and requests either their own maps
+// if one was saved before, or a blank one
 router.get('/default/:token', (req, res) => {
   if (req.params) {
     const tokenIsValidThenEmail = helper.checkTokenIsValid(req.params.token)
-    if (tokenIsValidThenEmail) {
-      helper.check_user(tokenIsValidThenEmail)
-        .then((obj) => {
+
+    if (tokenIsValidThenEmail.errors) {
+      console.log(tokenIsValidThenEmail.errors)
+      // A hack that I'm using for the test.
+      default_map.info.unauthorized = true
+      return res.send(default_map);
+    }
+      // Token is real
+      helper.checkUser(tokenIsValidThenEmail)
+        .then(obj => {
           if (obj) {
-            res.send(obj);
-          } else {
-            res.send(default_map);
+            return res.send(obj);
           }
+          return res.send(default_map);
         })
         .catch(err => {
           console.log(err);
           res.send(default_map);
       });
-    // User is not authorized
-    } else {
-      console.log("DEFAULT")
-      res.send(default_map);
-    }
 
   }
 });
 
 router.route('/save/:token')
   .post((req, res) => {
-
     if (!config.saveable) {
       return res.send({
         message: 'Sorry, you cannot save a map'
@@ -42,9 +44,9 @@ router.route('/save/:token')
 
     const tokenIsValidThenEmail = helper.checkTokenIsValid(req.params.token)
 
-    if (!tokenIsValidThenEmail) {
+    if (tokenIsValidThenEmail.errors) {
       return res.send({
-        message: 'Error: you are not authorized to save a map'
+        message: 'Error: you are not authorized to save a map:' + tokenIsValidThenEmail.errors
       });
     }
 
