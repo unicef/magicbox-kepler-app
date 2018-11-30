@@ -5,7 +5,7 @@ const config = require('../config')
 const jsonfile = require('jsonfile');
 const default_map = require('../public/users/default/config');
 const helper = require('../helpers/helper-user-map');
-
+const messageNotAuthorized = 'Error: you are not authorized to save a map.'
 // User requests logs in and requests either their own maps
 // if one was saved before, or a blank one
 router.get('/default/:token', (req, res) => {
@@ -38,7 +38,7 @@ router.route('/save/:token')
   .post((req, res) => {
     if (!config.saveable) {
       return res.send({
-        message: 'Sorry, you cannot save a map'
+        message: messageNotAuthorized
       });
     }
 
@@ -46,7 +46,7 @@ router.route('/save/:token')
 
     if (tokenIsValidThenEmail.errors) {
       return res.send({
-        message: 'Error: you are not authorized to save a map:' + tokenIsValidThenEmail.errors
+        message: messageNotAuthorized + tokenIsValidThenEmail.errors
       });
     }
 

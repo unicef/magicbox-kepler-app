@@ -1,5 +1,6 @@
 //Require the dev-dependencies
 const chai = require('chai');
+const config = require('../config')
 const chaiHttp = require('chai-http');
 const server = require('../app');
 const should = chai.should();
@@ -37,11 +38,14 @@ describe('/Post User map', () => {
           .post('/api/maps/save/' + tokenInvalid)
           .end((err, res) => {
                 res.should.have.status(200);
-                console.log(res.body.message)
-                res.body.message.should.be.contain("Error: you are not authorized to save a map");
-                res.body.message.should.be.contain("email domain not whitelisted");
-                res.body.message.should.be.contain("expired");
-                // res.body.datasets[0].data.allData.lengthlength.should.be.eql(3);
+                if (config.saveable === true) {
+                  res.body.message.should.be.contain("Error: you are not authorized to save a map");
+                  res.body.message.should.be.contain("email domain not whitelisted");
+                  res.body.message.should.be.contain("expired");
+                  // res.body.datasets[0].data.allData.lengthlength.should.be.eql(3);
+                } else {
+                  res.body.message.should.be.contain("Error: you are not authorized to save a map");
+                }
             done();
           });
     });
