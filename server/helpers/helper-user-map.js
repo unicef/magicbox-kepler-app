@@ -22,46 +22,38 @@ function getUserMap(email) {
   });
 }
 
-function checkExpired(authErrors, exp) {
+function checkExpired(exp) {
   // Check token expiration
   const currentTime = new Date().getTime();
   if ((currentTime*1000) > exp) {
-    authErrors.errors.push('expired')
+    return 'expired'
   }
-  return authErrors
 }
 
-function checkIDPAndISS(authErrors, idp, iss) {
+function checkIDPAndISS(idp, iss) {
   if (
     idp !== config.authProviderDetails.idp &&
     iss !== config.authProviderDetails.iss
   ) {
-    console.log(authErrors)
-    authErrors.errors.push('iss and or idp incorrect')
+    return 'iss and or idp incorrect'
   }
-  return authErrors
 }
 
 // Check email domain
-function checkEmailIsValid(authErrors, email, lists) {
+const checkEmailIsValid = (email, lists) => {
   const whiteListedDomains = lists.domains
   const whiteListedEmails = lists.emails
   const emailDomain = email.split(/@/)[1]
+  console.log(whiteListedDomains[emailDomain], '!!!')
   // Check email or domain is whitelisted
   if (
       whiteListedDomains[emailDomain]
     ||
       whiteListedEmails[email]
   ) {
-    // If email isn't white white
-    // then domain must be
-    if (!whiteListedEmails[email]) {
-      authErrors.errors.push('email domain not whitelisted')
-    }
-  } else {
-    authErrors.errors.push('email domain not whitelisted')
+    return
   }
-  return authErrors
+  return 'email not whitelisted'
 }
 
 module.exports = {
@@ -75,9 +67,12 @@ module.exports = {
 
     const decodedToken = decode(jwt)
     const {email, idp, exp, iss} = decodedToken
-    authErrors = checkExpired(authErrors,  exp)
-    authErrors = checkIDPAndISS(authErrors, idp, iss)
-    authErrors = checkEmailIsValid(authErrors, email, config.whiteLists)
+    authErrors.errors = [
+      checkExpired(exp),
+      checkIDPAndISS(idp, iss),
+      checkEmailIsValid(email, config.whiteLists)
+    ].filter(e => { return e })
+
     if (authErrors.errors.length > 0) {
       return authErrors
     }
@@ -110,5 +105,6 @@ module.exports = {
           resolve(true)
       });
     })
-  }
+  },
+  checkEmailIsValid
 };
