@@ -25,7 +25,7 @@ function getUserMap(email) {
 function checkExpired(exp) {
   // Check token expiration
   const currentTime = new Date().getTime();
-  if ((currentTime*1000) > exp) {
+  if (currentTime > (exp * 1000)) {
     return 'expired'
   }
 }
