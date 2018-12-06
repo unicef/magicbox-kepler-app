@@ -25,6 +25,7 @@ function getUserMap(email) {
 function checkExpired(exp) {
   // Check token expiration
   const currentTime = new Date().getTime();
+  console.log(new Date(currentTime), exp, new Date((exp)))
   if (currentTime > (exp * 1000)) {
     return 'expired'
   }
@@ -44,7 +45,6 @@ const checkEmailIsValid = (email, lists) => {
   const whiteListedDomains = lists.domains
   const whiteListedEmails = lists.emails
   const emailDomain = email.split(/@/)[1]
-  console.log(whiteListedDomains[emailDomain], '!!!')
   // Check email or domain is whitelisted
   if (
       whiteListedDomains[emailDomain]

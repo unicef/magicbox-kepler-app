@@ -2,7 +2,6 @@ const express = require('express');
 // eslint-disable-next-line new-cap
 const router = express.Router();
 const config = require('../config')
-const defaultMap = require('../public/users/default/config');
 const helper = require('../helpers/helper-user-map');
 const messageNotAuthorized = 'Error: you are not authorized to save a map.'
 const mapSavedMessage = 'Saved! You may need to repoen your '
@@ -26,11 +25,11 @@ router.get('/default/:token', (req, res) => {
           return res.send(mapConfig);
         }
         // First time user, just send a default map
-        return res.send(defaultMap);
+        return res.send({error: 'no default map'});
       })
       .catch(err => {
         console.log(err);
-        res.send(defaultMap);
+        res.send({error: 'no default map'});
     });
 
   }

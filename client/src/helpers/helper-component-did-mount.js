@@ -12,7 +12,7 @@ module.exports = {
     fetch(fetch_defaut_path)
       .then(res => res.json()) // transform the data into json
       .then(obj => {
-        if (!obj.errors) {
+        if (!obj.error) {
           let dataSets = {datasets: obj.datasets.map(s => { return {
             info: {
               id: s.data.id,
