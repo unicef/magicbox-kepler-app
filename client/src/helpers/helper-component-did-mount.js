@@ -12,22 +12,23 @@ module.exports = {
     fetch(fetch_defaut_path)
       .then(res => res.json()) // transform the data into json
       .then(obj => {
-        console.log('Arrived')
-        console.log(obj)
-        let dataSets = {datasets: obj.datasets.map(s => { return {
-          info: {
-            id: s.data.id,
-            label: s.data.label,
-            color: s.data.color
-          },
-          data: {
-            fields: s.data.fields,
-            rows: s.data.allData
-          }
-        }}), config: obj.config}
+        if (!obj.errors) {
+          let dataSets = {datasets: obj.datasets.map(s => { return {
+            info: {
+              id: s.data.id,
+              label: s.data.label,
+              color: s.data.color
+            },
+            data: {
+              fields: s.data.fields,
+              rows: s.data.allData
+            }
+          }}), config: obj.config}
 
-        // addDataToMap action to inject dataset into kepler.gl instance
-        props.dispatch(addDataToMap(dataSets))
+          // addDataToMap action to inject dataset into kepler.gl instance
+          props.dispatch(addDataToMap(dataSets))
+
+        }
       })
       .catch(err => console.log(err))
   }

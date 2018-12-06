@@ -5,7 +5,6 @@ const mkdir = util.promisify(fs.mkdir);
 const jsonfile = require('jsonfile');
 const path = require('../config').default_path;
 const decode = require('jwt-decode')
-
 function createUserDir(email) {
   return new Promise((resolve, reject) => {
     mkdir(path + email)
@@ -23,11 +22,52 @@ function getUserMap(email) {
   });
 }
 
-module.exports = {
-  checkTokenIsValid: jwt => {
-    const authErrors = {
-      errors: []
+function checkExpired(authErrors, exp) {
+  // Check token expiration
+  const currentTime = new Date().getTime();
+  if ((currentTime*1000) > exp) {
+    authErrors.errors.push('expired')
+  }
+  return authErrors
+}
+
+function checkIDPAndISS(authErrors, idp, iss) {
+  if (
+    idp !== config.authProviderDetails.idp &&
+    iss !== config.authProviderDetails.iss
+  ) {
+    console.log(authErrors)
+    authErrors.errors.push('iss and or idp incorrect')
+  }
+  return authErrors
+}
+
+// Check email domain
+function checkEmailIsValid(authErrors, email, lists) {
+  const whiteListedDomains = lists.domains
+  const whiteListedEmails = lists.emails
+  const emailDomain = email.split(/@/)[1]
+  // Check email or domain is whitelisted
+  if (
+      whiteListedDomains[emailDomain]
+    ||
+      whiteListedEmails[email]
+  ) {
+    // If email isn't white white
+    // then domain must be
+    if (!whiteListedEmails[email]) {
+      authErrors.errors.push('email domain not whitelisted')
     }
+  } else {
+    authErrors.errors.push('email domain not whitelisted')
+  }
+  return authErrors
+}
+
+module.exports = {
+  tokenIsValid: jwt => {
+    let authErrors = { errors: []}
+
     if (jwt === 'default') {
       authErrors.errors.push('not a real token')
       return authErrors
@@ -35,30 +75,15 @@ module.exports = {
 
     const decodedToken = decode(jwt)
     const {email, idp, exp, iss} = decodedToken
-
-    // Check token expiration
-    const currentTime = new Date().getTime();
-    if ((currentTime*1000) > exp) {
-      authErrors.errors.push('expired')
-    }
-    // Check idp and iss match
-    if (
-      idp !== config.authProviderDetails.idp &&
-      iss !== config.authProviderDetails.iss
-    ) {
-      authErrors.errors.push('iss and or idp incorrect')
-    }
-    // Check email domain
-    const emailDomain = email.split(/@/)[1]
-
-    if (!config.whiteListedDomains[emailDomain]) {
-      authErrors.errors.push('email domain not whitelisted')
-    }
-
+    authErrors = checkExpired(authErrors,  exp)
+    authErrors = checkIDPAndISS(authErrors, idp, iss)
+    authErrors = checkEmailIsValid(authErrors, email, config.whiteLists)
     if (authErrors.errors.length > 0) {
       return authErrors
     }
-    return decodedToken.email
+    return {
+      email: decodedToken.email
+    }
   },
 
   checkUser: email => new Promise((resolve, reject) => {
@@ -75,4 +100,15 @@ module.exports = {
       }
     });
   }),
+  saveUserMap: (email, map) => {
+    return new Promise((resolve, reject) => {
+      jsonfile.writeFile(`./public/users/${email}/` +
+        'config.json', map, (err) => {
+        if (err) {
+          return reject(err)
+        }
+          resolve(true)
+      });
+    })
+  }
 };
