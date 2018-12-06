@@ -36,6 +36,18 @@ router.get('/default/:token', (req, res) => {
   }
 });
 
+router.get('/verify/:token', (req, res) => {
+  if (req.params) {
+    const tokenCheck = helper.tokenIsValid(req.params.token)
+    const authorized = Boolean(tokenCheck.email)
+    return res.send(
+      {
+        authorized
+      }
+    );
+  }
+});
+
 router.route('/save/:token')
   .post((req, res) => {
     if (!config.saveable) {

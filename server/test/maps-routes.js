@@ -7,6 +7,21 @@ const should = chai.should();
 const tokenInvalid = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJPbmxpbmUgSldUIEJ1aWxkZXIiLCJpYXQiOjE1NDM0NTcxNTUsImV4cCI6MTU3NDk5MzE1NSwiYXVkIjoid3d3LmV4YW1wbGUuY29tIiwic3ViIjoianJvY2tldEBleGFtcGxlLmNvbSIsIkdpdmVuTmFtZSI6IkpvaG5ueSIsIlN1cm5hbWUiOiJSb2NrZXQiLCJlbWFpbCI6Impyb2NrZXRAZXhhbXBsZS5jb20iLCJSb2xlIjpbIk1hbmFnZXIiLCJQcm9qZWN0IEFkbWluaXN0cmF0b3IiXX0.2cU__kIxuI-Lwm8lRcCa-nxFOARz4sNN71xgvN31OaE'
 chai.use(chaiHttp);
 
+describe('/GET token verification', () => {
+    it('should return authorized false if token is invalid', (done) => {
+      chai.request(server)
+          .get('/api/maps/verify/' + tokenInvalid)
+          .end((err, res) => {
+            if (err) {
+              console.log(err)
+            }
+            res.should.have.status(200);
+            res.body.authorized.should.be.equal(false);
+            done();
+          });
+    });
+});
+
 describe('/GET Default map', () => {
     it('should GET error message when token is string "default"', (done) => {
       chai.request(server)
