@@ -5,7 +5,13 @@
   "main": "index.js",
   "scripts": {
     "lint": "./node_modules/.bin/eslint '**/*.{js,jsx}' --quiet",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "cd server && mocha"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "cd server && mocha",
+      "pre-push": "cd server && mocha",
+    }
   },
   "repository": {
     "type": "git",
@@ -99,6 +105,7 @@
     "eslint-plugin-babel": "^4.1.2",
     "eslint-plugin-prettier": "^2.2.0",
     "eslint-plugin-react": "~6.7.0",
+    "husky": "^1.2.0",
     "jsdom": "^11.1.0",
     "json-loader": "^0.5.4",
     "nyc": "^11.4.1",
