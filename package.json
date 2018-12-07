@@ -10,7 +10,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "cd server && mocha",
-      "pre-push": "cd server && mocha",
+      "pre-push": "cd server && mocha"
     }
   },
   "repository": {
