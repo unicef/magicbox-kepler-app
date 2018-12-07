@@ -4,8 +4,7 @@ const router = express.Router();
 const config = require('../config')
 const helper = require('../helpers/helper-user-map');
 const messageNotAuthorized = 'Error: you are not authorized to save a map.'
-const mapSavedMessage = 'Saved! You may need to repoen your '
-  + 'browser in incognito mode next time you retrieve.'
+const mapSavedMessage = 'Saved! This map will be retrieved next time you log in.'
 // User requests logs in and requests either their own maps
 // if one was saved before, or a blank one
 router.get('/default/:token', (req, res) => {
