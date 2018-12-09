@@ -50,7 +50,7 @@ const saveable = config.can_save;
 let KeplerGl;
 function initializeReactGA() {
     ReactGA.initialize(config.gaCode);
-    ReactGA.pageview('/homepage');
+    ReactGA.pageview('/' + config.gaPage);
 }
 
 if (config.custom_header_path) {
