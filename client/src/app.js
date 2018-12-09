@@ -49,7 +49,7 @@ const saveable = config.can_save;
 
 let KeplerGl;
 function initializeReactGA() {
-    ReactGA.initialize('UA-130598933-1');
+    ReactGA.initialize(config.gaCode);
     ReactGA.pageview('/homepage');
 }
 
