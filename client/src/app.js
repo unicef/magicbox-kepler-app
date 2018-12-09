@@ -50,9 +50,9 @@ const saveable = config.can_save;
 let KeplerGl;
 function initializeReactGA() {
     ReactGA.initialize(config.gaCode);
-    ReactGA.pageview('/' + config.gaPage);
+    ReactGA.pageview(`/${config.gaPage}`);
 }
-
+initializeReactGA()
 if (config.custom_header_path) {
   const CustomPanelHeaderFactory = () => CustomPanelHeader;
   const CustomDataTableModalFactory = () => CustomDataTableModal;
