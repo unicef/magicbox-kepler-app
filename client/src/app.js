@@ -40,6 +40,7 @@ import {DataTableModalFactory} from 'kepler.gl/components';
 import KeplerGlSchema from 'kepler.gl/schemas';
 import SaveButton from './components/save-button';
 import config from '../config';
+import ReactGA from 'react-ga';
 // import downloadJsonFile from "./file-download";
 import helper_component_did_mount from './helpers/helper-component-did-mount'
 // shareable not used yet
@@ -47,6 +48,11 @@ import helper_component_did_mount from './helpers/helper-component-did-mount'
 const saveable = config.can_save;
 
 let KeplerGl;
+function initializeReactGA() {
+    ReactGA.initialize('UA-130598933-1');
+    ReactGA.pageview('/homepage');
+}
+
 if (config.custom_header_path) {
   const CustomPanelHeaderFactory = () => CustomPanelHeader;
   const CustomDataTableModalFactory = () => CustomDataTableModal;
