@@ -40,7 +40,7 @@ import {DataTableModalFactory} from 'kepler.gl/components';
 import KeplerGlSchema from 'kepler.gl/schemas';
 import SaveButton from './components/save-button';
 import config from '../config';
-import ReactGA from 'react-ga';
+// import ReactGA from 'react-ga';
 // import downloadJsonFile from "./file-download";
 import helper_component_did_mount from './helpers/helper-component-did-mount'
 // shareable not used yet
@@ -48,11 +48,11 @@ import helper_component_did_mount from './helpers/helper-component-did-mount'
 const saveable = config.can_save;
 
 let KeplerGl;
-function initializeReactGA() {
-    ReactGA.initialize(config.gaCode);
-    ReactGA.pageview(`/${config.gaPage}`);
-}
-initializeReactGA()
+// function initializeReactGA() {
+//     ReactGA.initialize(config.gaCode);
+//     ReactGA.pageview(`/${config.gaPage}`);
+// }
+// initializeReactGA()
 if (config.custom_header_path) {
   const CustomPanelHeaderFactory = () => CustomPanelHeader;
   const CustomDataTableModalFactory = () => CustomDataTableModal;
@@ -212,10 +212,11 @@ class App extends Component {
       }
       // create the config object
       const mapConfig = this.getMapConfig();
-      const url = '/api/maps/save/' + token;      // Sending and receiving data in JSON format using POST method
+      const url = '/api/maps/save';
       fetch(url, {
         method: 'POST',
         headers: {
+          'x-access-token' : `Bearer ${token}`,
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
