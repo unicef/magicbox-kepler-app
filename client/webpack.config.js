@@ -41,10 +41,10 @@ const CONFIG = {
   },
   devServer: {
     //redirect api calls to backend server
-    "proxy": {
-        "/api": {
-          "target": "http://server:5000",
-            "secure": false
+    proxy: {
+        '/api': {
+            target: 'http://server:5000',
+            secure: false
         }
       },
   },

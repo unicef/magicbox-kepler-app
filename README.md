@@ -4,6 +4,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/0ebed2a0a46f9976eaff/maintainability)](https://codeclimate.com/github/unicef/magicbox-kepler-demo/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/0ebed2a0a46f9976eaff/test_coverage)](https://codeclimate.com/github/unicef/magicbox-kepler-demo/test_coverage)
 
+##### To see new features, checkout dev branch
 
 ##### This project has:
 - an express backend that serves a default config.json to kepler-demo.
@@ -23,31 +24,10 @@ bash setup.sh
 
 ````
 bash setup.sh
+export MapboxAccessToken=<your_mapbox_token>
 docker-compose up
 ````
 
-### Otherwise install and run
-
-- Run the backend:
-```
-cd server
-npm install
-yarn start
-```
-- Go back to the root directory:
-```
-cd ..
-```
-
-#### Run the kepler.gl client:
-
-`cd client`
-- In webpack-config.js, find proxy and change http://server:5000 to http://localhost:5000
-
-```
-yarn --ignore-engines
-yarn start
-````
 
 ### Developer Background
 
