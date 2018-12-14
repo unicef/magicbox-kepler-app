@@ -13,10 +13,9 @@ router.get('/default', (req, res) => {
     const tokenCheck = helper.tokenIsValid(req.headers['x-access-token'])
     if (tokenCheck.errors) {
       return res.send(
-        {error: 'unauthorized'}
+        {error: 'unauthorized'},
       );
     }
-    // Token is real
     helper.checkUser(tokenCheck.email)
       .then(mapConfig => {
         if (mapConfig) {
@@ -35,15 +34,15 @@ router.get('/default', (req, res) => {
 
 router.get('/verify', (req, res) => {
   console.log("verify/token")
-  // if (req.params) {
-  //   const tokenCheck = helper.tokenIsValid(req.params.token)
-  //   const authorized = Boolean(tokenCheck.email)
-  //   return res.send(
-  //     {
-  //       authorized
-  //     }
-  //   );
-  // }
+  if (req.params) {
+  const tokenCheck = helper.tokenIsValid(req.headers['x-access-token'])
+    const authorized = Boolean(tokenCheck.email)
+    return res.send(
+      {
+        authorized
+      }
+    );
+  }
 });
 
 router.route('/save')
