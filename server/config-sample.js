@@ -5,5 +5,12 @@ module.exports = {
     iss: '',
     idp: ''
   },
-  clearListedDomains: {}
+  clearLists: {
+    domains: {
+    "example.org": 1
+    },
+    emails: {
+      "joe@example.com": 1
+    }
+  }
 };
