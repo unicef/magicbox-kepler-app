@@ -61,7 +61,7 @@ describe('/Post User map', () => {
             res.should.have.status(200);
             if (config.saveable === true) {
               res.body.message.should.be.contain("Error: you are not authorized to save a map");
-              res.body.message.should.be.contain("email not whitelisted");
+              res.body.message.should.be.contain("email not allowed");
               res.body.message.should.be.contain("expired");
             } else {
               res.body.message.should.be.contain("Error: you are not authorized to save a map");

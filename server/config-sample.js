@@ -5,5 +5,5 @@ module.exports = {
     iss: '',
     idp: ''
   },
-  whiteListedDomains: {}
+  clearListedDomains: {}
 };

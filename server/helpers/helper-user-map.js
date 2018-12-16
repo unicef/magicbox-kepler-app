@@ -42,18 +42,18 @@ function checkIDPAndISS(idp, iss) {
 
 // Check email domain
 const checkEmailIsValid = (email, lists) => {
-  const whiteListedDomains = lists.domains
-  const whiteListedEmails = lists.emails
+  const allowedDomains = lists.domains
+  const allowedEmails = lists.emails
   const emailDomain = email.split(/@/)[1]
-  // Check email or domain is whitelisted
+  // Check email or domain is clear listed
   if (
-      whiteListedDomains[emailDomain]
+      allowedDomains[emailDomain]
     ||
-      whiteListedEmails[email]
+      allowedEmails[email]
   ) {
     return
   }
-  return 'email not whitelisted'
+  return 'email not allowed'
 }
 
 module.exports = {
@@ -70,7 +70,7 @@ module.exports = {
     authErrors.errors = [
       checkExpired(exp),
       checkIDPAndISS(idp, iss),
-      checkEmailIsValid(email, config.whiteLists)
+      checkEmailIsValid(email, config.clearLists)
     ].filter(e => { return e })
 
     if (authErrors.errors.length > 0) {

@@ -1,5 +1,5 @@
 module.exports = {
-  whiteLists: {
+  clearLists: {
     domains: {
     "approved.com": 1
     },
