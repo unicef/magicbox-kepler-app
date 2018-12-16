@@ -5,6 +5,7 @@ module.exports = {
     iss: '',
     idp: ''
   },
+  sendDefaultToAuthorizedUsers: false,
   clearLists: {
     domains: {
     "example.org": 1

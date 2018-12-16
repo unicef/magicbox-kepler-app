@@ -15,7 +15,8 @@ function createUserDir(email) {
 
 function getUserMap(email) {
   return new Promise((resolve, reject) => {
-    jsonfile.readFile(`${path + email}/config.json`, (err, obj) => {
+    const target = config.sendDefaultToAuthorizedUsers ? 'default' : email
+    jsonfile.readFile(`${path + target}/config.json`, (err, obj) => {
       if (err) reject(err);
       return resolve(obj);
     });
