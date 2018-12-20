@@ -3,6 +3,9 @@ let config = require('../azure/config');
 let has_creds = config.azure.key1.match(/\d/);
 const blobFetcher = require('../azure/blob-fetcher');
 const helperIndex = require('./helper-index');
+const jsonfile = require('jsonfile');
+const topoJSON = require('topojson-client');
+const turf = require('@turf/turf');
 
 var countryCentriods = {};
 
@@ -16,9 +19,9 @@ function initializeCentriods() {
             let countryCode = contentArray[12];
             if (countryCode !== undefined && countryCode !== 'sov_a3') {
                 countryCentriods[countryCode] = {
-                        longitute: long,
-                        latitude: lat
-                    }
+                    longitute: long,
+                    latitude: lat
+                };
             }
         })
 }
@@ -28,9 +31,13 @@ function prepareListCountries(files) {
         fs.readFileSync(`./public/mobility/${file}`)
             .toString().split('\n')
             .forEach( content => {
-                let countryCode = content.split(',')[0].split('_')[0];
+                adminData = content.split(',')[0].split('_');
+                let countryCode = adminData[0];
                 if (countryCode.length > 0 && countryCode !== 'orig') {
-                    array.push({ countryCode: countryCode });
+                    array.push({
+                        countryCode: countryCode,
+                        adminLevel: adminData.length - 3
+                    });
                 }
             });
         return array;
@@ -47,11 +54,22 @@ function prepareListCountries(files) {
     return helperIndex.minifyCountryList(countryList);
 }
 
-function prepareMobilityData(countryCode, file) {
-
+function prepareMobilityData(countryCode, adminLevel, centriodFile) {
     if (Object.keys(countryCentriods).length === 0) {
-        initializeCentriods()
+        initializeCentriods();
     }
+    const shapeFile = `${countryCode.toUpperCase()}_${adminLevel}.json`;
+    return jsonfile.readFile('./public/shapefiles/countries/' + shapeFile)
+        .then((file) => {
+            let geojson = topoJSON.feature(file, file.objects.collection);
+            return setCoordinates ( countryCode, adminLevel, geojson, centriodFile );
+        })
+        .catch(error => {
+            return setCoordinates ( countryCode, adminLevel, null, centriodFile );
+        });
+}
+
+function setCoordinates(countryCode, adminLevel, geojson, file) {
     return fs.readFileSync(`./public/mobility/${file}`)
         .toString().split('\n')
         .filter( entry => {
@@ -60,16 +78,48 @@ function prepareMobilityData(countryCode, file) {
         }).map(entry => {
             let entryArray = entry.split(',');
             let origin = entryArray[0].split('_');
+            let orginCtryCode = origin[0];
+
             let destination = entryArray[1].split('_');
-            if (origin[0] !== undefined && origin[0] !== 'orig' &&
+            if (orginCtryCode !== undefined && orginCtryCode !== 'orig' &&
              destination[0] !== undefined && destination[0] !== 'dest') {
-                return countryCentriods[origin[0].toUpperCase()].longitute + ',' +
-                    countryCentriods[origin[0].toUpperCase()].latitude + ',' +
-                    countryCentriods[destination[0].toUpperCase()].longitute + ',' +
-                    countryCentriods[destination[0].toUpperCase()].latitude + ',' + entryArray[2];
+                if (geojson && Number(adminLevel) > 0) {
+                    return setCoordinatesFromShapeFile(geojson, adminLevel, origin, destination, entryArray);
+                } else {
+                    return setCoordinatesFromCentriodFile(orginCtryCode, adminLevel, destination, entryArray);
+                }
             }
             return `orig_lat,orig_long,dest_lat,dest_long,${entryArray[2]}`
         }).join('\n');
+}
+
+function setCoordinatesFromShapeFile(geojson, adminLevel, origin, destination, entryArray) {
+    let originAdmLvl = origin[Number(adminLevel) + 1];
+    if(!Number(originAdmLvl)) {
+        return;
+    }
+
+    let coordinates = geojson.features.find(feature => {
+            return feature.properties[`ID_${adminLevel}`] === Number(originAdmLvl);
+        }).geometry.coordinates;
+    let polygon = turf.polygon(coordinates.length > 1 ? coordinates[0] : coordinates);
+    let centriod = turf.centroid(polygon);
+
+    return centriod.geometry.coordinates[0] + ',' +
+        centriod.geometry.coordinates[1] + ',' +
+        countryCentriods[destination[0].toUpperCase()].longitute + ',' +
+        countryCentriods[destination[0].toUpperCase()].latitude + ',' + entryArray[2];
+}
+
+function setCoordinatesFromCentriodFile(orginCtryCode, adminLevel, destination, entryArray) {
+    if(Number(adminLevel) > 0){
+        return;
+    }
+
+    return countryCentriods[orginCtryCode.toUpperCase()].longitute + ',' +
+        countryCentriods[orginCtryCode.toUpperCase()].latitude + ',' +
+        countryCentriods[destination[0].toUpperCase()].longitute + ',' +
+        countryCentriods[destination[0].toUpperCase()].latitude + ',' + entryArray[2];
 }
 
 module.exports = {
@@ -88,14 +138,14 @@ module.exports = {
         })
     },
 
-    sendCountryMobilityData: (countryCode,file) => {
+    sendCountryMobilityData: (countryCode, adminLevel, file) => {
         return new Promise((resolve, reject) => {
             if (has_creds) {
                 blobFetcher.fetchBlob(countryCode)
                     .then(resolve)
             } else {
                 resolve(
-                    prepareMobilityData(countryCode, file)
+                    prepareMobilityData(countryCode, adminLevel, file)
                 );
             }
         })

@@ -167,12 +167,7 @@ const generateAdminLevels = (deepestLevel) => {
       return { adminLevel: value, id: shortid.generate() };
     });
   return adminLevels;
-};
-
-const getSelectedValue = (menu) => {
-  return menu.options[menu.selectedIndex].value;
-};
-
+}
 
 const client_url = window.location.origin; // will be something like http://localhost:8080
 const server_url = client_url.substr(0, client_url.length - 4) + config.server_port; // change that to http://localhost:5000
@@ -184,11 +179,13 @@ class LoadDataModal extends Component {
 
   state = {
     adminList: [],
+    mobilityAdminList: [],
     countryAndAdminList: [],
+    mobilityCtryAndAdminList: [],
     countrySelected: '',
+    mobilityCtrySelected: '',
     adminSelected: '',
-    mobilityList: [],
-    // countrySelected: false,
+    mobilityAdminSelected: '',
     isShapefileListLoading: true,
     submitReady: false,
     submitMobilityReady: false
@@ -196,35 +193,52 @@ class LoadDataModal extends Component {
 
   handleCountryChange = (event) => {
     let code = event.target.value;
-    if (code !== "") {
-      let country = this.state.countryAndAdminList.find(e => e.countryCode === code);
-      let maxAdmin = parseInt(country.adminLevel, 10);
-      let adminList = generateAdminLevels(maxAdmin);
-      this.setState({
-        adminList: adminList,
-        countrySelected: country
-      });
-    } else {
-      this.setState({
-        adminList: [],
-        countrySelected: '',
-        submitReady: false
-      });
-    }
+    this.setCountryAndAdminList('adminList', 'countrySelected', 'countryAndAdminList', 'submitReady', code);
   }
 
   handleAdminChange = (event) => {
     let admin = event.target.value;
-    if (admin !== "") this.setState({ submitReady: true, adminSelected: admin });
-    else this.setState({ submitReady: false });
+    this.setAdmin('submitReady', 'adminSelected', admin);
+  }
+
+  setAdmin = (submitVarName, adminVarName, admin) => {
+    if (admin !== "") {
+      this.setState({
+        [submitVarName]: true,
+        [adminVarName]: admin
+      });
+    }
+    else {
+      this.setState({ [submitVarName]: false });
+    }
+  }
+
+  handleMobilityAdminChange = (event) => {
+    let admin = event.target.value;
+    this.setAdmin('submitMobilityReady', 'mobilityAdminSelected', admin);
   }
 
   handleMobilityCountryChange = (event) => {
     let code = event.target.value;
-    if (code !== "")
-      this.setState({ submitMobilityReady: true });
-    else
-      this.setState({ submitMobilityReady: false });
+    this.setCountryAndAdminList('mobilityAdminList', 'mobilityCtrySelected', 'mobilityCtryAndAdminList', 'submitMobilityReady', code);
+  }
+
+  setCountryAndAdminList = (adminListVarName, ctrySelectedVarName, cntryAndAdminListVarName, submitVarName, code) => {
+    if (code !== "") {
+      let country = this.state[cntryAndAdminListVarName].find(e => e.countryCode === code);
+      let maxAdmin = parseInt(country.adminLevel, 10)
+      let adminList = generateAdminLevels(maxAdmin);
+
+      this.setState({
+        [adminListVarName]: adminList,
+        [ctrySelectedVarName]: country
+      });
+    } else
+      this.setState({
+        [submitVarName]: false,
+        [adminListVarName]: [],
+        [ctrySelectedVarName]: ''
+      });
   }
 
   handleShapefileChoice = (event) => {
@@ -232,7 +246,6 @@ class LoadDataModal extends Component {
     let countryCode = this.state.countrySelected.countryCode;
     let adminLevel = this.state.adminSelected;
     this.fetchSelectedShapefile(countryCode, adminLevel)
-
   }
 
   fetchSelectedShapefile = (countryCode, adminLevel) => {
@@ -267,15 +280,16 @@ class LoadDataModal extends Component {
   handleMobilityChoice = (event) => {
     event.preventDefault();
     let form = event.target;
-    let countryDD = form.elements["mobility-country-select"];
-    let countryCode = getSelectedValue(countryDD);
-    this.fetchSelectedMobilityData(countryCode);
+    let countryCode = this.state.mobilityCtrySelected.countryCode;
+    let adminLevel = this.state.mobilityAdminSelected;
+    this.fetchSelectedMobilityData(countryCode, adminLevel);
   }
 
-  fetchSelectedMobilityData = (countryCode) => {
-    fetch(`/api/mobility/countries/${countryCode}`)
+  fetchSelectedMobilityData = (countryCode, adminLevel) => {
+    fetch(`/api/mobility/countries/${countryCode}/${adminLevel}`)
       .then(res => res.json())
       .then(result => {
+        console.log(result);
         let dataSets = {
           datasets: [
             {
@@ -288,6 +302,13 @@ class LoadDataModal extends Component {
           ]
         };
         this.props.dispatch(addDataToMap(dataSets));
+        this.setState({
+          mobilityAdminList: [],
+          mobilityCtryAndAdminList: [],
+          mobilityCtrySelected: '',
+          mobilityAdminSelected: '',
+          submitMobilityReady: false
+        })
       }).catch(err => console.log(err));
   }
 
@@ -310,7 +331,7 @@ class LoadDataModal extends Component {
           });
         } else if (path === '/api/mobility/countries') {
           this.setState({
-            mobilityList: resultWithIds
+            mobilityCtryAndAdminList: resultWithIds
           });
         }
       }).catch(err => console.log(err));
@@ -360,13 +381,16 @@ class LoadDataModal extends Component {
 
                           <CountryShapefileSelect
                             adminList={this.state.adminList}
+                            mobilityAdminList={this.state.mobilityAdminList}
                             countryList={this.state.countryAndAdminList}
-                            mobilityList={this.state.mobilityList}
+                            mobilityCtryList={this.state.mobilityCtryAndAdminList}
                             onAdminChange={this.handleAdminChange}
+                            onMobilityAdminChange={this.handleMobilityAdminChange}
                             onCountryChange={this.handleCountryChange}
                             onMobilityCountryChange={this.handleMobilityCountryChange}
                             onShapefileSelected={this.handleShapefileChoice}
                             showAdmins={!!this.state.countrySelected}
+                            showMobilityAdmins={!!this.state.mobilityCtrySelected}
                             submitReady={this.state.submitReady}
                             onMobilitySelected={this.handleMobilityChoice}
                             submitMobilityReady={this.state.submitMobilityReady} />

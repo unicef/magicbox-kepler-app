@@ -11,6 +11,7 @@
     "test": "mocha --exit"
   },
   "dependencies": {
+    "@turf/turf": "^5.1.6",
     "azure-storage": "^2.10.2",
     "body-parser": "^1.18.3",
     "eslint": "^5.9.0",
@@ -20,7 +21,8 @@
     "eslint-plugin-react": "^7.11.1",
     "express": "^4.16.2",
     "jsonfile": "^5.0.0",
-    "jwt-decode": "^2.2.0"
+    "jwt-decode": "^2.2.0",
+    "topojson-client": "^3.0.0"
   },
   "devDependencies": {
     "chai-http": "^4.2.0",

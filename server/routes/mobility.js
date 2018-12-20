@@ -6,9 +6,9 @@ router.get('/countries', (req, res) => {
     .then(result => res.send(result));
 })
 
-router.get('/countries/:countryCode', (req, res) => {
+router.get('/countries/:countryCode/:adminLevel', (req, res) => {
   let fileName = "2017-12-25.csv";
-  helperMobility.sendCountryMobilityData(req.params.countryCode, fileName)
+  helperMobility.sendCountryMobilityData(req.params.countryCode, req.params.adminLevel, fileName)
     .then(result => res.send({data: result}));
 })
 
