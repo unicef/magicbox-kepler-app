@@ -6,14 +6,17 @@ import shortid from 'shortid';
 
 const propTypes = {
   adminList: PropTypes.array.isRequired,
+  mobilityAdminList: PropTypes.array.isRequired,
   countryList: PropTypes.array.isRequired,
-  mobilityList: PropTypes.array.isRequired,
+  mobilityCtryList: PropTypes.array.isRequired,
   onAdminChange: PropTypes.func.isRequired,
+  onMobilityAdminChange: PropTypes.func.isRequired,
   onCountryChange: PropTypes.func.isRequired,
   onMobilityCountryChange: PropTypes.func.isRequired,
   onShapefileSelected: PropTypes.func.isRequired,
   onMobilitySelected: PropTypes.func.isRequired,
   showAdmins: PropTypes.bool.isRequired,
+  showMobilityAdmins: PropTypes.bool.isRequired,
   submitReady: PropTypes.bool.isRequired,
   submitMobilityReady: PropTypes.bool.isRequired
 };
@@ -28,7 +31,18 @@ const generateOptions = (items, type) => {
   return options;
 };
 
-const CountryShapefileSelect = ({ adminList, countryList, mobilityList, onAdminChange, onCountryChange, onMobilityCountryChange, onShapefileSelected, onMobilitySelected, showAdmins, submitReady, submitMobilityReady }) => (
+const adminSelectTemplate = (adminList, onAdminChange) => {
+  return (
+    <div>
+      <label>Administrative level: </label>
+      <select name="mobility-admin-select" onChange={onAdminChange}>
+        {generateOptions(adminList, "admin")}
+      </select>
+    </div>
+  );
+}
+
+const CountryShapefileSelect = ({ adminList, mobilityAdminList, countryList, mobilityCtryList, onAdminChange, onMobilityAdminChange, onCountryChange, onMobilityCountryChange, onShapefileSelected, onMobilitySelected, showMobilityAdmins, showAdmins, submitReady, submitMobilityReady }) => (
   <div className="country-shapefile-select">
     <form onSubmit={onShapefileSelected}>
       <h3>Add shapefiles:</h3>
@@ -38,12 +52,7 @@ const CountryShapefileSelect = ({ adminList, countryList, mobilityList, onAdminC
         {generateOptions(countryList, "country")}
       </select>
       <div>{showAdmins &&
-        <div>
-          <label>Administrative level: </label>
-          <select name="admin-select" onChange={onAdminChange}>
-            {generateOptions(adminList, "admin")}
-          </select>
-        </div>
+        adminSelectTemplate(adminList, onAdminChange)
       }</div>
       <div>{submitReady && <input type="submit" value="Submit" />}</div>
     </form>
@@ -52,8 +61,11 @@ const CountryShapefileSelect = ({ adminList, countryList, mobilityList, onAdminC
       <p>Please select a country to access mobility:</p>
       <label>Country: </label>
       <select name="mobility-country-select" onChange={onMobilityCountryChange}>
-        {generateOptions(mobilityList, "country")}
+        {generateOptions(mobilityCtryList, "country")}
       </select>
+      <div>{showMobilityAdmins &&
+        adminSelectTemplate(mobilityAdminList, onMobilityAdminChange)
+      }</div>
       <div>{submitMobilityReady && <input type="submit" value="Submit" />}</div>
     </form>
   </div>

@@ -1,6 +1,7 @@
-# See https://help.github.com/ignore-files/ for more about ignoring files.
+--# See https://help.github.com/ignore-files/ for more about ignoring files.
 =======
 2017-12-25.csv
+2019-04-30.csv
 node_modules
 .env
 *config.js

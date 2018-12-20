@@ -36,7 +36,7 @@ module.exports = {
         blobFetcher.listBlobs('topojson')
           .then(resolve);
       } else {
-        fs.readdir('./public/topojson', (err, files) => {
+        fs.readdir('./public/population', (err, files) => {
           resolve(
             prepareListCountries(files)
           )

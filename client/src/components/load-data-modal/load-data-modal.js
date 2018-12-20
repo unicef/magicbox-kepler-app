@@ -30,7 +30,7 @@ import { Icons } from 'kepler.gl/components';
 import shortid from 'shortid';
 import { addDataToMap } from 'kepler.gl/actions';
 import * as topojson from 'topojson-client';
-import { LOADING_METHODS, QUERY_TYPES } from '../../constants/default-settings';
+import { LOADING_METHODS, QUERY_TYPES, ASSETS_URL } from '../../constants/default-settings';
 import Processors from 'kepler.gl/processors';
 import config from '../../../config';
 import CountryShapefileSelect from './country-shapefile-select';
@@ -57,11 +57,9 @@ const BackLink = styled.div`
   color: ${props => props.theme.titleColorLT};
   cursor: pointer;
   margin-bottom: 40px;
-
   :hover {
     font-weight: 500;
   }
-
   span {
     white-space: nowrap;
   }
@@ -76,7 +74,6 @@ const ModalTab = styled.div`
   border-bottom: 1px solid #d8d8d8;
   margin-bottom: 32px;
   justify-content: space-between;
-
   .load-data-modal__tab__inner {
     display: flex;
   }
@@ -88,17 +85,14 @@ const ModalTab = styled.div`
     font-size: 14px;
     font-weight: 400;
     color: ${props => props.theme.subtextColorLT};
-
     :first-child {
       margin-left: 0;
       padding-left: 0;
     }
-
     :hover {
       color: ${props => props.theme.textColorLT};
     }
   }
-
   .load-data-modal__tab__item.active {
     color: ${props => props.theme.textColorLT};
     border-bottom: 3px solid ${props => props.theme.textColorLT};
@@ -119,30 +113,25 @@ const ModalTab = styled.div`
 const StyledTrySampleData = styled.div`
   display: flex;
   margin-bottom: 12px;
-
   .demo-map-title {
     margin-left: 16px;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
   }
-
   .demo-map-label {
     font-size: 11px;
     color: ${props => props.theme.labelColorLT};
   }
-
   .demo-map-action {
     display: flex;
     font-size: 14px;
     align-items: center;
     color: ${props => props.theme.titleColorLT};
     cursor: pointer;
-
     :hover {
       font-weight: 500;
     }
-
     span {
       white-space: nowrap;
     }
@@ -167,25 +156,25 @@ const generateAdminLevels = (deepestLevel) => {
       return { adminLevel: value, id: shortid.generate() };
     });
   return adminLevels;
-};
-
-const getSelectedValue = (menu) => {
-  return menu.options[menu.selectedIndex].value;
-};
-
+}
 
 const client_url = window.location.origin; // will be something like http://localhost:8080
 const server_url = client_url.substr(0, client_url.length - 4) + config.server_port; // change that to http://localhost:5000
 
 class LoadDataModal extends Component {
+  constructor(props) {
+    super(props)
+  }
 
   state = {
     adminList: [],
+    mobilityAdminList: [],
     countryAndAdminList: [],
+    mobilityCtryAndAdminList: [],
     countrySelected: '',
+    mobilityCtrySelected: '',
     adminSelected: '',
-    mobilityList: [],
-    // countrySelected: false,
+    mobilityAdminSelected: '',
     isShapefileListLoading: true,
     submitReady: false,
     submitMobilityReady: false
@@ -193,48 +182,66 @@ class LoadDataModal extends Component {
 
   handleCountryChange = (event) => {
     let code = event.target.value;
-    if (code !== "") {
-      let country = this.state.countryAndAdminList.find(e => e.countryCode === code);
-      let maxAdmin = parseInt(country.adminLevel, 10);
-      let adminList = generateAdminLevels(maxAdmin);
-      this.setState({
-        adminList: adminList,
-        countrySelected: country
-      });
-    } else {
-      this.setState({
-        adminList: [],
-        countrySelected: '',
-        submitReady: false
-      });
-    }
+    this.setCountryAndAdminList('adminList', 'countrySelected', 'countryAndAdminList', 'submitReady', code);
   }
 
   handleAdminChange = (event) => {
     let admin = event.target.value;
-    if (admin !== "") this.setState({ submitReady: true, adminSelected: admin });
-    else this.setState({ submitReady: false });
+    this.setAdmin('submitReady', 'adminSelected', admin);
+  }
+
+  setAdmin = (submitVarName, adminVarName, admin) => {
+    if (admin !== "") {
+      this.setState({
+        [submitVarName]: true,
+        [adminVarName]: admin
+      });
+    }
+    else {
+      this.setState({ [submitVarName]: false });
+    }
+  }
+
+  handleMobilityAdminChange = (event) => {
+    let admin = event.target.value;
+    this.setAdmin('submitMobilityReady', 'mobilityAdminSelected', admin);
   }
 
   handleMobilityCountryChange = (event) => {
     let code = event.target.value;
-    if (code !== "")
-      this.setState({ submitMobilityReady: true });
-    else
-      this.setState({ submitMobilityReady: false });
+    this.setCountryAndAdminList('mobilityAdminList', 'mobilityCtrySelected', 'mobilityCtryAndAdminList', 'submitMobilityReady', code);
+  }
+
+  setCountryAndAdminList = (adminListVarName, ctrySelectedVarName, cntryAndAdminListVarName, submitVarName, code) => {
+    if (code !== "") {
+      let country = this.state[cntryAndAdminListVarName].find(e => e.countryCode === code);
+      let maxAdmin = parseInt(country.adminLevel, 10)
+      let adminList = generateAdminLevels(maxAdmin);
+
+      this.setState({
+        [adminListVarName]: adminList,
+        [ctrySelectedVarName]: country
+      });
+    } else
+      this.setState({
+        [submitVarName]: false,
+        [adminListVarName]: [],
+        [ctrySelectedVarName]: ''
+      });
   }
 
   handleShapefileChoice = (event) => {
     event.preventDefault();
-    let form = event.target;
-    let countryDD = form.elements["country-select"];
-    let adminDD = form.elements["admin-select"];
-    let countryCode = getSelectedValue(countryDD);
-    let adminLevel = getSelectedValue(adminDD);
+    let countryCode = this.state.countrySelected.countryCode;
+    let adminLevel = this.state.adminSelected;
+    this.fetchSelectedShapefile(countryCode, adminLevel)
+  }
+
+  fetchSelectedShapefile = (countryCode, adminLevel) => {
     fetch(`/api/shapefiles/countries/${countryCode}/${adminLevel}`)
     .then(res => res.json())
     .then(t => {
-      let geojson = topojson.feature(t, t.objects[countryCode + '_' + adminLevel]);
+      let geojson = topojson.feature(t, t.objects.collection);
       let dataSets = {
         datasets: [
           {
@@ -246,7 +253,6 @@ class LoadDataModal extends Component {
           }
         ]
       };
-
       this.props.dispatch(addDataToMap(dataSets));
       this.setState({
         adminList: [],
@@ -263,15 +269,16 @@ class LoadDataModal extends Component {
   handleMobilityChoice = (event) => {
     event.preventDefault();
     let form = event.target;
-    let countryDD = form.elements["mobility-country-select"];
-    let countryCode = getSelectedValue(countryDD);
-    this.fetchSelectedMobilityData(countryCode);
+    let countryCode = this.state.mobilityCtrySelected.countryCode;
+    let adminLevel = this.state.mobilityAdminSelected;
+    this.fetchSelectedMobilityData(countryCode, adminLevel);
   }
 
-  fetchSelectedMobilityData = (countryCode) => {
-    fetch(`/api/mobility/countries/${countryCode}`)
+  fetchSelectedMobilityData = (countryCode, adminLevel) => {
+    fetch(`/api/mobility/countries/${countryCode}/${adminLevel}`)
       .then(res => res.json())
       .then(result => {
+        console.log(result);
         let dataSets = {
           datasets: [
             {
@@ -284,6 +291,13 @@ class LoadDataModal extends Component {
           ]
         };
         this.props.dispatch(addDataToMap(dataSets));
+        this.setState({
+          mobilityAdminList: [],
+          mobilityCtryAndAdminList: [],
+          mobilityCtrySelected: '',
+          mobilityAdminSelected: '',
+          submitMobilityReady: false
+        })
       }).catch(err => console.log(err));
   }
 
@@ -306,7 +320,7 @@ class LoadDataModal extends Component {
           });
         } else if (path === '/api/mobility/countries') {
           this.setState({
-            mobilityList: resultWithIds
+            mobilityCtryAndAdminList: resultWithIds
           });
         }
       }).catch(err => console.log(err));
@@ -356,13 +370,16 @@ class LoadDataModal extends Component {
 
                           <CountryShapefileSelect
                             adminList={this.state.adminList}
+                            mobilityAdminList={this.state.mobilityAdminList}
                             countryList={this.state.countryAndAdminList}
-                            mobilityList={this.state.mobilityList}
+                            mobilityCtryList={this.state.mobilityCtryAndAdminList}
                             onAdminChange={this.handleAdminChange}
+                            onMobilityAdminChange={this.handleMobilityAdminChange}
                             onCountryChange={this.handleCountryChange}
                             onMobilityCountryChange={this.handleMobilityCountryChange}
                             onShapefileSelected={this.handleShapefileChoice}
                             showAdmins={!!this.state.countrySelected}
+                            showMobilityAdmins={!!this.state.mobilityCtrySelected}
                             submitReady={this.state.submitReady}
                             onMobilitySelected={this.handleMobilityChoice}
                             submitMobilityReady={this.state.submitMobilityReady} />
