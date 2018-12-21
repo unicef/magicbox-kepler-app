@@ -18,11 +18,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import React, { Component } from 'react';
+import React from 'react';
 import config from '../../config';
 export default class CustomPanelHeader extends React.Component {
 
     render() {
-        return (<img src={`./../public/images/${config.custom_header_path}`}/>)
+        return (<img alt="sidebar header showing logos and imagery about the partnership" src={`./../public/images/${config.custom_header_path}`}/>)
     }
 }

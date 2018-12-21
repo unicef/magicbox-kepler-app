@@ -212,10 +212,11 @@ class App extends Component {
       }
       // create the config object
       const mapConfig = this.getMapConfig();
-      const url = '/api/maps/save/' + token;      // Sending and receiving data in JSON format using POST method
+      const url = '/api/maps/save';
       fetch(url, {
         method: 'POST',
         headers: {
+          'x-access-token' : `Bearer ${token}`,
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },

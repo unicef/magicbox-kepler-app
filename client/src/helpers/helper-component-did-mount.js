@@ -1,16 +1,22 @@
 module.exports = {
   fetch_default_user_map: (addDataToMap, props) => {
     console.log(props.user)
-    let fetch_defaut_path = '/api/maps/default/'
     let token = 'default'
     if (props.user) {
       if (props.user.tokenStr) {
        token = props.user.tokenStr
       }
     }
-    fetch_defaut_path += token
-    fetch(fetch_defaut_path)
-      .then(res => res.json()) // transform the data into json
+    const url = '/api/maps/default';
+    fetch(url, {
+      method: 'GET',
+      headers: {
+        'x-access-token' : `Bearer ${token}`,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(response => response.json())
       .then(obj => {
         if (!obj.error) {
           let dataSets = {datasets: obj.datasets.map(s => { return {

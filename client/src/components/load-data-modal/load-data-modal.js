@@ -28,9 +28,9 @@ import { LoadingSpinner } from 'kepler.gl/components';
 import { themeLT } from 'kepler.gl/styles';
 import { Icons } from 'kepler.gl/components';
 import shortid from 'shortid';
-import { updateVisData, addDataToMap } from 'kepler.gl/actions';
+import { addDataToMap } from 'kepler.gl/actions';
 import * as topojson from 'topojson-client';
-import { LOADING_METHODS, QUERY_TYPES, ASSETS_URL } from '../../constants/default-settings';
+import { LOADING_METHODS, QUERY_TYPES } from '../../constants/default-settings';
 import Processors from 'kepler.gl/processors';
 import config from '../../../config';
 import CountryShapefileSelect from './country-shapefile-select';
@@ -173,13 +173,8 @@ const getSelectedValue = (menu) => {
 };
 
 const client_url = window.location.origin; // will be something like http://localhost:8080
-const server_url = client_url.substr(0, client_url.length - 4) + config.server_port; // change that to http://localhost:5000
-
 
 class LoadDataModal extends Component {
-  constructor(props) {
-    super(props)
-  }
 
   state = {
     adminList: [],
@@ -221,7 +216,6 @@ class LoadDataModal extends Component {
     let adminDD = form.elements["admin-select"];
     let countryCode = getSelectedValue(countryDD);
     let adminLevel = getSelectedValue(adminDD);
-    let blobName = `${countryCode}_${adminLevel}.json`;
     fetch(`/api/shapefiles/countries/${countryCode}/${adminLevel}`)
     .then(res => res.json())
     .then(t => {
