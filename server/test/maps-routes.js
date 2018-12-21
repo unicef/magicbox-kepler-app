@@ -10,7 +10,8 @@ chai.use(chaiHttp);
 describe('/GET token verification', () => {
     it('should return authorized false if token is invalid', (done) => {
       chai.request(server)
-          .get('/api/maps/verify/' + tokenInvalid)
+          .get('/api/maps/verify/')
+          .set('x-access-token', tokenInvalid)
           .end((err, res) => {
             if (err) {
               console.log(err)
@@ -25,7 +26,8 @@ describe('/GET token verification', () => {
 describe('/GET Default map', () => {
     it('should GET error message when token is string "default"', (done) => {
       chai.request(server)
-          .get('/api/maps/default/default')
+          .get('/api/maps/default')
+          .set('x-access-token', 'default')
           .end((err, res) => {
             if (err) {
               console.log(err)
@@ -38,7 +40,8 @@ describe('/GET Default map', () => {
 
     it('should GET error message when token is invalid', (done) => {
       chai.request(server)
-          .get('/api/maps/default/' + tokenInvalid)
+          .get('/api/maps/default/')
+          .set('x-access-token', tokenInvalid)
           .end((err, res) => {
             if (err) {
               console.log(err)
@@ -53,7 +56,8 @@ describe('/GET Default map', () => {
 describe('/Post User map', () => {
     it('should not save user map when token is invalid', (done) => {
       chai.request(server)
-          .post('/api/maps/save/' + tokenInvalid)
+          .post('/api/maps/save/')
+          .set('x-access-token', tokenInvalid)
           .end((err, res) => {
             if (err) {
               console.log(err)
