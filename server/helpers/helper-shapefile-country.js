@@ -1,7 +1,7 @@
 const fs = require('fs')
 const jsonfile = require('jsonfile')
 let config = require('../azure/config');
-let has_creds = config.azure.key1.match(/\d/)
+let has_creds = config.azure.topojson.key1.match(/\d/)
 const blobFetcher = require('../azure/blob-fetcher');
 const helperIndex = require('./helper-index')
 function prepareListCountries(files) {
@@ -34,7 +34,7 @@ module.exports = {
     return new Promise((resolve, reject) => {
       // User has azure blob storage credentials
       if (has_creds) {
-        blobFetcher.listBlobs()
+        blobFetcher.listBlobs('topojson')
           .then(resolve);
       } else {
         fs.readdir('./public/shapefiles/countries', (err, files) => {
