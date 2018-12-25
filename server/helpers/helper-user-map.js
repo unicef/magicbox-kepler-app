@@ -61,7 +61,7 @@ module.exports = {
   tokenIsValid: jwt => {
     let authErrors = { errors: []}
 
-    if (jwt === 'default') {
+    if (jwt.match('default')) {
       authErrors.errors.push('not a real token')
       return authErrors
     }
