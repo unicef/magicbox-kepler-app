@@ -36,7 +36,6 @@ import config from '../../../config';
 import CountryShapefileSelect from './country-shapefile-select';
 import SampleMapGallery from './sample-map-gallery';
 import { shapefileHashEnglish } from './english-shapefile-hash';
-
 const propTypes = {
   // query options
   loadingMethod: PropTypes.object.isRequired,
@@ -219,7 +218,7 @@ class LoadDataModal extends Component {
     fetch(`/api/shapefiles/countries/${countryCode}/${adminLevel}`)
     .then(res => res.json())
     .then(t => {
-      let geojson = topojson.feature(t, t.objects.collection);
+      let geojson = topojson.feature(t, t.objects[countryCode + '_' + adminLevel]);
       let dataSets = {
         datasets: [
           {
@@ -231,7 +230,10 @@ class LoadDataModal extends Component {
           }
         ]
       };
+
       this.props.dispatch(addDataToMap(dataSets));
+
+
     })
     .catch(err => console.log(err));
   }

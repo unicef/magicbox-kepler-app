@@ -1,11 +1,5 @@
 const azure = require('azure-storage');
-
 const config = require('./config');
-
-const azureKey = config.azure.key1;
-const storageAccount = config.azure.storageAccount;
-const containerName = config.azure.containerName;
-const blobSvc = azure.createBlobService(storageAccount, azureKey);
 const helper = require('../helpers/helper-index')
 
 module.exports = {
@@ -13,7 +7,11 @@ module.exports = {
     * Retrieves list of blobs in an array
     * @return {Promise} fulfilled with an array of (country, deepestAdmin) tuples
     */
-  listBlobs: async () => new Promise((resolve, reject) => {
+  listBlobs: async (blobKind) => new Promise((resolve, reject) => {
+    const storageAccount = config.azure[blobKind].storageAccount
+    const azureKey = config.azure[blobKind].key1
+    const blobSvc = azure.createBlobService(storageAccount, azureKey);
+    const containerName = config.azure[blobKind].containerName
     blobSvc.listBlobsSegmented(containerName, null, (err, data) => {
       if (err) {
         reject(err);
@@ -37,11 +35,17 @@ module.exports = {
     * Retrieves a blob and saves it to a file
     * @return {Promise} fulfilled with a text string of blob contents
     */
-  fetchBlob: async blobName => new Promise((resolve, reject) => {
-    blobSvc.getBlobToText(containerName, blobName, (err, data) => {
+  fetchBlob: async (blobKind, blobName) => new Promise((resolve, reject) => {
+    const storageAccount = config.azure[blobKind].storageAccount
+    const azureKey = config.azure[blobKind].key1
+    const container = config.azure[blobKind].containerName
+    const blobSvc = azure.createBlobService(storageAccount, azureKey);
+    console.log(storageAccount, azureKey, container, blobName)
+    blobSvc.getBlobToText(container, blobName, (err, data) => {
       if (err) {
         reject(err);
       } else {
+
         return resolve(data);
       }
     });
