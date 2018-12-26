@@ -12,11 +12,7 @@ function getIndicator(indicator, countryName) {
           return resolve(indicatorData)
         })
     } else {
-      let path = './public/' + indicator + '/'
-      if (indicator === 'topojson') {
-        path += 'countries/'
-      }
-      path += countryName
+      let path = './public/' + indicator + '/' + countryName
       fs.readFile(path, (err, file) => {
         resolve(file)
       })
