@@ -15,8 +15,7 @@ function createUserDir(email) {
 
 function getUserMap(email) {
   return new Promise((resolve, reject) => {
-    const target = config.sendDefaultToAuthorizedUsers ? 'default' : email
-    jsonfile.readFile(`${path + target}/config.json`, (err, obj) => {
+    jsonfile.readFile(`${path + email}/config.json`, (err, obj) => {
       if (err) reject(err);
       return resolve(obj);
     });
@@ -32,12 +31,11 @@ function checkExpired(exp) {
   }
 }
 
-function checkIDPAndISS(idp, iss) {
+function checkISS(iss) {
   if (
-    idp !== config.authProviderDetails.idp &&
     iss !== config.authProviderDetails.iss
   ) {
-    return 'iss and or idp incorrect'
+    return 'iss incorrect'
   }
 }
 
@@ -67,18 +65,19 @@ module.exports = {
     }
 
     const decodedToken = decode(jwt)
-    const {email, idp, exp, iss} = decodedToken
+    const {exp, iss} = decodedToken
+    const email = decodedToken.email || decodedToken['signInNames.emailAddress']
+
     authErrors.errors = [
       checkExpired(exp),
-      checkIDPAndISS(idp, iss),
+      checkISS(iss),
       checkEmailIsValid(email, config.clearLists)
     ].filter(e => { return e })
-
     if (authErrors.errors.length > 0) {
       return authErrors
     }
     return {
-      email: decodedToken.email
+      email
     }
   },
 

@@ -2,10 +2,8 @@ module.exports = {
   default_path: './public/users/',
   saveable: false,
   authProviderDetails: {
-    iss: '',
-    idp: ''
+    iss: ''
   },
-  sendDefaultToAuthorizedUsers: false,
   clearLists: {
     domains: {
     "example.org": 1
