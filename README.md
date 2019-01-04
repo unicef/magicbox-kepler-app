@@ -4,8 +4,8 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/0ebed2a0a46f9976eaff/maintainability)](https://codeclimate.com/github/unicef/magicbox-kepler-demo/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/0ebed2a0a46f9976eaff/test_coverage)](https://codeclimate.com/github/unicef/magicbox-kepler-demo/test_coverage)
 
-##### To see new features, checkout dev branch
-
+### To see new features, checkout dev branch
+[live demo](http://magicbox-kepler-app.eastus.cloudapp.azure.com/)
 ##### This project has:
 - an express backend that serves a default config.json to kepler-demo.
 - a "Save Config" button that replaces old default map with current map.
