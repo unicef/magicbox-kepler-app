@@ -346,7 +346,7 @@ const Tabs = ({ method, toggleMethod }) => (
 const TrySampleData = ({ onClick }) => (
   <StyledTrySampleData className="try-sample-data">
     <div className="demo-map-title">
-      <div className="demo-map-label">Select shapefile from</div>
+      <div className="demo-map-label">Select borderfile from</div>
       <div className="demo-map-action" onClick={onClick}>
         <span>MagicBox</span>
         <Icons.ArrowRight height="16px" />

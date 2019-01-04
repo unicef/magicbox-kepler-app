@@ -27,7 +27,7 @@ const generateOptions = (items, type) => {
 const CountryShapefileSelect = ({ adminList, countryList, onAdminChange, onCountryChange, onShapefileSelected, showAdmins, submitReady }) => (
   <div className="country-shapefile-select">
     <form onSubmit={onShapefileSelected}>
-      <h3>Add shapefiles:</h3>
+      <h3>Add borderfile:</h3>
       <p>Please select a country to see available administrative levels:</p>
       <label>Country: </label>
       <select name="country-select" onChange={onCountryChange}>
