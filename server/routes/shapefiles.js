@@ -9,9 +9,22 @@ router.get('/countries', (req, res) => {
 });
 
 router.get('/countries/:countryCode/:adminLevel', (req, res) => {
+  let getHealthSites = (req.query.healthsites == 'true');
   const fileName = `${req.params.countryCode}_${req.params.adminLevel}.json`;
   helperShapefile.sendCountryShapefile(fileName)
-    .then(result => res.send(result));
+    .then(shapedata => {
+      if (getHealthSites) {
+        helperShapefile.sendCountryHealthSites(req.params.countryCode)
+          .then(healthsites => {
+            res.send({
+              shapedata: shapedata,
+              healthsites: healthsites
+            });
+        });
+      } else {
+        res.send({ shapedata: shapedata });
+      }
+    })
 });
 
 module.exports = router;
