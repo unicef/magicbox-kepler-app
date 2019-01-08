@@ -39,6 +39,9 @@ const CountryShapefileSelect = ({ adminList, countryList, onAdminChange, onCount
           <select name="admin-select" onChange={onAdminChange}>
             {generateOptions(adminList, "admin")}
           </select>
+          <div>
+            <input type="checkbox" name="get-health-sites" value="true" />Get health sites
+          </div>
         </div>
       }</div>
       <div>{submitReady && <input type="submit" value="Submit" />}</div>

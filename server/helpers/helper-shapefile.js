@@ -2,6 +2,7 @@ const jsonfile = require('jsonfile')
 const config = require('../azure/config');
 const fs = require('fs')
 let has_creds = config.azure.topojson.key1.match(/\d/)
+let has_health_creds = config.azure.healthsites.key1.match(/\d/);
 const blobFetcher = require('../azure/blob-fetcher');
 
 function getIndicator(indicator, countryName) {
@@ -45,5 +46,21 @@ module.exports = {
         });
       })
     })
+  },
+  sendCountryHealthSites: countryName => {
+    return new Promise((resolve, reject) => {
+      let file = `${countryName}.csv`;
+      if (has_health_creds) {
+        blobFetcher.fetchBlob('healthsites', file)
+          .then(healthData => {
+            return resolve(healthData);
+          })
+      } else {
+        let path = `./public/healthsites/${file}`;
+        fs.readFile(path, {encoding: 'utf8'}, (err, file) => {
+          resolve(file);
+        })
+      }
+    });
   }
 }

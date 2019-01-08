@@ -215,28 +215,48 @@ class LoadDataModal extends Component {
     let adminDD = form.elements["admin-select"];
     let countryCode = getSelectedValue(countryDD);
     let adminLevel = getSelectedValue(adminDD);
-    fetch(`/api/shapefiles/countries/${countryCode}/${adminLevel}`)
+    let getHealthSites = form.elements["get-health-sites"].checked;
+    fetch(`/api/shapefiles/countries/${countryCode}/${adminLevel}?healthsites=${getHealthSites}`)
     .then(res => res.json())
     .then(t => {
-      let geojson = topojson.feature(t, t.objects[countryCode + '_' + adminLevel]);
-      let dataSets = {
-        datasets: [
-          {
-            info: {
-              id: `shapefile-${countryCode}-${adminLevel}`,
-              label: `Shapefile for ${countryCode} L-${adminLevel}`
-            },
-            data: Processors.processGeojson(geojson)
-          }
-        ]
-      };
-
-      this.props.dispatch(addDataToMap(dataSets));
-
-
+      this.uploadShapefiles(t.shapedata, countryCode, adminLevel);
+      if (getHealthSites) {
+        this.uploadHealthSites (t.healthsites, countryCode);
+      }
     })
     .catch(err => console.log(err));
   }
+
+  uploadShapefiles = (shapedata, countryCode, adminLevel) => {
+    let geojson = topojson.feature(shapedata, shapedata.objects[countryCode + '_' + adminLevel]);
+    let dataSets = {
+      datasets: [
+        {
+          info: {
+            id: `shapefile-${countryCode}-${adminLevel}`,
+            label: `Shapefile for ${countryCode} L-${adminLevel}`
+          },
+          data: Processors.processGeojson(geojson)
+        }
+      ]
+    };
+    this.props.dispatch(addDataToMap(dataSets));
+  }
+
+  uploadHealthSites = (healthdata, countryCode) => {
+    let dataSets = {
+      datasets: [
+        {
+          info: {
+            id: `Health sites-${countryCode}`,
+            label: `Health sites-${countryCode}`
+          },
+          data: Processors.processCsvData(healthdata)
+        }
+      ]
+    };
+    this.props.dispatch(addDataToMap(dataSets));
+  };
 
   componentDidMount() {
     fetch('/api/shapefiles/countries')
