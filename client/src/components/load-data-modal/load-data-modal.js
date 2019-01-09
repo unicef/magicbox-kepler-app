@@ -249,7 +249,7 @@ class LoadDataModal extends Component {
         {
           info: {
             id: `Health sites-${countryCode}`,
-            label: `Health sites-${countryCode}`
+            label: `healthsites.io-${countryCode}`
           },
           data: Processors.processCsvData(healthdata)
         }
