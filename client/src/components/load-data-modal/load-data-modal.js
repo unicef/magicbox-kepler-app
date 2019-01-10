@@ -216,47 +216,63 @@ class LoadDataModal extends Component {
     let countryCode = getSelectedValue(countryDD);
     let adminLevel = getSelectedValue(adminDD);
     let getHealthSites = form.elements["get-health-sites"].checked;
-    fetch(`/api/shapefiles/countries/${countryCode}/${adminLevel}?healthsites=${getHealthSites}`)
-    .then(res => res.json())
-    .then(t => {
-      this.uploadShapefiles(t.shapedata, countryCode, adminLevel);
-      if (getHealthSites) {
-        this.uploadHealthSites (t.healthsites, countryCode);
-      }
-    })
-    .catch(err => console.log(err));
+    let getMobilityData = form.elements["get-mobility-data"].checked;
+    if (getMobilityData) {
+      this.uploadMobilityData(countryCode, adminLevel);
+    } else {
+      fetch(`/api/shapefiles/countries/${countryCode}/${adminLevel}?healthsites=${getHealthSites}`)
+      .then(res => res.json())
+      .then(t => {
+        this.uploadShapefiles(t.shapedata, countryCode, adminLevel);
+        if (getHealthSites) {
+          this.uploadHealthSites (t.healthsites, countryCode);
+        }
+      })
+      .catch(err => console.log(err));
+    }
   }
+
+  uploadMobilityData = (countryCode, adminLevel) => {
+    fetch(`/api/mobility/countries/${countryCode}/${adminLevel}`)
+      .then(res => res.json())
+      .then(t => {
+        let id = `mobility-data-${countryCode}-${adminLevel}`;
+        let label = `Mobility data for ${countryCode} L-${adminLevel}`;
+        let data = Processors.processCsvData(t.data);
+        this.uploadDataToMap(id, label, data);
+      })
+      .catch(err => console.log(err));
+  };
 
   uploadShapefiles = (shapedata, countryCode, adminLevel) => {
     let geojson = topojson.feature(shapedata, shapedata.objects[countryCode + '_' + adminLevel]);
+    let id = `shapefile-${countryCode}-${adminLevel}`;
+    let label = `Shapefile for ${countryCode} L-${adminLevel}`;
+    let data = Processors.processGeojson(geojson);
+    this.uploadDataToMap(id, label, data);
+  }
+
+  uploadHealthSites = (healthdata, countryCode) => {
+    let id = `Health sites-${countryCode}`;
+    let label = `healthsites.io-${countryCode}`;
+    let data = Processors.processCsvData(healthdata);
+    this.uploadDataToMap(id, label, data);
+  };
+
+  uploadDataToMap = (id, label, data) => {
     let dataSets = {
       datasets: [
         {
           info: {
-            id: `shapefile-${countryCode}-${adminLevel}`,
-            label: `Shapefile for ${countryCode} L-${adminLevel}`
+            id: id,
+            label: label
           },
-          data: Processors.processGeojson(geojson)
+          data: data
         }
       ]
     };
     this.props.dispatch(addDataToMap(dataSets));
   }
-
-  uploadHealthSites = (healthdata, countryCode) => {
-    let dataSets = {
-      datasets: [
-        {
-          info: {
-            id: `Health sites-${countryCode}`,
-            label: `healthsites.io-${countryCode}`
-          },
-          data: Processors.processCsvData(healthdata)
-        }
-      ]
-    };
-    this.props.dispatch(addDataToMap(dataSets));
-  };
 
   componentDidMount() {
     fetch('/api/shapefiles/countries')
