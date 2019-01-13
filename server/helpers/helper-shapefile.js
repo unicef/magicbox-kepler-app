@@ -55,6 +55,9 @@ module.exports = {
           .then(healthData => {
             return resolve(healthData);
           })
+          .catch(err => {
+            reject(err)
+          })
       } else {
         let path = `./public/healthsites/${file}`;
         fs.readFile(path, {encoding: 'utf8'}, (err, file) => {
