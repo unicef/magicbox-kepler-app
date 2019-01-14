@@ -27,7 +27,7 @@ const generateOptions = (items, type) => {
 const CountryShapefileSelect = ({ adminList, countryList, onAdminChange, onCountryChange, onShapefileSelected, showAdmins, submitReady }) => (
   <div className="country-shapefile-select">
     <form onSubmit={onShapefileSelected}>
-      <h3>Add borderfile:</h3>
+      <h3>Add borderfile or mobility data:</h3>
       <p>Please select a country to see available administrative levels:</p>
       <label>Country: </label>
       <select name="country-select" onChange={onCountryChange}>
@@ -40,7 +40,8 @@ const CountryShapefileSelect = ({ adminList, countryList, onAdminChange, onCount
             {generateOptions(adminList, "admin")}
           </select>
           <div>
-            <input type="checkbox" name="get-health-sites" value="true" />Get health sites
+            <div><input type="checkbox" name="get-health-sites" value="true" />Get health sites</div>
+            <div><input type="checkbox" name="get-mobility-data" value="true" />Replace borderfile with mobility data</div>
           </div>
         </div>
       }</div>
