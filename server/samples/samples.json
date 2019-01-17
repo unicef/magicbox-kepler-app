@@ -20,13 +20,13 @@
     "configUrl": "/public/configs/IND.json"
   },
   {
-    "id": "kyrgyzstan-school-connectivity",
+    "id": "kyrgyzstan-schools-connectivity",
     "label": "Kyrgyzstan School connectivity",
     "queryType": "sample",
     "imageUrl": "/public/images/KYG.png",
     "description": "School connectivity speed in Kyrgyzstan",
     "size": 1632,
-    "dataUrl": "https://raw.githubusercontent.com/uber-web/kepler.gl-data/master/county_unemployment/data.geojson",
-    "configUrl": "https://raw.githubusercontent.com/uber-web/kepler.gl-data/master/county_unemployment/config.json"
+    "dataUrl": "/public/schools/KYG.csv",
+    "configUrl": "/public/configs/KYG.json"
   }
 ]
