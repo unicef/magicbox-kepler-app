@@ -22,71 +22,67 @@
 // delete the local development overrides at the bottom of this file
 
 // avoid destructuring for older Node version support
-/* eslint-disable prefer-destructuring */
 const resolve = require('path').resolve;
 const join = require('path').join;
-/* eslint-enable prefer-destructuring */
 const webpack = require('webpack');
-
 const Dotenv = require('dotenv-webpack');
-
+const config = require('./config')
 const CONFIG = {
   // bundle app.js and everything it imports, recursively.
   entry: {
-    app: resolve('./src/main.js'),
+    app: resolve('./src/main.js')
   },
   // this will output the production bundle to the dist folder
   // ideally, this will be hosted from a CDN or a static file server (nginx, apache)
-  // for production builds, the index.html will need to be configured to point to
-  // the production bundle
+  // for production builds, the index.html will need to be configured to point to the production bundle
   output: {
     path: resolve(__dirname, 'dist'),
-    filename: 'bundle.js',
+    filename: 'bundle.js'
   },
   devServer: {
-    // redirect api calls to backend server
+    //redirect api calls to backend server
     proxy: {
-      '/api': {
-        target: `http://server:5000`,
-        secure: false,
+        '/api': {
+            target: 'http://server:5000',
+            secure: false
+        }
       },
-    },
   },
   devtool: 'source-map',
 
   resolve: {
     // Make src files outside of this dir resolve modules in our node_modules folder
-    modules: [resolve(__dirname, '.'), resolve(__dirname, 'node_modules'), 'node_modules'],
+    modules: [resolve(__dirname, '.'), resolve(__dirname, 'node_modules'), 'node_modules']
   },
 
   module: {
     rules: [
-      {
-        test: /\.js|.jsx$/,
+    {
+      test: /\.m?js$/,
+      exclude: /(node_modules|bower_components)/,
+      use: {
         loader: 'babel-loader',
-        include: join(__dirname, 'src'),
-        exclude: [/node_modules/],
-      },
-      {
-        // The example has some JSON data
-        test: /\.json$/,
-        loader: 'json-loader',
-        exclude: [/node_modules/],
-      },
-    ],
+        options: {
+          presets: ['@babel/preset-env'],
+          plugins: ['@babel/plugin-proposal-object-rest-spread']
+        }
+      }
+    }
+  ]
   },
 
   node: {
-    fs: 'empty',
+    fs: 'empty'
   },
 
   // Optional: Enables reading mapbox token from environment variable
   plugins: [
     new Dotenv(),
-    new webpack.EnvironmentPlugin(['REACT_APP_MAPBOX_ACCESS_TOKEN']),
-  ],
+    new webpack.EnvironmentPlugin(['REACT_APP_MAPBOX_ACCESS_TOKEN'])
+  ]
 };
 
 // This line enables bundling against src in this repo rather than installed deck.gl module
-/* eslint-disable-next-line global-require, import/no-unresolved */
-module.exports = env => (env ? require('../webpack.config.local')(CONFIG, __dirname)(env) : CONFIG);
+module.exports = env => {
+  return env ? require('../webpack.config.local')(CONFIG, __dirname)(env) : CONFIG;
+};
