@@ -9,25 +9,32 @@ router.get('/countries', (req, res) => {
 });
 
 router.get('/countries/:countryCode/:adminLevel', (req, res) => {
-  const getHealthSites = (req.query.healthsites == 'true');
-  const fileName = `${req.params.countryCode}_${req.params.adminLevel}.json`;
+  let getHealthSites = (req.query.healthsites == 'true');
+  let getSchoolData = (req.query.schools == 'true');
+  let countryCode = req.params.countryCode
+  const fileName = `${countryCode}_${req.params.adminLevel}.json`;
   helperShapefile.sendCountryShapefile(fileName)
     .then(shapedata => {
-      if (getHealthSites) {
-        helperShapefile.sendCountryHealthSites(req.params.countryCode)
-          .then(healthsites => {
-            res.send({
-              shapedata,
-              healthsites
-            });
-        }).catch(err => {
-          console.log(err)
-          res.send({ shapedata });
-        })
-      } else {
-        res.send({ shapedata });
+      if (getHealthSites && !getSchoolData) {
+        return helperShapefile.sendCountryHealthSites(countryCode, shapedata);
+      } else if (!getHealthSites && getSchoolData) {
+        return helperShapefile.sendCountrySchoolData(countryCode, shapedata);
+      } else if(getHealthSites && getSchoolData) {
+        return helperShapefile.sendCountryHealthSites(countryCode, shapedata)
+          .then(ctryAndShapeData =>
+            helperShapefile.sendCountrySchoolData(countryCode, ctryAndShapeData)
+          );
+      }else {
+        res.send({ shapedata: shapedata });
       }
     })
+    .then((results) => {
+      res.send(results);
+    })
+    .catch(err => {
+      console.log(err)
+      res.send({ shapedata });
+    });
 });
 
 module.exports = router;

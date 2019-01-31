@@ -28,6 +28,12 @@ module.exports = {
       key1: 'asdf',
        //key1: 'asdf',
       containerName: 'healthsites'
+    },
+    schools: {
+      storageAccount: 'magicboxdata',
+      key1: 'asdf',
+       //key1: 'asdf',
+      containerName: 'schools-osm'
     }
   }
 }

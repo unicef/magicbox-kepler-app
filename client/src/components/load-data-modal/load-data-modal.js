@@ -216,12 +216,20 @@ class LoadDataModal extends Component {
     let countryCode = getSelectedValue(countryDD);
     let adminLevel = getSelectedValue(adminDD);
     let getHealthSites = form.elements["get-health-sites"].checked;
-    fetch(`/api/shapefiles/countries/${countryCode}/${adminLevel}?healthsites=${getHealthSites}`)
+    let getSchools = form.elements["get-schools"].checked;
+    fetch(`/api/shapefiles/countries/${countryCode}/${adminLevel}?healthsites=${getHealthSites}&schools=${getSchools}`)
     .then(res => res.json())
     .then(t => {
       this.uploadShapefiles(t.shapedata, countryCode, adminLevel);
       if (getHealthSites) {
-        this.uploadHealthSites (t.healthsites, countryCode);
+        let id = `Health sites-${countryCode}`;
+        let label = `healthsites.io-${countryCode}`;
+        this.uploadCSVData (t.healthsites, id, label);
+      }
+      if (getSchools) {
+        let id = `Schools-${countryCode}`;
+        let label = `schools.io-${countryCode}`;
+        this.uploadCSVData (t.schools, id, label);
       }
     })
     .catch(err => console.log(err));
@@ -243,13 +251,13 @@ class LoadDataModal extends Component {
     this.props.dispatch(addDataToMap(dataSets));
   }
 
-  uploadHealthSites = (healthdata, countryCode) => {
+  uploadCSVData = (healthdata, id, label) => {
     let dataSets = {
       datasets: [
         {
           info: {
-            id: `Health sites-${countryCode}`,
-            label: `healthsites.io-${countryCode}`
+            id: id,
+            label: label
           },
           data: Processors.processCsvData(healthdata)
         }
