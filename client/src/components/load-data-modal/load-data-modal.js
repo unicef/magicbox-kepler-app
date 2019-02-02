@@ -329,21 +329,23 @@ class LoadDataModal extends Component {
             </StyledSpinner>
           ) : (
               <div>
-                {loadingMethod.id !== 'sample' ? (
+                {loadingMethod.id !== 'upload' ? (
                   <Tabs
                     method={loadingMethod.id}
                     toggleMethod={this.props.onSetLoadingMethod}
                   />
                 ) : null}
                 {loadingMethod.id === 'upload' ? (
-                  <FileUpload onFileUpload={this.props.onFileUpload} />
-                ) : null}
-                {loadingMethod.id === 'sample' ? (
-                  <div className="gallery">
+                  <div>
                     <BackLink onClick={() => this.props.onSetLoadingMethod(previousMethod.id)}>
                       <Icons.LeftArrow height="12px" />
                       <span>Back</span>
                     </BackLink>
+                    <FileUpload onFileUpload={this.props.onFileUpload} />
+                  </div>
+                ) : null}
+                {loadingMethod.id === 'sample' ? (
+                  <div className="gallery">
                     <SampleMapGallery
                       sampleData={currentOption}
                       sampleMaps={sampleMaps}
@@ -379,7 +381,7 @@ const Tabs = ({ method, toggleMethod }) => (
     <div className="load-data-modal__tab__inner">
       {LOADING_METHODS.map(
         ({ id, label }) =>
-          id !== 'sample' ? (
+          id !== 'upload' ? (
             <div
               className={classnames('load-data-modal__tab__item', {
                 active: method && id === method
@@ -392,14 +394,14 @@ const Tabs = ({ method, toggleMethod }) => (
           ) : null
       )}
     </div>
-    <TrySampleData onClick={() => toggleMethod(QUERY_TYPES.sample)} />
+    <TrySampleData onClick={() => toggleMethod(QUERY_TYPES.upload)} />
   </ModalTab>
 );
 
 const TrySampleData = ({ onClick }) => (
   <StyledTrySampleData className="try-sample-data">
     <div className="demo-map-title">
-      <div className="demo-map-label">Select borderfile from</div>
+      <div className="demo-map-label">Load Your Data</div>
       <div className="demo-map-action" onClick={onClick}>
         <span>MagicBox</span>
         <Icons.ArrowRight height="16px" />

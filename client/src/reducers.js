@@ -40,7 +40,7 @@ const initialAppState = {
   appName: 'example',
   loaded: false,
   loadingMethod: DEFAULT_LOADING_METHOD,
-  currentOption: DEFAULT_LOADING_METHOD.options[0],
+  currentOption: LOADING_METHODS[0].options[0],
   previousMethod: null,
   sampleMaps: [], // this is used to store sample maps fetch from a remote json file
   isMapLoading: false // determine whether we are loading a sample map
