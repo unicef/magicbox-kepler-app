@@ -9,32 +9,35 @@ router.get('/countries', (req, res) => {
 });
 
 router.get('/countries/:countryCode/:adminLevel', (req, res) => {
-  let getHealthSites = (req.query.healthsites == 'true');
-  let getSchoolData = (req.query.schools == 'true');
   let countryCode = req.params.countryCode
   const fileName = `${countryCode}_${req.params.adminLevel}.json`;
-  helperShapefile.sendCountryShapefile(fileName)
-    .then(shapedata => {
-      if (getHealthSites && !getSchoolData) {
-        return helperShapefile.sendCountryHealthSites(countryCode, shapedata);
-      } else if (!getHealthSites && getSchoolData) {
-        return helperShapefile.sendCountrySchoolData(countryCode, shapedata);
-      } else if(getHealthSites && getSchoolData) {
-        return helperShapefile.sendCountryHealthSites(countryCode, shapedata)
-          .then(ctryAndShapeData =>
-            helperShapefile.sendCountrySchoolData(countryCode, ctryAndShapeData)
-          );
-      }else {
-        res.send({ shapedata: shapedata });
-      }
-    })
-    .then((results) => {
-      res.send(results);
-    })
-    .catch(err => {
-      console.log(err)
-      res.send({ shapedata });
-    });
+
+  let promises = [
+    helperShapefile.getCountryShapefile(fileName)
+  ]
+
+  if (req.query.healthsites == 'true') {
+    promises.push(
+      helperShapefile.getPoints('healthsites', countryCode)
+    )
+  }
+  if (req.query.schools == 'true') {
+    promises.push(
+      helperShapefile.getPoints('schools', countryCode)
+    )
+  }
+
+  Promise.all(promises)
+  .then(values => {
+    const hash = values.reduce((h, k) => {
+                h[k.name] = k.data
+                return h
+              }, {})
+              console.log(hash)
+    res.send(
+      hash
+    );
+  })
 });
 
 module.exports = router;
