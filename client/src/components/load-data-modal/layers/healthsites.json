@@ -1,0 +1,65 @@
+{
+  "id": "90xxnxn",
+  "type": "point",
+  "config": {
+    "dataId": "Health sites-CMR",
+    "label": "Health sites",
+    "color": [
+      23,
+      184,
+      190,
+      255
+    ],
+    "columns": {
+      "lat": "lat",
+      "lng": "lon",
+      "altitude": null
+    },
+    "isVisible": true,
+    "visConfig": {
+      "radius": 10,
+      "fixedRadius": false,
+      "opacity": 0.8,
+      "outline": false,
+      "thickness": 2,
+      "colorRange": {
+        "name": "Global Warming",
+        "type": "sequential",
+        "category": "Uber",
+        "colors": [
+          "#5A1846",
+          "#900C3F",
+          "#C70039",
+          "#E3611C",
+          "#F1920E",
+          "#FFC300"
+        ]
+      },
+      "radiusRange": [
+        0,
+        50
+      ],
+      "hi-precision": false
+    },
+    "textLabel": {
+      "field": null,
+      "color": [
+        255,
+        255,
+        255
+      ],
+      "size": 50,
+      "offset": [
+        0,
+        0
+      ],
+      "anchor": "middle"
+    }
+  },
+  "visualChannels": {
+    "colorField": null,
+    "colorScale": "quantile",
+    "sizeField": null,
+    "sizeScale": "linear"
+  }
+}

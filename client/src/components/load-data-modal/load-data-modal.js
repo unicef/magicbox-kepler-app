@@ -32,10 +32,17 @@ import { addDataToMap } from 'kepler.gl/actions';
 import * as topojson from 'topojson-client';
 import { LOADING_METHODS, QUERY_TYPES } from '../../constants/default-settings';
 import Processors from 'kepler.gl/processors';
-import config from '../../../config';
+import KeplerGlSchema from 'kepler.gl/schemas';
+// import config from '../../../config';
 import CountryShapefileSelect from './country-shapefile-select';
 import SampleMapGallery from './sample-map-gallery';
 import { shapefileHashEnglish } from './english-shapefile-hash';
+let config = require('./layers/base')
+let layerSchools = require('./layers/schools')
+let layerHealthsites = require('./layers/healthsites')
+let layerBorderFile = require('./layers/borderfile')
+
+
 const propTypes = {
   // query options
   loadingMethod: PropTypes.object.isRequired,
@@ -222,13 +229,13 @@ class LoadDataModal extends Component {
     .then(t => {
       this.uploadShapefiles(t.shapedata, countryCode, adminLevel);
       if (getHealthSites) {
-        let id = `Health sites-${countryCode}`;
-        let label = `healthsites.io-${countryCode}`;
+        let id = `healthsites-${countryCode}`;
+        let label = `healthsites-${countryCode}`;
         this.uploadCSVData (t.healthsites, id, label);
       }
       if (getSchools) {
-        let id = `Schools-${countryCode}`;
-        let label = `schools.io-${countryCode}`;
+        let id = `schools-${countryCode}`;
+        let label = `schools-${countryCode}`;
         this.uploadCSVData (t.schools, id, label);
       }
     })
@@ -237,33 +244,51 @@ class LoadDataModal extends Component {
 
   uploadShapefiles = (shapedata, countryCode, adminLevel) => {
     let geojson = topojson.feature(shapedata, shapedata.objects[countryCode + '_' + adminLevel]);
-    let dataSets = {
-      datasets: [
-        {
-          info: {
-            id: `shapefile-${countryCode}-${adminLevel}`,
-            label: `Shapefile for ${countryCode} L-${adminLevel}`
-          },
-          data: Processors.processGeojson(geojson)
-        }
-      ]
+    const dataset = {
+      info: {
+        id: `borderfile-${countryCode}-${adminLevel}`,
+        label: `borderfile ${countryCode} L-${adminLevel}`
+      },
+      data: Processors.processGeojson(geojson)
     };
-    this.props.dispatch(addDataToMap(dataSets));
+    layerHealthsites.config.dataId = `healthsites-${countryCode}`
+    layerHealthsites.config.label = `healthsites-${countryCode}`
+    layerSchools.config.dataId = `schools-${countryCode}`
+    layerSchools.config.label = `schools-${countryCode}`
+    layerBorderFile.config.dataId = `borderfile-${countryCode}-${adminLevel}`
+    layerBorderFile.config.label = `borderfile ${countryCode} L-${adminLevel}`
+    console.log(config)
+    console.log(this.props)
+    console.log('bbbbbb')
+    console.log(KeplerGlSchema)
+    console.log('lkkkk')
+    console.log(this.props.demo)
+
+
+    console.log("___==++=")
+    console.log(config.config.visState.layers)
+    //console.log(tempConfig)
+     config.config.visState.layers = [layerHealthsites, layerSchools, layerBorderFile]
+    // [layerHealthsites, layerSchools, layerBorderFile].forEach(l => {
+    //   config.config.visState.layers.push(l)
+    // })
+
+      // console.log(this.props.demo.keplerGL)
+      // let tempConfig = KeplerGlSchema.getConfigToSave(this.props.demo.keplerGL)
+
+
+    this.props.dispatch(addDataToMap({datasets: dataset, config}));
   }
 
   uploadCSVData = (healthdata, id, label) => {
-    let dataSets = {
-      datasets: [
-        {
-          info: {
-            id: id,
-            label: label
-          },
-          data: Processors.processCsvData(healthdata)
-        }
-      ]
-    };
-    this.props.dispatch(addDataToMap(dataSets));
+    let dataset = {
+      info: {
+        id: id,
+        label: label
+      },
+      data: Processors.processCsvData(healthdata)
+    }
+    this.props.dispatch(addDataToMap({datasets: dataset}));
   };
 
   componentDidMount() {

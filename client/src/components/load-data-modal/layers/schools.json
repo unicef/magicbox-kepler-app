@@ -1,0 +1,68 @@
+{
+  "id": "pt0tinf",
+  "type": "point",
+  "config": {
+    "dataId": "Schools-CMR",
+    "label": "Schools",
+    "color": [
+      246,
+      209,
+      138,
+      255
+    ],
+    "columns": {
+      "lat": "@lat",
+      "lng": "@lon",
+      "altitude": null
+    },
+    "isVisible": true,
+    "visConfig": {
+      "radius": 10,
+      "fixedRadius": false,
+      "opacity": 0.8,
+      "outline": false,
+      "thickness": 2,
+      "colorRange": {
+        "name": "Global Warming",
+        "type": "sequential",
+        "category": "Uber",
+        "colors": [
+          "#5A1846",
+          "#900C3F",
+          "#C70039",
+          "#E3611C",
+          "#F1920E",
+          "#FFC300"
+        ]
+      },
+      "radiusRange": [
+        0,
+        50
+      ],
+      "hi-precision": false
+    },
+    "textLabel": {
+      "field": null,
+      "color": [
+        255,
+        255,
+        255
+      ],
+      "size": 50,
+      "offset": [
+        0,
+        0
+      ],
+      "anchor": "middle"
+    }
+  },
+  "visualChannels": {
+    "colorField": {
+      "name": "Facilities",
+      "type": "string"
+    },
+    "colorScale": "ordinal",
+    "sizeField": null,
+    "sizeScale": "linear"
+  }
+}
