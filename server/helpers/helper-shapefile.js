@@ -23,7 +23,7 @@ function getIndicator(indicator, countryName) {
 }
 
 module.exports = {
-  sendCountryShapefile: countryName => {
+  getCountryShapefile: countryName => {
     return new Promise((resolve, reject) => {
       getIndicator('topojson', countryName)
       .then(borderFile => {
@@ -43,57 +43,38 @@ module.exports = {
               g.properties[extraIndicators[index]] = dataset[i].sum
             })
           })
-          return resolve(borderFile)
+          return resolve({
+            name: 'shapedata',
+            data: borderFile
+          });
         });
       })
     })
   },
 
-  sendCountryHealthSites: (countryName, shapedata) => {
+  getPoints: (kind, countryName) => {
     return new Promise((resolve, reject) => {
       let file = `${countryName}.csv`;
-      if (has_health_creds) {
-        blobFetcher.fetchBlob('healthsites', file)
-          .then(healthData => {
-            return resolve(healthData);
+      if (has_creds) {
+        blobFetcher.fetchBlob(kind, file)
+          .then(poinsData => {
+            return resolve({
+              name: kind,
+              data: poinsData
+            })
           })
           .catch(err => {
-            reject(err)
+          return resolve(null)
           })
       } else {
-        let path = `./public/healthsites/${file}`;
+        let path = `./public/${kind}/${file}`;
         fs.readFile(path, {encoding: 'utf8'}, (err, file) => {
-          resolve({
-            shapedata: shapedata,
-            healthsites: file
-          });
+          return resolve({
+            name: kind,
+            data: file
+          })
         })
       }
     });
   },
-
-  sendCountrySchoolData: (countryCode, data) => {
-    return new Promise((resolve, reject) => {
-        let file = `${countryCode}.csv`;
-        if (has_school_cred) {
-            blobFetcher.fetchBlob('schools', file)
-              .then(schoolData => {
-                  return resolve(schoolData);
-              });
-        } else {
-            let path = `./public/schools/${file}`;
-            fs.readFile(path, {encoding: 'utf8'}, (err, file) => {
-              if(data['shapedata'] == undefined) {
-                resolve({
-                  shapedata: data,
-                  schools: file
-                })
-              } else {
-                data['schools'] = file;
-                resolve(data);
-              }
-            })
-        }
-    })
-}
 }
