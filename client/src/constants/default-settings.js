@@ -27,7 +27,7 @@ export const ASSETS_URL = 'https://d1a3f4spazzrp4.cloudfront.net/kepler.gl/';
 export const DATA_URL = 'https://raw.githubusercontent.com/uber-web/kepler.gl-data/master/';
 
 export const QUERY_TYPES = keyMirror({
-  file: null,
+  upload: null,
   sample: null
 });
 
@@ -43,7 +43,7 @@ export const LOADING_METHODS = [
     options: [
       {
         id: QUERY_OPTIONS.csv,
-        queryType: QUERY_TYPES.file,
+        queryType: QUERY_TYPES.upload,
         label: 'Csv',
         icon: 'note',
         description:
@@ -52,7 +52,7 @@ export const LOADING_METHODS = [
       },
       {
         id: QUERY_OPTIONS.geojson,
-        queryType: QUERY_TYPES.file,
+        queryType: QUERY_TYPES.upload,
         label: 'Geojson',
         icon: 'note',
         description:
@@ -69,4 +69,4 @@ export const LOADING_METHODS = [
   }
 ];
 
-export const DEFAULT_LOADING_METHOD = LOADING_METHODS[0];
+export const DEFAULT_LOADING_METHOD = LOADING_METHODS[1];
