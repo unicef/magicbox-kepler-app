@@ -64,7 +64,7 @@ module.exports = {
             })
           })
           .catch(err => {
-            reject(err)
+          return resolve(null)
           })
       } else {
         let path = `./public/${kind}/${file}`;

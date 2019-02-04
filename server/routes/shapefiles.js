@@ -30,10 +30,11 @@ router.get('/countries/:countryCode/:adminLevel', (req, res) => {
   Promise.all(promises)
   .then(values => {
     const hash = values.reduce((h, k) => {
-                h[k.name] = k.data
-                return h
-              }, {})
-              console.log(hash)
+      if(k) {
+        h[k.name] = k.data
+      }
+      return h
+    }, {})
     res.send(
       hash
     );
