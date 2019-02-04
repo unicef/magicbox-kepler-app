@@ -42,6 +42,9 @@ const CountryShapefileSelect = ({ adminList, countryList, onAdminChange, onCount
           <div>
             <input type="checkbox" name="get-health-sites" value="true" />Get health sites
           </div>
+          <div>
+            <input type="checkbox" name="get-schools" value="true" />Get schools
+          </div>
         </div>
       }</div>
       <div>{submitReady && <input type="submit" value="Submit" />}</div>

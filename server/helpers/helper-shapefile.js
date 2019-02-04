@@ -3,6 +3,7 @@ const config = require('../azure/config');
 const fs = require('fs')
 let has_creds = config.azure.topojson.key1.match(/\d/)
 let has_health_creds = config.azure.healthsites.key1.match(/\d/);
+let has_school_cred = config.azure.schools.key1.match(/\d/);
 const blobFetcher = require('../azure/blob-fetcher');
 
 function getIndicator(indicator, countryName) {
@@ -22,7 +23,7 @@ function getIndicator(indicator, countryName) {
 }
 
 module.exports = {
-  sendCountryShapefile: countryName => {
+  getCountryShapefile: countryName => {
     return new Promise((resolve, reject) => {
       getIndicator('topojson', countryName)
       .then(borderFile => {
@@ -42,28 +43,38 @@ module.exports = {
               g.properties[extraIndicators[index]] = dataset[i].sum
             })
           })
-          return resolve(borderFile)
+          return resolve({
+            name: 'shapedata',
+            data: borderFile
+          });
         });
       })
     })
   },
-  sendCountryHealthSites: countryName => {
+
+  getPoints: (kind, countryName) => {
     return new Promise((resolve, reject) => {
       let file = `${countryName}.csv`;
-      if (has_health_creds) {
-        blobFetcher.fetchBlob('healthsites', file)
-          .then(healthData => {
-            return resolve(healthData);
+      if (has_creds) {
+        blobFetcher.fetchBlob(kind, file)
+          .then(poinsData => {
+            return resolve({
+              name: kind,
+              data: poinsData
+            })
           })
           .catch(err => {
-            reject(err)
+          return resolve(null)
           })
       } else {
-        let path = `./public/healthsites/${file}`;
+        let path = `./public/${kind}/${file}`;
         fs.readFile(path, {encoding: 'utf8'}, (err, file) => {
-          resolve(file);
+          return resolve({
+            name: kind,
+            data: file
+          })
         })
       }
     });
-  }
+  },
 }

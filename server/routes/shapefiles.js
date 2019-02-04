@@ -9,25 +9,36 @@ router.get('/countries', (req, res) => {
 });
 
 router.get('/countries/:countryCode/:adminLevel', (req, res) => {
-  const getHealthSites = (req.query.healthsites == 'true');
-  const fileName = `${req.params.countryCode}_${req.params.adminLevel}.json`;
-  helperShapefile.sendCountryShapefile(fileName)
-    .then(shapedata => {
-      if (getHealthSites) {
-        helperShapefile.sendCountryHealthSites(req.params.countryCode)
-          .then(healthsites => {
-            res.send({
-              shapedata,
-              healthsites
-            });
-        }).catch(err => {
-          console.log(err)
-          res.send({ shapedata });
-        })
-      } else {
-        res.send({ shapedata });
+  let countryCode = req.params.countryCode
+  const fileName = `${countryCode}_${req.params.adminLevel}.json`;
+
+  let promises = [
+    helperShapefile.getCountryShapefile(fileName)
+  ]
+
+  if (req.query.healthsites == 'true') {
+    promises.push(
+      helperShapefile.getPoints('healthsites', countryCode)
+    )
+  }
+  if (req.query.schools == 'true') {
+    promises.push(
+      helperShapefile.getPoints('schools', countryCode)
+    )
+  }
+
+  Promise.all(promises)
+  .then(values => {
+    const hash = values.reduce((h, k) => {
+      if(k) {
+        h[k.name] = k.data
       }
-    })
+      return h
+    }, {})
+    res.send(
+      hash
+    );
+  })
 });
 
 module.exports = router;
