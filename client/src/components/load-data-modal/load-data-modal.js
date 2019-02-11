@@ -251,33 +251,57 @@ class LoadDataModal extends Component {
       },
       data: Processors.processGeojson(geojson)
     };
+    if (this.props.demo.keplerGl.map.visState.datasets) {
+      
+    }
+    let datasets = [dataset]
+    console.log(dataset)
+    let setslength = Object.keys(this.props.demo.keplerGl.map.visState.datasets).length
+    let i = 0
+    // Object.keys(this.props.demo.keplerGl.map.visState.datasets).forEach(k => {
+    while (i < setslength) {
+      let temp = this.props.demo.keplerGl.map.visState.datasets[Object.keys(this.props.demo.keplerGl.map.visState.datasets)[i]]
+      i++
+//       console.log(k)
+//       console.log(temp[k].data)
+// console.log(temp[k].allData)
+      let obj = {
+        info: {
+          id: temp.id,
+          label: temp.label
+        },
+        data: {
+          fields: temp.fields,
+          rows: temp.data
+        }
+      }
+      console.log(obj)
+      datasets.push(obj)
+      
+    }
+    // })
+    console.log(datasets)
     layerHealthsites.config.dataId = `healthsites-${countryCode}`
     layerHealthsites.config.label = `healthsites-${countryCode}`
     layerSchools.config.dataId = `schools-${countryCode}`
     layerSchools.config.label = `schools-${countryCode}`
+    layerSchools.id = `${countryCode.toLowerCase()}` + `${parseInt(Math.random(1) *10)}` + `${parseInt(Math.random(1) *10)}` + `${parseInt(Math.random(1) *10)}` + `${parseInt(Math.random(1) *10)}`
     layerBorderFile.config.dataId = `borderfile-${countryCode}-${adminLevel}`
     layerBorderFile.config.label = `borderfile ${countryCode} L-${adminLevel}`
-    console.log(config)
-    console.log(this.props)
-    console.log('bbbbbb')
-    console.log(KeplerGlSchema)
-    console.log('lkkkk')
-    console.log(this.props.demo)
 
-
-    console.log("___==++=")
-    console.log(config.config.visState.layers)
-    //console.log(tempConfig)
-     config.config.visState.layers = [layerHealthsites, layerSchools, layerBorderFile]
-    // [layerHealthsites, layerSchools, layerBorderFile].forEach(l => {
-    //   config.config.visState.layers.push(l)
-    // })
-
-      // console.log(this.props.demo.keplerGL)
-      // let tempConfig = KeplerGlSchema.getConfigToSave(this.props.demo.keplerGL)
-
-
-    this.props.dispatch(addDataToMap({datasets: dataset, config}));
+    // console.log(this.props.demo.keplerGL.map)
+    let tempConfig = KeplerGlSchema.getConfigToSave(this.props.demo.keplerGl.map)
+    // tempDatsets = this.props.demo.keplerGl.visState.datasets
+    
+        // this.props.dispatch(addDataToMap({datasets: dataset}));
+    // console.log(tempConfig)
+    // let layers = [layerHealthsites, layerSchools, layerBorderFile]
+    config.config.visState.layers = tempConfig.config.visState.layers
+    config.config.visState.layers.push(layerHealthsites)
+    config.config.visState.layers.push(layerSchools)
+    config.config.visState.layers.push(layerBorderFile)
+    
+    this.props.dispatch(addDataToMap({datasets, config}));
   }
 
   uploadCSVData = (healthdata, id, label) => {
