@@ -2,8 +2,8 @@
   "id": "90xxnxn",
   "type": "point",
   "config": {
-    "dataId": "Health sites-CMR",
-    "label": "Health sites",
+    "dataId": "healthsites-CMR",
+    "label": "healthsites-CMR",
     "color": [
       23,
       184,
@@ -23,17 +23,15 @@
       "outline": false,
       "thickness": 2,
       "colorRange": {
-        "name": "Global Warming",
-        "type": "sequential",
-        "category": "Uber",
+        "name": "ColorBrewer Set1-3",
+        "type": "qualitative",
+        "category": "ColorBrewer",
         "colors": [
-          "#5A1846",
-          "#900C3F",
-          "#C70039",
-          "#E3611C",
-          "#F1920E",
-          "#FFC300"
-        ]
+          "#e41a1c",
+          "#377eb8",
+          "#4daf4a"
+        ],
+        "reversed": false
       },
       "radiusRange": [
         0,
@@ -57,8 +55,11 @@
     }
   },
   "visualChannels": {
-    "colorField": null,
-    "colorScale": "quantile",
+    "colorField": {
+      "name": "type",
+      "type": "string"
+    },
+    "colorScale": "ordinal",
     "sizeField": null,
     "sizeScale": "linear"
   }
