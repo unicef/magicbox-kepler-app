@@ -75,6 +75,17 @@ const BackLink = styled.div`
   }
 `;
 
+const ShapeFile = styled.div`
+  hr {
+    margin-top: 40px;
+  }
+
+  p {
+    font-size: 13px;
+    color: #29323C;
+  }
+`;
+
 const ModalTab = styled.div`
   align-items: flex-end;
   display: flex;
@@ -252,7 +263,7 @@ class LoadDataModal extends Component {
       data: Processors.processGeojson(geojson)
     };
     if (this.props.demo.keplerGl.map.visState.datasets) {
-      
+
     }
     let datasets = [dataset]
     console.log(dataset)
@@ -277,7 +288,7 @@ class LoadDataModal extends Component {
       }
       console.log(obj)
       datasets.push(obj)
-      
+
     }
     // })
     console.log(datasets)
@@ -292,7 +303,7 @@ class LoadDataModal extends Component {
     // console.log(this.props.demo.keplerGL.map)
     let tempConfig = KeplerGlSchema.getConfigToSave(this.props.demo.keplerGl.map)
     // tempDatsets = this.props.demo.keplerGl.visState.datasets
-    
+
         // this.props.dispatch(addDataToMap({datasets: dataset}));
     // console.log(tempConfig)
     // let layers = [layerHealthsites, layerSchools, layerBorderFile]
@@ -300,7 +311,7 @@ class LoadDataModal extends Component {
     config.config.visState.layers.push(layerHealthsites)
     config.config.visState.layers.push(layerSchools)
     config.config.visState.layers.push(layerBorderFile)
-    
+
     this.props.dispatch(addDataToMap({datasets, config}));
   }
 
@@ -370,11 +381,7 @@ class LoadDataModal extends Component {
                 ) : null}
                 {loadingMethod.id === 'sample' ? (
                   <div className="gallery">
-                    <SampleMapGallery
-                      sampleData={currentOption}
-                      sampleMaps={sampleMaps}
-                      onLoadSampleData={this.props.onLoadSampleData} />
-                    <div className="shapefile-gallery">
+                    <ShapeFile className="shapefile-gallery">
                       {this.state.isShapefileListLoading ? (
                         <StyledSpinner>
                           <LoadingSpinner />
@@ -389,7 +396,13 @@ class LoadDataModal extends Component {
                             showAdmins={this.state.countrySelected}
                             submitReady={this.state.submitReady} />
                         )}
-                    </div>
+                    <hr />
+                    <p>Here are a few examples of data visualization</p>
+                    </ShapeFile>
+                    <SampleMapGallery
+                      sampleData={currentOption}
+                      sampleMaps={sampleMaps}
+                      onLoadSampleData={this.props.onLoadSampleData} />
                   </div>
                 ) : null}
               </div>)
@@ -413,7 +426,7 @@ const Tabs = ({ method, toggleMethod }) => (
               key={id}
               onClick={() => toggleMethod(id)}
             >
-              <div>{label}</div>
+              <div>{id=='sample'?'':label}</div>
             </div>
           ) : null
       )}

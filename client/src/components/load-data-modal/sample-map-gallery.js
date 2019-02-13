@@ -43,7 +43,7 @@ const StyledSampleMap = styled.div`
   line-height: 22px;
   width: 30%;
   max-width: 480px;
-  margin-bottom: 50px;
+  margin-bottom: 20px;
   .sample-map__image {
     border-radius: 4px;
     overflow: hidden;
