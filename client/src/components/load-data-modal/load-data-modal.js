@@ -438,9 +438,9 @@ const Tabs = ({ method, toggleMethod }) => (
 const TrySampleData = ({ onClick }) => (
   <StyledTrySampleData className="try-sample-data">
     <div className="demo-map-title">
-      <div className="demo-map-label">Load Your Data</div>
+
       <div className="demo-map-action" onClick={onClick}>
-        <span>MagicBox</span>
+      <div className="demo-map-label">Load Your Own Data</div>
         <Icons.ArrowRight height="16px" />
       </div>
     </div>

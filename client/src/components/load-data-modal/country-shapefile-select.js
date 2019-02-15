@@ -87,7 +87,7 @@ const CountryShapefileSelect = ({ adminList, countryList, onAdminChange, onCount
           </div>
         </div>
       </div>
-      <div><input type="submit" value="GENERATE" disabled={submitReady?"":"disabled"} /></div>
+      <div><input type="submit" value="GENERATE" style={{cursor:'pointer'}} disabled={submitReady?"":"disabled"} /></div>
     </VisualizationForm>
   </div>
 );
