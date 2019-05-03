@@ -17,14 +17,14 @@
 ### Run
 
 ```
-export MapboxAccessToken=<your_mapbox_token>
+vi ./client/.env # update REACT_APP_MAPBOX_ACCESS_TOKEN
 bash setup.sh
 ````
 ### Docker
 
 ````
 bash setup.sh
-export MapboxAccessToken=<your_mapbox_token>
+vi ./client/.env # update REACT_APP_MAPBOX_ACCESS_TOKEN
 docker-compose up
 ````
 
