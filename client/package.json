@@ -1,9 +1,11 @@
 {
   "scripts": {
-    "build": "webpack",
+    "build": "webpack --mode production",
     "start": "webpack-dev-server --host 0.0.0.0 --disableHostCheck true --inline --content-base .",
     "start-local": "webpack-dev-server --env.es6 --progress --hot --open",
-    "start-local-es5": "webpack-dev-server --env.local --progress --hot --open"
+    "start-local-es5": "webpack-dev-server --env.local --progress --hot --open",
+    "docker-build-multibuild": "docker build -t unicef/magicbox-kepler-ui . --file Dockerfile-k8s-multibuild",
+    "docker-build": "npm run build && docker build -t unicef/magicbox-kepler-ui . --file Dockerfile-k8s-only-nginx"
   },
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.2.3",

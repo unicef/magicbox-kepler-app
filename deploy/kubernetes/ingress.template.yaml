@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: magicbox-kepler
+spec:
+  rules:
+  - host: magicbox-kepler.example.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: magicbox-kepler
+          servicePort: 80
+      - path: /api
+        backend:
+          serviceName: magicbox-kepler
+          servicePort: 5000
