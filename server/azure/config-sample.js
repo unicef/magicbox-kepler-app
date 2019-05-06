@@ -7,12 +7,33 @@ module.exports = {
   connectionSettings: {
     host: 'ip_address',
     port: 22, // normal is port 22
-    username: 'username',
-    password: 'fill yours here'
+    username: '[fill yours here]',
+    password: '[fill yours here]'
   },
   azure: {
-    storageAccount: 'topojson',
-    key1: 'asdf', // Azure storage key
-    containerName: 'gadm2-8'
+    topojson: {
+      storageAccount: 'topojson',
+      key1: 'asdf',
+       //key1: 'asdf',
+      containerName: 'gadm3-6'
+    },
+    population: {
+      storageAccount: 'magicboxdata',
+      key1: 'asdf',
+       //key1: 'asdf',
+      containerName: ''
+    },
+    healthsites: {
+      storageAccount: 'magicboxdata',
+      key1: 'asdf',
+       //key1: 'asdf',
+      containerName: 'healthsites'
+    },
+    schools: {
+      storageAccount: 'magicboxdata',
+      key1: 'asdf',
+       //key1: 'asdf',
+      containerName: 'schools-osm'
+    }
   }
 }

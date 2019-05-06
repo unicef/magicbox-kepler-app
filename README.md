@@ -14,12 +14,7 @@
 
 ![screenshot](screenshot.png)
 
-### Run
 
-```
-vi ./client/.env # update REACT_APP_MAPBOX_ACCESS_TOKEN
-bash setup.sh
-````
 ### Docker
 
 ````

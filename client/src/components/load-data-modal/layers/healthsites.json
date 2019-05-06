@@ -1,0 +1,66 @@
+{
+  "id": "90xxnxn",
+  "type": "point",
+  "config": {
+    "dataId": "healthsites-CMR",
+    "label": "healthsites-CMR",
+    "color": [
+      23,
+      184,
+      190,
+      255
+    ],
+    "columns": {
+      "lat": "lat",
+      "lng": "lon",
+      "altitude": null
+    },
+    "isVisible": true,
+    "visConfig": {
+      "radius": 10,
+      "fixedRadius": false,
+      "opacity": 0.8,
+      "outline": false,
+      "thickness": 2,
+      "colorRange": {
+        "name": "ColorBrewer Set1-3",
+        "type": "qualitative",
+        "category": "ColorBrewer",
+        "colors": [
+          "#e41a1c",
+          "#377eb8",
+          "#4daf4a"
+        ],
+        "reversed": false
+      },
+      "radiusRange": [
+        0,
+        50
+      ],
+      "hi-precision": false
+    },
+    "textLabel": {
+      "field": null,
+      "color": [
+        255,
+        255,
+        255
+      ],
+      "size": 50,
+      "offset": [
+        0,
+        0
+      ],
+      "anchor": "middle"
+    }
+  },
+  "visualChannels": {
+    "colorField": {
+      "name": "type",
+      "type": "string"
+    },
+    "colorScale": "ordinal",
+    "sizeField": null,
+    "sizeScale": "linear"
+  }
+}

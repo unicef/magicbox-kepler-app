@@ -1,32 +1,45 @@
 module.exports = {
   fetch_default_user_map: (addDataToMap, props) => {
-    let fetch_defaut_path = '/api/maps/default/'
-    let user = 'default'
+    console.log(props.user)
+    let token = 'default'
     if (props.user) {
-      if (props.user.displayableId) {
-       user = props.user.displayableId
+      if (props.user.tokenStr) {
+       token = props.user.tokenStr
       }
     }
-    fetch_defaut_path += user
-    fetch(fetch_defaut_path)
-      .then(res => res.json()) // transform the data into json
+    const url = '/api/maps/default';
+    fetch(url, {
+      method: 'GET',
+      headers: {
+        'x-access-token' : `Bearer ${token}`,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(response => response.json())
       .then(obj => {
-        console.log('Arrived')
-        console.log(obj)
-        let dataSets = {datasets: obj.datasets.map(s => { return {
-          info: {
-            id: s.data.id,
-            label: s.data.label,
-            color: s.data.color
-          },
-          data: {
-            fields: s.data.fields,
-            rows: s.data.allData
-          }
-        }}), config: obj.config}
+        if (!obj.error) {
+          let dataSets = {
+            datasets: obj.datasets.map(s => {
+              return {
+                info: {
+                  id: s.data.id,
+                  label: s.data.label,
+                  color: s.data.color
+                },
+                data: {
+                  fields: s.data.fields,
+                  rows: s.data.allData
+                }
+              }
+            }),
+          config: obj.config
+        }
 
-        // addDataToMap action to inject dataset into kepler.gl instance
-        props.dispatch(addDataToMap(dataSets))
+          // addDataToMap action to inject dataset into kepler.gl instance
+          props.dispatch(addDataToMap(dataSets))
+
+        }
       })
       .catch(err => console.log(err))
   }

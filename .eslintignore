@@ -1,0 +1,8 @@
+node_modules
+client/src/components/custom-panel-header.js
+client/src/helpers/helper-component-did-mount.js
+client/src/factories/custom-data-table-modal.js
+client/src/components/load-data-modal/country-shapefile-select.js
+client/src/components/load-data-modal/load-data-modal.js
+server/helpers/helper-shapefile-country.js
+server/helpers/helper-shapefile.js

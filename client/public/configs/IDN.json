@@ -1,0 +1,127 @@
+{
+  "version": "v1",
+  "config": {
+    "visState": {
+      "filters": [],
+      "layers": [
+        {
+          "id": "vpiqo9n",
+          "type": "hexagon",
+          "config": {
+            "dataId": "indonesia-healthsites",
+            "label": "Health sites",
+            "color": [
+              23,
+              184,
+              190
+            ],
+            "columns": {
+              "lat": "lat",
+              "lng": "lon"
+            },
+            "isVisible": true,
+            "visConfig": {
+              "opacity": 0.8,
+              "worldUnitSize": 4.0486,
+              "resolution": 8,
+              "colorRange": {
+                "name": "ColorBrewer Set1-3",
+                "type": "qualitative",
+                "category": "ColorBrewer",
+                "colors": [
+                  "#e41a1c",
+                  "#377eb8",
+                  "#4daf4a"
+                ],
+                "reversed": false
+              },
+              "coverage": 1,
+              "sizeRange": [
+                0,
+                500
+              ],
+              "percentile": [
+                0,
+                100
+              ],
+              "elevationPercentile": [
+                0,
+                100
+              ],
+              "elevationScale": 42.5,
+              "hi-precision": false,
+              "colorAggregation": "mode",
+              "sizeAggregation": "count",
+              "enable3d": true
+            },
+            "textLabel": {
+              "field": null,
+              "color": [
+                255,
+                255,
+                255
+              ],
+              "size": 50,
+              "offset": [
+                0,
+                0
+              ],
+              "anchor": "middle"
+            }
+          },
+          "visualChannels": {
+            "colorField": {
+              "name": "type",
+              "type": "string"
+            },
+            "colorScale": "ordinal",
+            "sizeField": null,
+            "sizeScale": "linear"
+          }
+        }
+      ],
+      "interactionConfig": {
+        "tooltip": {
+          "fieldsToShow": {
+            "f5amhc8qs": [
+              "uuid",
+              "upstream",
+              "source",
+              "name",
+              "version"
+            ]
+          },
+          "enabled": true
+        },
+        "brush": {
+          "size": 0.5,
+          "enabled": false
+        }
+      },
+      "layerBlending": "normal",
+      "splitMaps": []
+    },
+    "mapState": {
+      "bearing": -25.28257686676428,
+      "dragRotate": true,
+      "latitude": -6.962623219231603,
+      "longitude": 115.09005055873044,
+      "pitch": 57.853170252730955,
+      "zoom": 4.972155539935855,
+      "isSplit": false
+    },
+    "mapStyle": {
+      "styleType": "dark",
+      "topLayerGroups": {},
+      "visibleLayerGroups": {
+        "label": true,
+        "road": true,
+        "border": false,
+        "building": true,
+        "water": true,
+        "land": true
+      },
+      "mapStyles": {}
+    }
+  }
+}

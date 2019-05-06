@@ -1,32 +1,32 @@
 [
   {
-    "id": "earthquakes",
-    "label": "California Earthquakes",
+    "id": "indonesia-healthsites",
+    "label": "Health sites in Indonesia",
     "queryType": "sample",
-    "imageUrl": "https://s3.amazonaws.com/uber-static/kepler.gl/sample/earthquakes.png",
-    "description": "Location, maginitude and magtype of 2.5+ magnitude earthquakes in california.",
-    "size": 54936,
-    "dataUrl": "https://raw.githubusercontent.com/uber-web/kepler.gl-data/master/earthquakes/data.csv",
-    "configUrl": "https://raw.githubusercontent.com/uber-web/kepler.gl-data/master/earthquakes/config.json"
+    "imageUrl": "/public/images/IDN.png",
+    "description": "healthsites.io Indonesia",
+    "size": 4425,
+    "dataUrl": "/public/healthsites/IDN.csv",
+    "configUrl": "/public/configs/IDN.json"
   },
   {
-    "id": "sfcontour",
-    "label": "San Francisco elevation contours",
+    "id": "india-population",
+    "label": "India population",
     "queryType": "sample",
-    "imageUrl": "https://s3.amazonaws.com/uber-static/kepler.gl/sample/sfcontour.png",
-    "description": "Elevation contours of San Francisco mainland and Treasure Island/Yerba Island.",
-    "size": 13598,
-    "dataUrl": "https://raw.githubusercontent.com/uber-web/kepler.gl-data/master/sfcontour/data.json",
-    "configUrl": "https://raw.githubusercontent.com/uber-web/kepler.gl-data/master/sfcontour/config.json"
+    "imageUrl": "/public/images/IND.png",
+    "description": "",
+    "size": 2340,
+    "dataUrl": "/public/borders/IND.csv",
+    "configUrl": "/public/configs/IND.json"
   },
   {
-    "id": "county_unemployment",
-    "label": "2017 Unemployment Rates for U.S. Counties",
+    "id": "kyrgyzstan-schools-connectivity",
+    "label": "Kyrgyzstan School connectivity",
     "queryType": "sample",
-    "imageUrl": "https://s3.amazonaws.com/uber-static/kepler.gl/sample/counties-unemployment.png",
-    "description": "2017 Labor force information for U.S. Counties",
-    "size": 3220,
-    "dataUrl": "https://raw.githubusercontent.com/uber-web/kepler.gl-data/master/county_unemployment/data.geojson",
-    "configUrl": "https://raw.githubusercontent.com/uber-web/kepler.gl-data/master/county_unemployment/config.json"
+    "imageUrl": "/public/images/KYG.png",
+    "description": "School connectivity speed in Kyrgyzstan",
+    "size": 1632,
+    "dataUrl": "/public/schools/KYG.csv",
+    "configUrl": "/public/configs/KYG.json"
   }
 ]

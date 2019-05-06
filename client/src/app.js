@@ -38,17 +38,21 @@ import {CustomDataTableModal} from './factories/custom-data-table-modal';
 import {PanelHeaderFactory} from 'kepler.gl/components';
 import {DataTableModalFactory} from 'kepler.gl/components';
 import KeplerGlSchema from 'kepler.gl/schemas';
-import Button from './components/button';
+import SaveButton from './components/save-button';
 import config from '../config';
+import ReactGA from 'react-ga';
 // import downloadJsonFile from "./file-download";
 import helper_component_did_mount from './helpers/helper-component-did-mount'
+// shareable not used yet
+// const shareable = config.can_share;
+const saveable = config.can_save;
 
-const client_url = window.location.origin; // will be something like http://localhost:8080
-const server_url = client_url.substr(0, client_url.length-4) + config.server_port; // change from client_url to http://localhost:5000
-// const server_url = 'http://0.0.0.0:' + config.server_port; // change from client_url to http://localhost:500
-
-const countrycode = config.country_code;
 let KeplerGl;
+function initializeReactGA() {
+    ReactGA.initialize(config.gaCode);
+    ReactGA.pageview(`/${config.gaPage}`);
+}
+initializeReactGA()
 if (config.custom_header_path) {
   const CustomPanelHeaderFactory = () => CustomPanelHeader;
   const CustomDataTableModalFactory = () => CustomDataTableModal;
@@ -64,7 +68,7 @@ if (config.custom_header_path) {
   ]);
 }
 
-const MAPBOX_TOKEN = process.env.MapboxAccessToken; // eslint-disable-line
+const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN; // eslint-disable-line
 
 const GlobalStyleDiv = styled.div`
   font-family: ff-clan-web-pro, 'Helvetica Neue', Helvetica, sans-serif;
@@ -96,9 +100,7 @@ class App extends Component {
     // if we pass an id as part of the url
     // we try to fetch along map configurations
     const { params: { id: sampleMapId } = {} } = this.props;
-    // const {user} = this.props;
-    const user = config.user;
-    //const sampleMapsUrl = `${server_url}/api/${user}/samples`;
+
     const sampleMapsUrl = '/api/samples';
     this.props.dispatch(loadSampleConfigurations(sampleMapsUrl, sampleMapId));
     window.addEventListener('resize', this._onResize);
@@ -208,28 +210,31 @@ class App extends Component {
   }
 
   exportMapConfig = () => {
-    let email = this.props.user ? this.props.user.displayableId : 'default'
-    // create the config object
-    const mapConfig = this.getMapConfig();
-    const url = '/api/maps/save/' + email;
-    // Sending and receiving data in JSON format using POST method
-    fetch(url, {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(mapConfig)
-    })
-      .then(response => response.json())
-      .then(body => alert(body.message));
-    // // save it as a json file
-    // downloadJsonFile(mapConfig, 'kepler.gl.json');
+    if (saveable) {
+      let token = 'default'
+      if (this.props.user) {
+        token = this.props.user.tokenStr ? this.props.user.tokenStr : 'default'
+      }
+      // create the config object
+      const mapConfig = this.getMapConfig();
+      const url = '/api/maps/save';
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'x-access-token' : `Bearer ${token}`,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(mapConfig)
+      })
+        .then(response => response.json())
+        .then(body => alert(body.message));
+      // // save it as a json file
+    }// downloadJsonFile(mapConfig, 'kepler.gl.json');
   };
 
   render() {
     const { width, height } = this.state;
-    const saveable = config.can_save;
     return (
       <GlobalStyleDiv>
         <div
@@ -241,9 +246,8 @@ class App extends Component {
             marginTop: 0
           }}
         >
-          <div className='overlay-buttons'>
-            <Button onClick={this.exportMapConfig}>Save Config</Button>
-          </div>
+          <SaveButton saveable={saveable} onClick={this.exportMapConfig} />
+
           <KeplerGl
             mapboxApiAccessToken={MAPBOX_TOKEN}
             id="map"
