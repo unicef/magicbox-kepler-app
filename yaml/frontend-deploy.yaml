@@ -1,0 +1,19 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: magicbox-client-deployment
+spec:
+  selector:
+    matchLabels:
+      app: magicbox-client
+  replicas: 1 # tells deployment to run 1 pods matching the template
+  template: # create pods using pod definition in this template
+    metadata:
+      labels:
+        app: magicbox-client
+    spec:
+      containers:
+      - name: magicbox-client
+        image:  mikefab/kepler-demo_client:latest
+        ports:
+        - containerPort: 80

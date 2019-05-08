@@ -18,9 +18,9 @@ app.use((req, res, next) => {
 app.use(bodyParser.json({ limit: '250mb', extended: true }));
 app.use(bodyParser.urlencoded({ limit: '250mb', extended: true }));
 
-app.use('/api/maps', maps);
-app.use('/api/samples', samples);
-app.use('/api/shapefiles', shapefiles);
+app.use('/maps', maps);
+app.use('/samples', samples);
+app.use('/shapefiles', shapefiles);
 
 app.use('/', index);
 

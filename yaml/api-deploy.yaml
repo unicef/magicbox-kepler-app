@@ -1,0 +1,19 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: magicbox-server-deployment
+spec:
+  selector:
+    matchLabels:
+      app: magicbox-server
+  replicas: 1 # tells deployment to run 1 pods matching the template
+  template: # create pods using pod definition in this template
+    metadata:
+      labels:
+        app: magicbox-server
+    spec:
+      containers:
+      - name: magicbox-server
+        image:  mikefab/kepler-demo_server:latest
+        ports:
+        - containerPort: 5000
