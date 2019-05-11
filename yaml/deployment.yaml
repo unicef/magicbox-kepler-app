@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: List
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: magicbox-kepler
+    name: magicbox-kepler
+  spec:
+    ports:
+    - name: front
+      protocol: TCP
+      port: 80
+      targetPort: 8080
+    - name: back
+      protocol: TCP
+      port: 5000
+    selector:
+      app: magicbox-kepler
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: magicbox-kepler
+    labels:
+      app: magicbox-kepler
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: magicbox-kepler
+    template:
+      metadata:
+        labels:
+          app: magicbox-kepler
+      spec:
+        containers:
+        - name: front
+          image: mikefab/kepler-demo_client:latest
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 8080
+        - name: back
+          image: mikefab/kepler-demo_server:latest
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 5000

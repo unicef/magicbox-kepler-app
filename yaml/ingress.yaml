@@ -6,21 +6,22 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
-  backend:
-    serviceName: default-http-backend
-    servicePort: 80
   rules:
   - host: magicbox.unicef.io
     http:
       paths:
         - path: /
           backend:
-            serviceName: magicbox-client-service
+            serviceName: magicbox-kepler
             servicePort: 8080
         - path: /api
           backend:
-            serviceName: magicbox-server-service
+            serviceName: magicbox-kepler
             servicePort: 5000
+        - path: /povertyradar
+          backend:
+            serviceName: magicbox-app
+            servicePort: 80
   tls:
   - hosts:
     - magicbox.unicef.io
