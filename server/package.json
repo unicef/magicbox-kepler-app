@@ -8,7 +8,8 @@
   "scripts": {
     "lint": "node_modules/.bin/eslint .",
     "start": "node app.js",
-    "test": "mocha --exit"
+    "test": "mocha --exit",
+    "docker-build": "docker build -t unicef/magicbox-kepler-back . --file Dockerfile"
   },
   "dependencies": {
     "azure-storage": "^2.10.2",

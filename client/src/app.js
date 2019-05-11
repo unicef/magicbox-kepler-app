@@ -75,6 +75,11 @@ const GlobalStyleDiv = styled.div`
   font-weight: 400;
   font-size: 0.875em;
   line-height: 1.71429;
+  transition: margin 1s, height 1s;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  margin-top: 0;
 
   *,
   *:before,

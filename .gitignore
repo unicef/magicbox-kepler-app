@@ -33,3 +33,7 @@ dist
 
 # testing
 /coverage
+
+# kubernetes
+deploy/kubernetes/deployment.yaml
+deploy/kubernetes/ingress.yaml

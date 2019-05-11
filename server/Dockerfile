@@ -1,6 +1,11 @@
-FROM node:8
+FROM node:8-alpine
+
 COPY . /opt/app
+
 WORKDIR /opt/app
-RUN npm install
-CMD npm start
+ 
+RUN npm install --only production
+
 EXPOSE 5000
+
+CMD ["npm", "start"]
