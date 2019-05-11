@@ -12,6 +12,7 @@ items:
     - name: front
       protocol: TCP
       port: 80
+      targetPort: 8080
     - name: back
       protocol: TCP
       port: 5000
@@ -35,12 +36,12 @@ items:
       spec:
         containers:
         - name: front
-          image: unicef/magicbox-kepler-ui:latest
+          image: mikefab/kepler-demo_client:latest
           imagePullPolicy: Always
           ports:
-          - containerPort: 80
+          - containerPort: 8080
         - name: back
-          image: unicef/magicbox-kepler-back:latest
+          image: mikefab/kepler-demo_server:latest
           imagePullPolicy: Always
           ports:
           - containerPort: 5000
