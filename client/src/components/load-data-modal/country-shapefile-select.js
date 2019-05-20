@@ -3,6 +3,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import shortid from 'shortid';
+import styled from 'styled-components';
 
 const propTypes = {
   adminList: PropTypes.array.isRequired,
@@ -13,6 +14,45 @@ const propTypes = {
   showAdmins: PropTypes.bool.isRequired,
   submitReady: PropTypes.bool.isRequired,
 };
+
+const VisualizationForm = styled.form`
+  p {
+    font-size: 13px;
+    margin-bottom: 2px;
+    color: #29323C;
+  }
+
+  select {
+    width: 40%;
+    padding: 2px;
+    border-radius: 3px;
+    background-color: white;
+  }
+
+  select:nth-child(2) {
+    margin-bottom: 15px;
+  }
+
+  input[type="checkbox"] {
+    vertical-align: middle;
+  }
+
+  input[type="submit"] {
+    margin-top: 10px;
+    padding: 6px;
+    background-color: #0068EA;
+    border-radius: 5px;
+    color: white;
+    border-radius: 3px;
+    border-color: #0068EA;
+  }
+
+  input[type="submit"]:disabled {
+    background-color: #e7e7e7;
+    border-color: #e7e7e7;
+    color: #6c757d;
+  }
+`;
 
 const generateOptions = (items, type) => {
   let [valueName, textName] =
@@ -26,23 +66,29 @@ const generateOptions = (items, type) => {
 
 const CountryShapefileSelect = ({ adminList, countryList, onAdminChange, onCountryChange, onShapefileSelected, showAdmins, submitReady }) => (
   <div className="country-shapefile-select">
-    <form onSubmit={onShapefileSelected}>
-      <h3>Add shapefiles:</h3>
-      <p>Please select a country to see available administrative levels:</p>
-      <label>Country: </label>
+    <VisualizationForm onSubmit={onShapefileSelected}>
+      <p>In order to create a visualization, please provide the following inputs:</p>
+      <p>PLEASE SELECT A COUNTRY:</p>
+      {/* <label>Country: </label> */}
       <select name="country-select" onChange={onCountryChange}>
         {generateOptions(countryList, "country")}
       </select>
-      <div>{showAdmins &&
+      <div>
         <div>
-          <label>Administrative level: </label>
-          <select name="admin-select" onChange={onAdminChange}>
+          <p>ADMINISTRATIVE LEVEL: </p>
+          <select disabled={showAdmins?"":"disabled"} name="admin-select" onChange={onAdminChange}>
             {generateOptions(adminList, "admin")}
           </select>
+          <div>
+            <input type="checkbox" name="get-health-sites" value="true" disabled={showAdmins?"":"disabled"} />VIEW HEALTH SITES
+          </div>
+          <div>
+            <input type="checkbox" name="get-schools" value="true" disabled={showAdmins?"":"disabled"} />VIEW SCHOOLS
+          </div>
         </div>
-      }</div>
-      <div>{submitReady && <input type="submit" value="Submit" />}</div>
-    </form>
+      </div>
+      <div><input type="submit" value="GENERATE" style={{cursor:'pointer'}} disabled={submitReady?"":"disabled"} /></div>
+    </VisualizationForm>
   </div>
 );
 

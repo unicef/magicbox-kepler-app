@@ -1,18 +1,14 @@
-.overlay-buttons {
-  position: absolute;
-  z-index: 100;
-  bottom: 0;
-  right: 0;
-}
-
-.overlay-buttons > button {
-  width: 120px;
-  height: 40px;
-  background-color: #1f7cf4;
-  color: #FFFFFF;
-  cursor: pointer;
-  font-size: 12px;
-  margin: 30px;
-  border: none;
-  border-radius: 3px;
+.saveConfigButton {
+    background-color: #0068EA;
+    color: #ffffff;
+    font-size: 12px;
+    font-family: Monserrat, sans-serif;
+    z-index: 10;
+    position: absolute;
+    top: 75vh;
+    left: 90vw;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 40px;
 }

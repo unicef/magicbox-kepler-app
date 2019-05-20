@@ -2,6 +2,7 @@ version: '3'
 services:
   client:
     build: ./client
+    restart: always
     volumes:
     - ./client:/opt/app
     - /opt/app/node_modules
@@ -12,6 +13,7 @@ services:
 
   server:
     build: ./server
+    restart: always
     volumes:
     - ./server:/opt/app
     - /opt/app/node_modules

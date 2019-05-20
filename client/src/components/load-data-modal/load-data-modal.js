@@ -26,16 +26,22 @@ import PropTypes from 'prop-types';
 import { FileUpload } from 'kepler.gl/components';
 import { LoadingSpinner } from 'kepler.gl/components';
 import { themeLT } from 'kepler.gl/styles';
-import { Icons } from 'kepler.gl/components/';
+import { Icons } from 'kepler.gl/components';
 import shortid from 'shortid';
-import { updateVisData, addDataToMap } from 'kepler.gl/actions';
+import { addDataToMap } from 'kepler.gl/actions';
 import * as topojson from 'topojson-client';
-import { LOADING_METHODS, QUERY_TYPES, ASSETS_URL } from '../../constants/default-settings';
+import { LOADING_METHODS, QUERY_TYPES } from '../../constants/default-settings';
 import Processors from 'kepler.gl/processors';
-import config from '../../../config';
+import KeplerGlSchema from 'kepler.gl/schemas';
+// import config from '../../../config';
 import CountryShapefileSelect from './country-shapefile-select';
 import SampleMapGallery from './sample-map-gallery';
 import { shapefileHashEnglish } from './english-shapefile-hash';
+let config = require('./layers/base')
+let layerSchools = require('./layers/schools')
+let layerHealthsites = require('./layers/healthsites')
+let layerBorderFile = require('./layers/borderfile')
+
 
 const propTypes = {
   // query options
@@ -66,6 +72,17 @@ const BackLink = styled.div`
   }
   svg {
     margin-right: 10px;
+  }
+`;
+
+const ShapeFile = styled.div`
+  hr {
+    margin-top: 40px;
+  }
+
+  p {
+    font-size: 13px;
+    color: #29323C;
   }
 `;
 
@@ -173,13 +190,8 @@ const getSelectedValue = (menu) => {
 };
 
 const client_url = window.location.origin; // will be something like http://localhost:8080
-const server_url = client_url.substr(0, client_url.length - 4) + config.server_port; // change that to http://localhost:5000
-
 
 class LoadDataModal extends Component {
-  constructor(props) {
-    super(props)
-  }
 
   state = {
     adminList: [],
@@ -221,26 +233,98 @@ class LoadDataModal extends Component {
     let adminDD = form.elements["admin-select"];
     let countryCode = getSelectedValue(countryDD);
     let adminLevel = getSelectedValue(adminDD);
-    let blobName = `${countryCode}_${adminLevel}.json`;
-    fetch(`/api/shapefiles/countries/${countryCode}/${adminLevel}`)
+    let getHealthSites = form.elements["get-health-sites"].checked;
+    let getSchools = form.elements["get-schools"].checked;
+    fetch(`/api/shapefiles/countries/${countryCode}/${adminLevel}?healthsites=${getHealthSites}&schools=${getSchools}`)
     .then(res => res.json())
     .then(t => {
-      let geojson = topojson.feature(t, t.objects.collection);
-      let dataSets = {
-        datasets: [
-          {
-            info: {
-              id: `shapefile-${countryCode}-${adminLevel}`,
-              label: `Shapefile for ${countryCode} L-${adminLevel}`
-            },
-            data: Processors.processGeojson(geojson)
-          }
-        ]
-      };
-      this.props.dispatch(addDataToMap(dataSets));
+      this.uploadShapefiles(t.shapedata, countryCode, adminLevel);
+      if (getHealthSites) {
+        let id = `healthsites-${countryCode}`;
+        let label = `healthsites-${countryCode}`;
+        this.uploadCSVData (t.healthsites, id, label);
+      }
+      if (getSchools) {
+        let id = `schools-${countryCode}`;
+        let label = `schools-${countryCode}`;
+        this.uploadCSVData (t.schools, id, label);
+      }
     })
     .catch(err => console.log(err));
   }
+
+  uploadShapefiles = (shapedata, countryCode, adminLevel) => {
+    let geojson = topojson.feature(shapedata, shapedata.objects[countryCode + '_' + adminLevel]);
+    const dataset = {
+      info: {
+        id: `borderfile-${countryCode}-${adminLevel}`,
+        label: `borderfile ${countryCode} L-${adminLevel}`
+      },
+      data: Processors.processGeojson(geojson)
+    };
+    if (this.props.demo.keplerGl.map.visState.datasets) {
+
+    }
+    let datasets = [dataset]
+    console.log(dataset)
+    let setslength = Object.keys(this.props.demo.keplerGl.map.visState.datasets).length
+    let i = 0
+    // Object.keys(this.props.demo.keplerGl.map.visState.datasets).forEach(k => {
+    while (i < setslength) {
+      let temp = this.props.demo.keplerGl.map.visState.datasets[Object.keys(this.props.demo.keplerGl.map.visState.datasets)[i]]
+      i++
+//       console.log(k)
+//       console.log(temp[k].data)
+// console.log(temp[k].allData)
+      let obj = {
+        info: {
+          id: temp.id,
+          label: temp.label
+        },
+        data: {
+          fields: temp.fields,
+          rows: temp.data
+        }
+      }
+      console.log(obj)
+      datasets.push(obj)
+
+    }
+    // })
+    console.log(datasets)
+    layerHealthsites.config.dataId = `healthsites-${countryCode}`
+    layerHealthsites.config.label = `healthsites-${countryCode}`
+    layerSchools.config.dataId = `schools-${countryCode}`
+    layerSchools.config.label = `schools-${countryCode}`
+    layerSchools.id = `${countryCode.toLowerCase()}` + `${parseInt(Math.random(1) *10)}` + `${parseInt(Math.random(1) *10)}` + `${parseInt(Math.random(1) *10)}` + `${parseInt(Math.random(1) *10)}`
+    layerBorderFile.config.dataId = `borderfile-${countryCode}-${adminLevel}`
+    layerBorderFile.config.label = `borderfile ${countryCode} L-${adminLevel}`
+
+    // console.log(this.props.demo.keplerGL.map)
+    let tempConfig = KeplerGlSchema.getConfigToSave(this.props.demo.keplerGl.map)
+    // tempDatsets = this.props.demo.keplerGl.visState.datasets
+
+        // this.props.dispatch(addDataToMap({datasets: dataset}));
+    // console.log(tempConfig)
+    // let layers = [layerHealthsites, layerSchools, layerBorderFile]
+    config.config.visState.layers = tempConfig.config.visState.layers
+    config.config.visState.layers.push(layerHealthsites)
+    config.config.visState.layers.push(layerSchools)
+    config.config.visState.layers.push(layerBorderFile)
+
+    this.props.dispatch(addDataToMap({datasets, config}));
+  }
+
+  uploadCSVData = (healthdata, id, label) => {
+    let dataset = {
+      info: {
+        id: id,
+        label: label
+      },
+      data: Processors.processCsvData(healthdata)
+    }
+    this.props.dispatch(addDataToMap({datasets: dataset}));
+  };
 
   componentDidMount() {
     fetch('/api/shapefiles/countries')
@@ -280,26 +364,24 @@ class LoadDataModal extends Component {
             </StyledSpinner>
           ) : (
               <div>
-                {loadingMethod.id !== 'sample' ? (
+                {loadingMethod.id !== 'upload' ? (
                   <Tabs
                     method={loadingMethod.id}
                     toggleMethod={this.props.onSetLoadingMethod}
                   />
                 ) : null}
                 {loadingMethod.id === 'upload' ? (
-                  <FileUpload onFileUpload={this.props.onFileUpload} />
-                ) : null}
-                {loadingMethod.id === 'sample' ? (
-                  <div className="gallery">
+                  <div>
                     <BackLink onClick={() => this.props.onSetLoadingMethod(previousMethod.id)}>
                       <Icons.LeftArrow height="12px" />
                       <span>Back</span>
                     </BackLink>
-                    <SampleMapGallery
-                      sampleData={currentOption}
-                      sampleMaps={sampleMaps}
-                      onLoadSampleData={this.props.onLoadSampleData} />
-                    <div className="shapefile-gallery">
+                    <FileUpload onFileUpload={this.props.onFileUpload} />
+                  </div>
+                ) : null}
+                {loadingMethod.id === 'sample' ? (
+                  <div className="gallery">
+                    <ShapeFile className="shapefile-gallery">
                       {this.state.isShapefileListLoading ? (
                         <StyledSpinner>
                           <LoadingSpinner />
@@ -314,7 +396,13 @@ class LoadDataModal extends Component {
                             showAdmins={this.state.countrySelected}
                             submitReady={this.state.submitReady} />
                         )}
-                    </div>
+                    <hr />
+                    <p>Here are a few examples of data visualization</p>
+                    </ShapeFile>
+                    <SampleMapGallery
+                      sampleData={currentOption}
+                      sampleMaps={sampleMaps}
+                      onLoadSampleData={this.props.onLoadSampleData} />
                   </div>
                 ) : null}
               </div>)
@@ -330,7 +418,7 @@ const Tabs = ({ method, toggleMethod }) => (
     <div className="load-data-modal__tab__inner">
       {LOADING_METHODS.map(
         ({ id, label }) =>
-          id !== 'sample' ? (
+          id !== 'upload' ? (
             <div
               className={classnames('load-data-modal__tab__item', {
                 active: method && id === method
@@ -338,21 +426,21 @@ const Tabs = ({ method, toggleMethod }) => (
               key={id}
               onClick={() => toggleMethod(id)}
             >
-              <div>{label}</div>
+              <div>{id=='sample'?'':label}</div>
             </div>
           ) : null
       )}
     </div>
-    <TrySampleData onClick={() => toggleMethod(QUERY_TYPES.sample)} />
+    <TrySampleData onClick={() => toggleMethod(QUERY_TYPES.upload)} />
   </ModalTab>
 );
 
 const TrySampleData = ({ onClick }) => (
   <StyledTrySampleData className="try-sample-data">
     <div className="demo-map-title">
-      <div className="demo-map-label">Select shapefile from</div>
+
       <div className="demo-map-action" onClick={onClick}>
-        <span>MagicBox</span>
+      <div className="demo-map-label">Load Your Own Data</div>
         <Icons.ArrowRight height="16px" />
       </div>
     </div>

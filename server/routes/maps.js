@@ -1,38 +1,77 @@
 const express = require('express');
 // eslint-disable-next-line new-cap
 const router = express.Router();
-const default_map = require('../public/users/default/config')
-const jsonfile = require('jsonfile')
-const helper = require('../helpers/helper-user-map')
-
-router.get('/default/:email', function(req, res) {
+const config = require('../config')
+const helper = require('../helpers/helper-user-map');
+const messageNotAuthorized = 'Error: you are not authorized to save a map.'
+const mapSavedMessage = 'Saved! This map will be retrieved next time you log in.'
+// User requests logs in and requests either their own maps
+// if one was saved before, or a blank one
+router.get('/default', (req, res) => {
   if (req.params) {
-    helper.check_user(req.params.email)
-    .then(obj => {
-      if (obj) {
-        res.send(obj)
-      } else {
-        res.send(default_map)
-      }
-    })
-    .catch(err => {
-      console.log(err)
-      res.send(default_map)
-    })
+    // Returns error or email
+    const tokenCheck = helper.tokenIsValid(req.headers['x-access-token'])
+    if (tokenCheck.errors) {
+      return res.send(
+        {error: 'unauthorized'},
+      );
+    }
+    helper.checkUser(tokenCheck.email)
+      .then(mapConfig => {
+        if (mapConfig) {
+          return res.send(mapConfig);
+        }
+        // First time user, just send a default map
+        return res.send({error: 'no default map'});
+      })
+      .catch(err => {
+        console.log(err);
+        res.send({error: 'no default map'});
+    });
+
   }
 });
 
-router.route('/save/:email')
-    .post((req, res) => {
-      jsonfile.writeFile('./public/users/' + req.params.email + '/' + 'config.json', req.body, err => {
-        if (err) {
-          console.log(err)
-          res.send({message: 'Could not save'})
-        } else {
-          res.send({message: 'Saved! You may need to repoen your ' +
-            'browser in incognito mode next time you retrieve.'
-        });
+router.get('/verify', (req, res) => {
+  console.log("verify/token")
+  if (req.params) {
+  const tokenCheck = helper.tokenIsValid(req.headers['x-access-token'])
+    const authorized = Boolean(tokenCheck.email)
+    return res.send(
+      {
+        authorized
       }
+    );
+  }
+});
+
+router.route('/save')
+  .post((req, res) => {
+    if (!config.saveable) {
+      return res.send({
+        message: messageNotAuthorized
+      });
+    }
+    // console.log("save req header", req.headers['x-access-token'])
+    const tokenCheck = helper.tokenIsValid(req.headers['x-access-token'])
+    // User not authorized
+    if (tokenCheck.errors) {
+      return res.send({
+        message: messageNotAuthorized +
+        ': ' +
+        tokenCheck.errors
+      });
+    }
+    // User is authorized to save map
+    helper.saveUserMap(tokenCheck.email, req.body)
+    .then(() => {
+      res.send({
+        message: mapSavedMessage
+      });
+    })
+    .catch(err => {
+      console.log(err)
+      res.send({ message: 'Could not save' });
     })
   });
 

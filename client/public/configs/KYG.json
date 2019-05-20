@@ -1,0 +1,133 @@
+{
+  "version": "v1",
+  "config": {
+    "visState": {
+      "filters": [],
+      "layers": [
+        {
+          "id": "qup646h",
+          "type": "hexagon",
+          "config": {
+            "dataId": "kyrgyzstan-schools-connectivity",
+            "label": "Point",
+            "color": [
+              23,
+              184,
+              190
+            ],
+            "columns": {
+              "lat": "Lat",
+              "lng": "Lon"
+            },
+            "isVisible": true,
+            "visConfig": {
+              "opacity": 0.8,
+              "worldUnitSize": 10.1463,
+              "resolution": 8,
+              "colorRange": {
+                "name": "Uber Viz Diverging 1.5",
+                "type": "diverging",
+                "category": "Uber",
+                "colors": [
+                  "#00939C",
+                  "#5DBABF",
+                  "#BAE1E2",
+                  "#F8C0AA",
+                  "#DD7755",
+                  "#C22E00"
+                ],
+                "reversed": false
+              },
+              "coverage": 1,
+              "sizeRange": [
+                0,
+                500
+              ],
+              "percentile": [
+                0,
+                100
+              ],
+              "elevationPercentile": [
+                0,
+                100
+              ],
+              "elevationScale": 34,
+              "hi-precision": false,
+              "colorAggregation": "average",
+              "sizeAggregation": "average",
+              "enable3d": true
+            },
+            "textLabel": {
+              "field": null,
+              "color": [
+                255,
+                255,
+                255
+              ],
+              "size": 50,
+              "offset": [
+                0,
+                0
+              ],
+              "anchor": "middle"
+            }
+          },
+          "visualChannels": {
+            "colorField": {
+              "name": "Speed connectivity",
+              "type": "real"
+            },
+            "colorScale": "quantile",
+            "sizeField": {
+              "name": "Speed connectivity",
+              "type": "real"
+            },
+            "sizeScale": "linear"
+          }
+        }
+      ],
+      "interactionConfig": {
+        "tooltip": {
+          "fieldsToShow": {
+            "krz1gzamk": [
+              "Id",
+              "Address",
+              "Admin0",
+              "Admin1",
+              "Admin2"
+            ]
+          },
+          "enabled": true
+        },
+        "brush": {
+          "size": 0.5,
+          "enabled": false
+        }
+      },
+      "layerBlending": "normal",
+      "splitMaps": []
+    },
+    "mapState": {
+      "bearing": 16.357247437774525,
+      "dragRotate": true,
+      "latitude": 41.45653251733479,
+      "longitude": 72.24048871478446,
+      "pitch": 52.98360655737705,
+      "zoom": 6.33249308233424,
+      "isSplit": false
+    },
+    "mapStyle": {
+      "styleType": "dark",
+      "topLayerGroups": {},
+      "visibleLayerGroups": {
+        "label": true,
+        "road": true,
+        "border": false,
+        "building": true,
+        "water": true,
+        "land": true
+      },
+      "mapStyles": {}
+    }
+  }
+}

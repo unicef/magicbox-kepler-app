@@ -22,7 +22,6 @@ import { push } from 'react-router-redux';
 import { text as requestText, json as requestJson } from 'd3-request';
 import { toggleModal } from 'kepler.gl/actions';
 import { console as Console } from 'global/window';
-import { MAP_CONFIG_URL } from './constants/sample-maps';
 
 // CONSTANTS
 export const INIT = 'INIT';
@@ -124,22 +123,7 @@ export function loadSampleConfigurations(sampleMapsUrl, sampleMapId = null) {
             dispatch(setLoadingMapStatus(true));
           }
         }
+      /* eslint handle-callback-err: "warn" */
       }).catch(err => Console.warn(`Error loading sample configuration file ${sampleMapsUrl}`))
-
-    // requestJson(MAP_CONFIG_URL, (error, samples) => {
-    //   if (error) {
-    //     Console.warn(`Error loading sample configuration file ${MAP_CONFIG_URL}`);
-    //   } else {
-    //     dispatch(loadMapSampleFile(samples));
-    //     // Load the specified map
-    //     if (sampleMapId) {
-    //       const map = samples.find(s => s.id === sampleMapId);
-    //       if (map) {
-    //         dispatch(loadRemoteMap(map));
-    //         dispatch(setLoadingMapStatus(true));
-    //       }
-    //     }
-    //   }
-    // });
   }
 }

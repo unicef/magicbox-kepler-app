@@ -1,0 +1,74 @@
+{
+  "version": "v1",
+  "config": {
+    "visState": {
+      "filters": [
+
+      ],
+      "layers": [
+      ],
+      "interactionConfig": {
+        "tooltip": {
+          "fieldsToShow": {
+            "shapefile-CMR-3": [
+              "GID_0",
+              "NAME_0",
+              "GID_1",
+              "NAME_1",
+              "NL_NAME_1"
+            ],
+            "Health sites-CMR": [
+              "uuid",
+              "upstream",
+              "source",
+              "name",
+              "version"
+            ],
+            "Schools-CMR": [
+              "@id",
+              "@lon",
+              "@lat",
+              "name",
+              "barrier"
+            ]
+          },
+          "enabled": true
+        },
+        "brush": {
+          "size": 0.5,
+          "enabled": false
+        }
+      },
+      "layerBlending": "normal",
+      "splitMaps": [
+
+      ]
+    },
+    "mapState": {
+      "bearing": 24,
+      "dragRotate": true,
+      "latitude": 6.53342847013605,
+      "longitude": 12.584277751663615,
+      "pitch": 50,
+      "zoom": 5.797198746936302,
+      "isSplit": false
+    },
+    "mapStyle": {
+      "styleType": "dark",
+      "topLayerGroups": {
+
+      },
+      "visibleLayerGroups": {
+        "label": true,
+        "road": true,
+        "border": false,
+        "building": true,
+        "water": true,
+        "land": true
+      },
+      "mapStyles": {
+
+      }
+    }
+  }
+}

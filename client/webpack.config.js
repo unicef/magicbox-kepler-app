@@ -23,10 +23,10 @@
 
 // avoid destructuring for older Node version support
 const resolve = require('path').resolve;
-const join = require('path').join;
+//const join = require('path').join;
 const webpack = require('webpack');
 const Dotenv = require('dotenv-webpack');
-const config = require('./config')
+//const config = require('./config')
 const CONFIG = {
   // bundle app.js and everything it imports, recursively.
   entry: {
@@ -57,19 +57,18 @@ const CONFIG = {
 
   module: {
     rules: [
-      {
-        test: /\.js|.jsx$/,
+    {
+      test: /\.m?js$/,
+      exclude: /(node_modules|bower_components)/,
+      use: {
         loader: 'babel-loader',
-        include: join(__dirname, 'src'),
-        exclude: [/node_modules/]
-      },
-      {
-        // The example has some JSON data
-        test: /\.json$/,
-        loader: 'json-loader',
-        exclude: [/node_modules/]
+        options: {
+          presets: ['@babel/preset-env'],
+          plugins: ['@babel/plugin-proposal-object-rest-spread']
+        }
       }
-    ]
+    }
+  ]
   },
 
   node: {
@@ -79,7 +78,7 @@ const CONFIG = {
   // Optional: Enables reading mapbox token from environment variable
   plugins: [
     new Dotenv(),
-    new webpack.EnvironmentPlugin(['MapboxAccessToken'])
+    new webpack.EnvironmentPlugin(['REACT_APP_MAPBOX_ACCESS_TOKEN'])
   ]
 };
 

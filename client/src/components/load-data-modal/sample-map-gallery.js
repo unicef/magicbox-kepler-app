@@ -43,7 +43,7 @@ const StyledSampleMap = styled.div`
   line-height: 22px;
   width: 30%;
   max-width: 480px;
-  margin-bottom: 50px;
+  margin-bottom: 20px;
   .sample-map__image {
     border-radius: 4px;
     overflow: hidden;
@@ -86,7 +86,7 @@ const SampleMap = ({ sample, onClick }) => (
   <StyledSampleMap className="sample-map-gallery__item">
     <div className="sample-map">
       <div className="sample-map__image" onClick={onClick}>
-        <img src={sample.imageUrl} />
+        <img alt= "thumbnail image of a sample map" src={sample.imageUrl} />
       </div>
       <div className="sample-map__title">{sample.label}</div>
       <div className="sample-map__size">{`${numFormat(sample.size)} rows`}</div>

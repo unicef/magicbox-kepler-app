@@ -1,0 +1,142 @@
+{
+  "version": "v1",
+  "config": {
+    "visState": {
+      "filters": [],
+      "layers": [
+        {
+          "id": "nvew1oc",
+          "type": "geojson",
+          "config": {
+            "dataId": "india-population",
+            "label": "India L-3",
+            "color": [
+              23,
+              184,
+              190,
+              255
+            ],
+            "columns": {
+              "geojson": "_geojson"
+            },
+            "isVisible": true,
+            "visConfig": {
+              "opacity": 0.96,
+              "thickness": 0.4,
+              "colorRange": {
+                "name": "Uber Viz Diverging 4",
+                "type": "diverging",
+                "category": "Uber",
+                "colors": [
+                  "#00939C",
+                  "#49A6AE",
+                  "#71BABF",
+                  "#97CED1",
+                  "#BAE1E2",
+                  "#FEEEE8",
+                  "#F8C0AA",
+                  "#F2A587",
+                  "#E68059",
+                  "#D55A2B",
+                  "#C22E00"
+                ],
+                "reversed": false
+              },
+              "radius": 10,
+              "sizeRange": [
+                0,
+                10
+              ],
+              "radiusRange": [
+                0,
+                50
+              ],
+              "heightRange": [
+                0,
+                500
+              ],
+              "elevationScale": 99.4,
+              "hi-precision": false,
+              "stroked": true,
+              "filled": true,
+              "enable3d": true,
+              "wireframe": true
+            },
+            "textLabel": {
+              "field": null,
+              "color": [
+                255,
+                255,
+                255
+              ],
+              "size": 50,
+              "offset": [
+                0,
+                0
+              ],
+              "anchor": "middle"
+            }
+          },
+          "visualChannels": {
+            "colorField": {
+              "name": "population",
+              "type": "real"
+            },
+            "colorScale": "quantile",
+            "sizeField": null,
+            "sizeScale": "linear",
+            "heightField": {
+              "name": "population",
+              "type": "real"
+            },
+            "heightScale": "linear",
+            "radiusField": null,
+            "radiusScale": "linear"
+          }
+        }
+      ],
+      "interactionConfig": {
+        "tooltip": {
+          "fieldsToShow": {
+            "shapefile-IND-3": [
+              "GID_0",
+              "NAME_0",
+              "GID_1",
+              "NAME_1",
+              "NL_NAME_1"
+            ]
+          },
+          "enabled": true
+        },
+        "brush": {
+          "size": 0.5,
+          "enabled": false
+        }
+      },
+      "layerBlending": "normal",
+      "splitMaps": []
+    },
+    "mapState": {
+      "bearing": -26.60029282576867,
+      "dragRotate": true,
+      "latitude": 21.250090451793977,
+      "longitude": 84.95718525007948,
+      "pitch": 42.5944348848774,
+      "zoom": 4.576999335948125,
+      "isSplit": false
+    },
+    "mapStyle": {
+      "styleType": "dark",
+      "topLayerGroups": {},
+      "visibleLayerGroups": {
+        "label": true,
+        "road": true,
+        "border": false,
+        "building": true,
+        "water": true,
+        "land": true
+      },
+      "mapStyles": {}
+    }
+  }
+}
