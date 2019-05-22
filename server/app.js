@@ -1,5 +1,5 @@
+require('dotenv').config()
 const express = require('express');
-
 const app = express();
 const port = process.env.PORT || 5000;
 const bodyParser = require('body-parser');
@@ -17,13 +17,10 @@ app.use((req, res, next) => {
 // this will let us get the data from a POST
 app.use(bodyParser.json({ limit: '250mb', extended: true }));
 app.use(bodyParser.urlencoded({ limit: '250mb', extended: true }));
-
 app.use('/api/maps', maps);
 app.use('/api/samples', samples);
 app.use('/api/shapefiles', shapefiles);
-
 app.use('/', index);
-
 // app.use('/api', router);
 
 /* eslint-disable-next-line no-console */

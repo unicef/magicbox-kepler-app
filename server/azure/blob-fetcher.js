@@ -40,7 +40,6 @@ module.exports = {
     const azureKey = config.azure[blobKind].key1
     const container = config.azure[blobKind].containerName
     const blobSvc = azure.createBlobService(storageAccount, azureKey);
-    console.log(storageAccount, azureKey, container, blobName)
     blobSvc.getBlobToText(container, blobName, (err, data) => {
       if (err) {
         reject(err);
