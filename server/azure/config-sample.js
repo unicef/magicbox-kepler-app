@@ -12,28 +12,24 @@ module.exports = {
   },
   azure: {
     topojson: {
-      storageAccount: 'topojson',
-      key1: 'asdf',
-       //key1: 'asdf',
-      containerName: 'gadm3-6'
+      storageAccount: process.env.TOPOJSON_ACCOUNT || 'topojson',
+      key1: process.env.TOPOJSON_ACCOUNT_KEY || 'asdf',
+      containerName: process.env.TOPOJSON_CONTAINER || 'gadm3-6'
     },
     population: {
-      storageAccount: 'magicboxdata',
-      key1: 'asdf',
-       //key1: 'asdf',
-      containerName: ''
+      storageAccount: process.env.POPULATION_ACCOUNT || 'magicboxdata',
+      key1: process.env.POPULATION_ACCOUNT_KEY || 'asdf',
+      containerName: process.env.POPULATION_CONTAINER || 'sedac-population'
     },
     healthsites: {
-      storageAccount: 'magicboxdata',
-      key1: 'asdf',
-       //key1: 'asdf',
-      containerName: 'healthsites'
+      storageAccount: process.env.HEALTHSITES_ACCOUNT || 'magicboxdata',
+      key1: process.env.HEALTHSITES_ACCOUNT_KEY || 'asdf',
+      containerName: process.env.HEALTHSITES_CONTAINER || 'healthsites'
     },
     schools: {
-      storageAccount: 'magicboxdata',
-      key1: 'asdf',
-       //key1: 'asdf',
-      containerName: 'schools-osm'
+      storageAccount: process.env.SCHOOLS_ACCOUNT || 'magicboxdata',
+      key1: process.env.SCHOOLS_ACCOUNT_KEY || 'asdf',
+      containerName: process.env.SCHOOLS_CONTAINER || 'schools-osm'
     }
   }
 }
