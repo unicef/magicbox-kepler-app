@@ -1,4 +1,5 @@
-//Require the dev-dependencies
+require('dotenv').config()
+const basePath = process.env.BASE_PATH
 const chai = require('chai');
 const config = require('../config')
 const chaiHttp = require('chai-http');
@@ -10,7 +11,7 @@ chai.use(chaiHttp);
 describe('/GET token verification', () => {
     it('should return authorized false if token is invalid', (done) => {
       chai.request(server)
-          .get('/api/maps/verify/')
+          .get(`${basePath}maps/verify/`)
           .set('x-access-token', tokenInvalid)
           .end((err, res) => {
             if (err) {
@@ -26,7 +27,7 @@ describe('/GET token verification', () => {
 describe('/GET Default map', () => {
     it('should GET error message when token is string "default"', (done) => {
       chai.request(server)
-          .get('/api/maps/default')
+          .get(`${basePath}maps/default/`)
           .set('x-access-token', 'default')
           .end((err, res) => {
             if (err) {
@@ -40,7 +41,7 @@ describe('/GET Default map', () => {
 
     it('should GET error message when token is invalid', (done) => {
       chai.request(server)
-          .get('/api/maps/default/')
+          .get(`${basePath}maps/default/`)
           .set('x-access-token', tokenInvalid)
           .end((err, res) => {
             if (err) {
@@ -56,7 +57,7 @@ describe('/GET Default map', () => {
 describe('/Post User map', () => {
     it('should not save user map when token is invalid', (done) => {
       chai.request(server)
-          .post('/api/maps/save/')
+          .post(`${basePath}maps/save/`)
           .set('x-access-token', tokenInvalid)
           .end((err, res) => {
             if (err) {
