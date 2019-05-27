@@ -1,6 +1,6 @@
 module.exports = {
   default_path: './public/users/',
-  saveable: false,
+  saveable: process.env.SAVEABLE || false,
   authProviderDetails: {
     iss: ''
   },

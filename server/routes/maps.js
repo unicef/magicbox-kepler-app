@@ -8,7 +8,6 @@ const messageNotAuthorized = 'Error: you are not authorized to save a map.'
 // if one was saved before, or a blank one
 router.get('/default', (req, res) => {
   if (req.params) {
-  // if (true) {
     // Returns error or email
     const tokenCheck = helper.tokenIsValid(req.headers['x-access-token'])
     if (tokenCheck.errors) {

@@ -16,6 +16,11 @@ module.exports = {
       key1: process.env.TOPOJSON_ACCOUNT_KEY || 'asdf',
       containerName: process.env.TOPOJSON_CONTAINER || 'gadm3-6'
     },
+    users: {
+      storageAccount: process.env.USERS_ACCOUNT || 'topojson',
+      key1: process.env.USERS_ACCOUNT_KEY || 'asdf',
+      containerName: process.env.USERS_CONTAINER || 'users'
+    },
     population: {
       storageAccount: process.env.POPULATION_ACCOUNT || 'magicboxdata',
       key1: process.env.POPULATION_ACCOUNT_KEY || 'asdf',
