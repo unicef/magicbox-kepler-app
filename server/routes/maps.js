@@ -4,11 +4,11 @@ const router = express.Router();
 const config = require('../config')
 const helper = require('../helpers/helper-user-map');
 const messageNotAuthorized = 'Error: you are not authorized to save a map.'
-const mapSavedMessage = 'Saved! This map will be retrieved next time you log in.'
 // User requests logs in and requests either their own maps
 // if one was saved before, or a blank one
 router.get('/default', (req, res) => {
   if (req.params) {
+  // if (true) {
     // Returns error or email
     const tokenCheck = helper.tokenIsValid(req.headers['x-access-token'])
     if (tokenCheck.errors) {
@@ -64,7 +64,7 @@ router.route('/save')
     }
     // User is authorized to save map
     helper.saveUserMap(tokenCheck.email, req.body)
-    .then(() => {
+    .then((mapSavedMessage) => {
       res.send({
         message: mapSavedMessage
       });

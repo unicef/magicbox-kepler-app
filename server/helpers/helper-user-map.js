@@ -4,7 +4,11 @@ const config = require('../config')
 const mkdir = util.promisify(fs.mkdir);
 const jsonfile = require('jsonfile');
 const path = require('../config').default_path;
+const has_creds = require('../azure/config').azure.topojson.key1.match(/\d/)
 const decode = require('jwt-decode')
+const blobFetcher = require('../azure/blob-fetcher');
+const mapSavedMessage = 'This map will be retrieved next time you log in.'
+
 function createUserDir(email) {
   return new Promise((resolve, reject) => {
     mkdir(path + email)
@@ -82,28 +86,57 @@ module.exports = {
   },
 
   checkUser: email => new Promise((resolve, reject) => {
-    // Check user has directory
-    fs.stat(path + email, (err, stat) => {
-      if (err === null) {
-        // User has dir
-        getUserMap(email)
+    console.log(has_creds)
+    if (has_creds) {
+      blobFetcher.listBlobs('users')
+      .then(ary => {
+        // Look for user email in blob
+        let target = `${email}/config.json`
+        let match = ary.find(e => { return e === target })
+        if (match) {
+          // if match, then perhaps fetch and return blob
+          // named by email
+          blobFetcher.fetchBlob('users', target)
           .then(resolve)
-          .catch(reject);
-      } else {
-        createUserDir(email)
-          .then(resolve).catch(reject);
-      }
-    });
+          .catch(reject)
+        } else {
+          return resolve()
+        }
+      });
+    } else {
+      // Check user has directory
+      fs.stat(path + email, (err, stat) => {
+        if (err === null) {
+          // User has dir
+          getUserMap(email)
+            .then(resolve)
+            .catch(reject);
+        } else {
+          createUserDir(email)
+            .then(resolve).catch(reject);
+        }
+      });
+
+    }
   }),
+
   saveUserMap: (email, map) => {
     return new Promise((resolve, reject) => {
-      jsonfile.writeFile(`./public/users/${email}/` +
-        'config.json', map, (err) => {
-        if (err) {
-          return reject(err)
-        }
-          resolve(true)
-      });
+      if (has_creds) {
+        console.log('has creds!')
+        blobFetcher.saveBlob('users', email, map)
+        .then(msg => {
+          resolve(`Saved to cloud! ${mapSavedMessage}`)
+        }).catch(console.log)
+      } else {
+        jsonfile.writeFile(`./public/users/${email}/` +
+          'config.json', map, (err) => {
+          if (err) {
+            return reject(err)
+          }
+            resolve(`Saved to local! ${mapSavedMessage}`)
+        });
+      }
     })
   },
   checkEmailIsValid
